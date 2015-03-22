@@ -1,1 +1,2 @@
+mkdir data || true
 mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@"

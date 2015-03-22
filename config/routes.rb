@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get 'profile/profile'
 
   devise_for :users
-  
+
   post 'upload_version' => 'wonko_versions#upload'
 
   resources :wonko_files, id: /[^\/]+/ do
@@ -16,9 +16,11 @@ Rails.application.routes.draw do
       end
     end
   end
-  
+
   root 'home#index'
-  
+  get 'about' => 'home#about'
+  get 'irc' => 'home#irc'
+
   get 'files/' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_root
   get 'files/index.json' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_index
   get 'files/:wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: /[^\/]+/, id: /[^\/]+/, defaults: { format: 'json' }, as: :files_version

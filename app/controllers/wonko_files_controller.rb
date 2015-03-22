@@ -77,12 +77,6 @@ class WonkoFilesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_wonko_file
-      @wonko_file = WonkoFile.find(params[:id])
-      add_breadcrumb @wonko_file.uid, wonko_file_path(@wonko_file)
-    end
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def wonko_file_params
       params.require(:wonko_file).permit(:uid, :name)

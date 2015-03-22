@@ -15,7 +15,7 @@
   <%= csrf_meta_tags %>
   <script>
     hljs.initHighlightingOnLoad();
-    
+
     function setUrlQueryParameter(key, value) {
       var url = new URI(document.location.href);
       url.setQuery(key, value);
@@ -23,8 +23,8 @@
         document.location.href = url.href();
       }
     }
-    
-    $(function() {
+
+    $(document).on('page:change', function() {
       $('#getUrlLink').on('click', function() {
         prompt("Ctrl+C followed by Enter","<%= files_root_url %>");
       });
@@ -61,7 +61,7 @@
     });
   </script>
 </head>
-<body>
+<body data-spy="scroll" data-target=".scrollspy">
   <%= navbar position: :static do %>
     <%= vertical do %>
       <%= link_to 'WonkoWeb', root_path %>
@@ -69,12 +69,13 @@
     <%= horizontal do %>
       <%= nav class: 'navbar-left' do %>
         <%= link_to 'Get URL for MultiMC', '#', id: 'getUrlLink' %>
+        <%= link_to 'About', about_path %>
       <% end %>
-        <%= form_tag '#', class: 'navbar-form navbar-left' do |f| %>
-          <div class="form-group">
-            <input type="checkbox" class="form-control" id="wurEnabler"/>
-          </div>
-        <% end %>
+      <%= form_tag '#', class: 'navbar-form navbar-left' do |f| %>
+        <div class="form-group">
+          <input type="checkbox" class="form-control" id="wurEnabler"/>
+        </div>
+      <% end %>
       <%= nav class: 'navbar-right' do %>
         <% if user_signed_in? %>
           <%= link_to 'Edit account', edit_user_registration_path %>
@@ -89,12 +90,47 @@
 
   <div class="container">
     <% if not devise_controller? %>
-      <ol class="breadcrumb">
-        <%= render_breadcrumbs tag: :li, separator: '' %>
-      </ol>
+      <%= render_breadcrumbs builder: BootstrapBreadcrumbsBuilder %>
     <% end %>
     <%= bootstrap_flash %>
     <%= yield %>
   </div>
+
+  <style>
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.footer-contents {
+  margin: 20px 0;
+  color: #777777;
+}
+.footer-contents > a {
+  color: #777777;
+}
+.footer-contents > .glyphicon {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+body {
+  padding-bottom: 70px;
+  position: relative;
+}
+  </style>
+  <footer class="footer">
+    <div class="container">
+      <center class="footer-contents">
+        &copy; 2015 Jan Dalheimer <%= gi_icon :asterisk, size: :sm %> <%= link_to 'Contact', about_path + '#contact' %>
+      </center>
+    </div>
+  </footer>
 </body>
 </html>
