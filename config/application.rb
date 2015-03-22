@@ -1,6 +1,19 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails/all'
+require "rails"
+
+%w(
+  action_controller
+  action_view
+  action_mailer
+  rails/test_unit
+  sprockets
+).each do |framework|
+  begin
+    require "#{framework}/railtie"
+  rescue LoadError
+  end
+end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -21,5 +34,10 @@ module Workspace
     # config.i18n.default_locale = :de
 
     config.autoload_paths += Dir["#{config.root}/lib/"]
+    config.generators do |g|
+      g.fixture_replacement :fabrication
+      g.orm             :mongoid
+      g.test_framework  :rspec
+    end
   end
 end
