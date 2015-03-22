@@ -1,0 +1,2 @@
+class WonkoFilePolicy < WonkoPolicy
+end

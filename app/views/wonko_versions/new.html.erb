@@ -1,0 +1,20 @@
+<h1>New Wonko Version</h1>
+
+<%= render 'form' %>
+
+<h1>New Wonko Versions from file</h1>
+<%= bootstrap_form_tag url: upload_version_path, multipart: true do |f| %>
+  <%= f.alert_message "Please fix the errors below." %>
+  <%= f.file_field :file, hide_label: true, multiple: true %>
+<% end %>
+
+<script>
+  $(function() {
+    $('#_file').attr('style', 'width:100%');
+    $('#_file').fileinput({
+      previewFileType: 'text',
+      allowedFileExtensions: ['json'],
+      previewClass: 'bg-warning'
+    });
+  });
+</script>
