@@ -53,6 +53,10 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'rspec-rails'
 end
+group :production do
+  gem 'rails_12factor'
+  gem 'puma'
+end
 
 gem 'devise'
 gem 'devise_uid'
