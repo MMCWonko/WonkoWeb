@@ -2,12 +2,12 @@ require 'spec_helper'
 require 'rails_helper'
 
 describe WonkoPolicy do
-  subject { WonkoPolicy }
+  subject { described_class }
 
-  context "for a visitor" do
+  context 'for a visitor' do
     let(:user) { nil }
 
-    it { should     permit(:show)    }
+    it { should permit(:show)    }
 
     it { should_not permit(:create)  }
     it { should_not permit(:new)     }
@@ -16,7 +16,7 @@ describe WonkoPolicy do
     it { should_not permit(:destroy) }
   end
 
-  context "for a user" do
+  context 'for a user' do
     let(:user) { User.new }
 
     it { should permit(:show)    }

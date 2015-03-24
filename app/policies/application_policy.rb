@@ -11,7 +11,7 @@ class ApplicationPolicy
   end
 
   def show?
-    not record._id == nil
+    !record._id.nil?
   end
 
   def create?
@@ -51,4 +51,3 @@ class ApplicationPolicy
     end
   end
 end
-

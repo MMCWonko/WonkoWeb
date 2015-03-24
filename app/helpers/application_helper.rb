@@ -1,21 +1,18 @@
 module ApplicationHelper
   def bootstrap_button_to(text, url, style, *args)
-    argsMerged = args.reduce({}, :merge)
-    if argsMerged.key? :icon
-      text = (icon argsMerged[:icon]) + ' ' + text
-    end
+    args_merged = args.reduce({}, :merge)
+    text = (icon args_merged[:icon]) + ' ' + text if args_merged.key? :icon
     args.select do |arg|
-      not [:icon].include? arg.keys.first
+      ![:icon].include? arg.keys.first
     end
     clazz = 'btn btn-' + style.to_s
     args.each do |arg|
-      if arg.keys.first == :class
-        clazz = clazz + ' ' + args[:class]
-      end
+      clazz = clazz + ' ' + args[:class] if arg.keys.first == :class
     end
     args << { class: clazz }
     link_to text, url, *args
   end
+
   def bootstrap_button_group(&block)
     ('<div class="btn-group">' + capture(&block) + '</div>').html_safe
   end
@@ -27,14 +24,15 @@ module ApplicationHelper
     ret += '</div><div class="col-md-3 scrollspy"><ul id="' + id + '" class="nav hidden-xs hidden-sm" data-spy="affix">'
     ret += sections.render_nav
     ret += '</ul></div></div>'
-    ret += '<script type="text/javascript">$(function() { $(\'#' + id + '\').affix({ offset: { top: ' + top + ' }});});</script>'
-    return ret.html_safe
+    ret += '<script type="text/javascript">$(function() { $(\'#' + id + '\').affix({ offset: { top: ' +
+           top + ' }});});</script>'
+    ret.html_safe
   end
 
   def gi_icon(key, *args)
     args.clone.each do |arg|
-      if arg.is_a? Hash and arg.keys.first == :size
-        args << {class: 'glyphicon-' + arg[:size].to_s}
+      if arg.is_a?(Hash) && arg.keys.first == :size
+        args << { class: 'glyphicon-' + arg[:size].to_s }
         args.delete arg
       end
     end
@@ -42,8 +40,8 @@ module ApplicationHelper
   end
 
   private
-  class AffixSectionContainer
 
+  class AffixSectionContainer
     attr_accessor :sections
     attr_accessor :level
 
@@ -55,24 +53,25 @@ module ApplicationHelper
 
     def section(id, title, &block)
       children = AffixSectionContainer.new(@helper, @level + 2)
-      ret = "<section id=\"#{id}\"><h#{@level.to_s}>#{title}</h#{@level.to_s}>#{@helper.capture(children, &block)}</section>"
+      ret = "<section id=\"#{id}\"><h#{@level}>#{title}</h#{@level}>#{@helper.capture(children, &block)}</section>"
       @sections << {
         id: id,
         title: title,
         children: children
       }
-      return ret.html_safe
+      ret.html_safe
     end
+
     def render_nav
       ret = ''
       @sections.each do |section|
         ret += '<li><a href="#' + section[:id] + '">' + section[:title] + '</a>'
-        if not section[:children].sections.empty?
+        unless section[:children].sections.empty?
           ret += '<ul class="nav">' + section[:children].render_nav + '</ul>'
         end
         ret += '</li>'
       end
-      return ret
+      ret
     end
   end
 end

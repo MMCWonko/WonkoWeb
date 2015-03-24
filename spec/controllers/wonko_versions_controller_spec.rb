@@ -24,11 +24,11 @@ RSpec.describe WonkoVersionsController, type: :controller do
   # WonkoVersion. As you add validations to WonkoVersion, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    skip('Add a hash of attributes valid for your model')
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    skip('Add a hash of attributes invalid for your model')
   }
 
   # This should return the minimal set of values that should be in the session
@@ -36,120 +36,120 @@ RSpec.describe WonkoVersionsController, type: :controller do
   # WonkoVersionsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "assigns all wonko_versions as @wonko_versions" do
+  describe 'GET #index' do
+    it 'assigns all wonko_versions as @wonko_versions' do
       wonko_version = WonkoVersion.create! valid_attributes
       get :index, {}, valid_session
       expect(assigns(:wonko_versions)).to eq([wonko_version])
     end
   end
 
-  describe "GET #show" do
-    it "assigns the requested wonko_version as @wonko_version" do
+  describe 'GET #show' do
+    it 'assigns the requested wonko_version as @wonko_version' do
       wonko_version = WonkoVersion.create! valid_attributes
       get :show, {:id => wonko_version.to_param}, valid_session
       expect(assigns(:wonko_version)).to eq(wonko_version)
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new wonko_version as @wonko_version" do
+  describe 'GET #new' do
+    it 'assigns a new wonko_version as @wonko_version' do
       get :new, {}, valid_session
       expect(assigns(:wonko_version)).to be_a_new(WonkoVersion)
     end
   end
 
-  describe "GET #edit" do
-    it "assigns the requested wonko_version as @wonko_version" do
+  describe 'GET #edit' do
+    it 'assigns the requested wonko_version as @wonko_version' do
       wonko_version = WonkoVersion.create! valid_attributes
       get :edit, {:id => wonko_version.to_param}, valid_session
       expect(assigns(:wonko_version)).to eq(wonko_version)
     end
   end
 
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new WonkoVersion" do
+  describe 'POST #create' do
+    context 'with valid params' do
+      it 'creates a new WonkoVersion' do
         expect {
           post :create, {:wonko_version => valid_attributes}, valid_session
         }.to change(WonkoVersion, :count).by(1)
       end
 
-      it "assigns a newly created wonko_version as @wonko_version" do
+      it 'assigns a newly created wonko_version as @wonko_version' do
         post :create, {:wonko_version => valid_attributes}, valid_session
         expect(assigns(:wonko_version)).to be_a(WonkoVersion)
         expect(assigns(:wonko_version)).to be_persisted
       end
 
-      it "redirects to the created wonko_version" do
+      it 'redirects to the created wonko_version' do
         post :create, {:wonko_version => valid_attributes}, valid_session
         expect(response).to redirect_to(WonkoVersion.last)
       end
     end
 
-    context "with invalid params" do
-      it "assigns a newly created but unsaved wonko_version as @wonko_version" do
+    context 'with invalid params' do
+      it 'assigns a newly created but unsaved wonko_version as @wonko_version' do
         post :create, {:wonko_version => invalid_attributes}, valid_session
         expect(assigns(:wonko_version)).to be_a_new(WonkoVersion)
       end
 
-      it "re-renders the 'new' template" do
+      it 're-renders the 'new' template' do
         post :create, {:wonko_version => invalid_attributes}, valid_session
-        expect(response).to render_template("new")
+        expect(response).to render_template('new')
       end
     end
   end
 
-  describe "PUT #update" do
-    context "with valid params" do
+  describe 'PUT #update' do
+    context 'with valid params' do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        skip('Add a hash of attributes valid for your model')
       }
 
-      it "updates the requested wonko_version" do
+      it 'updates the requested wonko_version' do
         wonko_version = WonkoVersion.create! valid_attributes
         put :update, {:id => wonko_version.to_param, :wonko_version => new_attributes}, valid_session
         wonko_version.reload
-        skip("Add assertions for updated state")
+        skip('Add assertions for updated state')
       end
 
-      it "assigns the requested wonko_version as @wonko_version" do
+      it 'assigns the requested wonko_version as @wonko_version' do
         wonko_version = WonkoVersion.create! valid_attributes
         put :update, {:id => wonko_version.to_param, :wonko_version => valid_attributes}, valid_session
         expect(assigns(:wonko_version)).to eq(wonko_version)
       end
 
-      it "redirects to the wonko_version" do
+      it 'redirects to the wonko_version' do
         wonko_version = WonkoVersion.create! valid_attributes
         put :update, {:id => wonko_version.to_param, :wonko_version => valid_attributes}, valid_session
         expect(response).to redirect_to(wonko_version)
       end
     end
 
-    context "with invalid params" do
-      it "assigns the wonko_version as @wonko_version" do
+    context 'with invalid params' do
+      it 'assigns the wonko_version as @wonko_version' do
         wonko_version = WonkoVersion.create! valid_attributes
         put :update, {:id => wonko_version.to_param, :wonko_version => invalid_attributes}, valid_session
         expect(assigns(:wonko_version)).to eq(wonko_version)
       end
 
-      it "re-renders the 'edit' template" do
+      it 're-renders the 'edit' template' do
         wonko_version = WonkoVersion.create! valid_attributes
         put :update, {:id => wonko_version.to_param, :wonko_version => invalid_attributes}, valid_session
-        expect(response).to render_template("edit")
+        expect(response).to render_template('edit')
       end
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested wonko_version" do
+  describe 'DELETE #destroy' do
+    it 'destroys the requested wonko_version' do
       wonko_version = WonkoVersion.create! valid_attributes
       expect {
         delete :destroy, {:id => wonko_version.to_param}, valid_session
       }.to change(WonkoVersion, :count).by(-1)
     end
 
-    it "redirects to the wonko_versions list" do
+    it 'redirects to the wonko_versions list' do
       wonko_version = WonkoVersion.create! valid_attributes
       delete :destroy, {:id => wonko_version.to_param}, valid_session
       expect(response).to redirect_to(wonko_versions_url)

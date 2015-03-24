@@ -2,7 +2,7 @@ class WonkoVersionsController < ApplicationController
   before_action :files_crumb
   before_action :set_wonko_file, except: [:upload]
   before_action :set_wonko_version, only: [:show, :edit, :update, :destroy, :copy]
-  before_filter :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show]
   after_action :verify_authorized, except: [:index, :show]
 
   def index
@@ -39,15 +39,15 @@ class WonkoVersionsController < ApplicationController
       end
     end
   end
-  
+
   def upload
-    files = if params[:file].is_a? Array then params[:file] else [params[:file]] end
+    files = params[:file].is_a?(Array) ? params[:file] : [params[:file]]
     results = []
-    
+
     files.each do |file|
       data = ActionController::Parameters.new(JSON.parse file.read)
       file = WonkoFile.find(data[:uid])
-  
+
       @wonko_version = file.wonkoversions.build(data.permit(:version, :type, :time))
       @wonko_version.data = WonkoVersion.clean_keys data[:data]
       @wonko_version.requires = data[:requires] || []
@@ -57,21 +57,24 @@ class WonkoVersionsController < ApplicationController
       else
         authorize @wonko_version, :create?
       end
-      
-      if not @wonko_version.save
+
+      unless @wonko_version.save
         format.html { render :new }
         format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
         return
       end
     end
-    
+
     respond_to do |format|
       if results.size == 1
-        format.html do redirect_to [results.first.wonkofile, results.first], notice: 'Wonko version was successfully created.' end
-        format.json do render :show, status: :created, location: @wonko_version end
+        format.html do
+          redirect_to [results.first.wonkofile, results.first],
+                      notice: 'Wonko version was successfully created.'
+        end
+        format.json { render :show, status: :created, location: @wonko_version }
       else
-        format.html do redirect_to root_path, notice: 'Wonko versions were successfully created.' end
-        format.json do render json: { status: :created } end
+        format.html { redirect_to root_path, notice: 'Wonko versions were successfully created.' }
+        format.json { render json: { status: :created } }
       end
     end
   end
@@ -93,17 +96,20 @@ class WonkoVersionsController < ApplicationController
     authorize @wonko_version
     @wonko_version.destroy
     respond_to do |format|
-      format.html { redirect_to wonko_file_wonko_versions_url(@wonko_file), notice: 'Wonko version was successfully destroyed.' }
+      format.html do
+        redirect_to wonko_file_wonko_versions_url(@wonko_file),
+                    notice: 'Wonko version was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end
-  
+
   def copy
     authorize @wonko_version, :show?
     @wonko_version = @wonko_version.clone
     @wonko_version.user = current_user
     authorize @wonko_version
-    
+
     respond_to do |format|
       if @wonko_version.save
         format.html { redirect_to [@wonko_file, @wonko_version], notice: 'Wonko version was successfully copied.' }
@@ -116,8 +122,9 @@ class WonkoVersionsController < ApplicationController
   end
 
   private
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def wonko_version_params
-      params.require(:wonko_version).permit(:version, :type, :time, :requires, :data)
-    end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def wonko_version_params
+    params.require(:wonko_version).permit(:version, :type, :time, :requires, :data)
+  end
 end

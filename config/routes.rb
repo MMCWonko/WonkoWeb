@@ -23,7 +23,8 @@ Rails.application.routes.draw do
 
   get 'files/' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_root
   get 'files/index.json' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_index
-  get 'files/:wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: /[^\/]+/, id: /[^\/]+/, defaults: { format: 'json' }, as: :files_version
+  get 'files/:wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: /[^\/]+/, id: /[^\/]+/,
+      defaults: { format: 'json' }, as: :files_version
   get 'files/:id.json' => 'wonko_files#show', id: /[^\/]+/, defaults: { format: 'json' }, as: :files_file
 
   # The priority is based upon order of creation: first created -> highest priority.

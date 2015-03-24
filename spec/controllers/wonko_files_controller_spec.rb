@@ -19,141 +19,139 @@ require 'rails_helper'
 # that an instance is receiving a specific message.
 
 RSpec.describe WonkoFilesController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # WonkoFile. As you add validations to WonkoFile, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:valid_attributes) do
+    skip('Add a hash of attributes valid for your model')
+  end
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  let(:invalid_attributes) do
+    skip('Add a hash of attributes invalid for your model')
+  end
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # WonkoFilesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "assigns all wonko_files as @wonko_files" do
+  describe 'GET #index' do
+    it 'assigns all wonko_files as @wonko_files' do
       wonko_file = WonkoFile.create! valid_attributes
       get :index, {}, valid_session
       expect(assigns(:wonko_files)).to eq([wonko_file])
     end
   end
 
-  describe "GET #show" do
-    it "assigns the requested wonko_file as @wonko_file" do
+  describe 'GET #show' do
+    it 'assigns the requested wonko_file as @wonko_file' do
       wonko_file = WonkoFile.create! valid_attributes
-      get :show, {:id => wonko_file.to_param}, valid_session
+      get :show, { id: wonko_file.to_param }, valid_session
       expect(assigns(:wonko_file)).to eq(wonko_file)
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new wonko_file as @wonko_file" do
+  describe 'GET #new' do
+    it 'assigns a new wonko_file as @wonko_file' do
       get :new, {}, valid_session
       expect(assigns(:wonko_file)).to be_a_new(WonkoFile)
     end
   end
 
-  describe "GET #edit" do
-    it "assigns the requested wonko_file as @wonko_file" do
+  describe 'GET #edit' do
+    it 'assigns the requested wonko_file as @wonko_file' do
       wonko_file = WonkoFile.create! valid_attributes
-      get :edit, {:id => wonko_file.to_param}, valid_session
+      get :edit, { id: wonko_file.to_param }, valid_session
       expect(assigns(:wonko_file)).to eq(wonko_file)
     end
   end
 
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new WonkoFile" do
-        expect {
-          post :create, {:wonko_file => valid_attributes}, valid_session
-        }.to change(WonkoFile, :count).by(1)
+  describe 'POST #create' do
+    context 'with valid params' do
+      it 'creates a new WonkoFile' do
+        expect do
+          post :create, { wonko_file: valid_attributes }, valid_session
+        end.to change(WonkoFile, :count).by(1)
       end
 
-      it "assigns a newly created wonko_file as @wonko_file" do
-        post :create, {:wonko_file => valid_attributes}, valid_session
+      it 'assigns a newly created wonko_file as @wonko_file' do
+        post :create, { wonko_file: valid_attributes }, valid_session
         expect(assigns(:wonko_file)).to be_a(WonkoFile)
         expect(assigns(:wonko_file)).to be_persisted
       end
 
-      it "redirects to the created wonko_file" do
-        post :create, {:wonko_file => valid_attributes}, valid_session
+      it 'redirects to the created wonko_file' do
+        post :create, { wonko_file: valid_attributes }, valid_session
         expect(response).to redirect_to(WonkoFile.last)
       end
     end
 
-    context "with invalid params" do
-      it "assigns a newly created but unsaved wonko_file as @wonko_file" do
-        post :create, {:wonko_file => invalid_attributes}, valid_session
+    context 'with invalid params' do
+      it 'assigns a newly created but unsaved wonko_file as @wonko_file' do
+        post :create, { wonko_file: invalid_attributes }, valid_session
         expect(assigns(:wonko_file)).to be_a_new(WonkoFile)
       end
 
       it "re-renders the 'new' template" do
-        post :create, {:wonko_file => invalid_attributes}, valid_session
-        expect(response).to render_template("new")
+        post :create, { wonko_file: invalid_attributes }, valid_session
+        expect(response).to render_template('new')
       end
     end
   end
 
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested wonko_file" do
-        wonko_file = WonkoFile.create! valid_attributes
-        put :update, {:id => wonko_file.to_param, :wonko_file => new_attributes}, valid_session
-        wonko_file.reload
-        skip("Add assertions for updated state")
+  describe 'PUT #update' do
+    context 'with valid params' do
+      let(:new_attributes) do
+        skip('Add a hash of attributes valid for your model')
       end
 
-      it "assigns the requested wonko_file as @wonko_file" do
+      it 'updates the requested wonko_file' do
         wonko_file = WonkoFile.create! valid_attributes
-        put :update, {:id => wonko_file.to_param, :wonko_file => valid_attributes}, valid_session
+        put :update, { id: wonko_file.to_param, wonko_file: new_attributes }, valid_session
+        wonko_file.reload
+        skip('Add assertions for updated state')
+      end
+
+      it 'assigns the requested wonko_file as @wonko_file' do
+        wonko_file = WonkoFile.create! valid_attributes
+        put :update, { id: wonko_file.to_param, wonko_file: valid_attributes }, valid_session
         expect(assigns(:wonko_file)).to eq(wonko_file)
       end
 
-      it "redirects to the wonko_file" do
+      it 'redirects to the wonko_file' do
         wonko_file = WonkoFile.create! valid_attributes
-        put :update, {:id => wonko_file.to_param, :wonko_file => valid_attributes}, valid_session
+        put :update, { id: wonko_file.to_param, wonko_file: valid_attributes }, valid_session
         expect(response).to redirect_to(wonko_file)
       end
     end
 
-    context "with invalid params" do
-      it "assigns the wonko_file as @wonko_file" do
+    context 'with invalid params' do
+      it 'assigns the wonko_file as @wonko_file' do
         wonko_file = WonkoFile.create! valid_attributes
-        put :update, {:id => wonko_file.to_param, :wonko_file => invalid_attributes}, valid_session
+        put :update, { id: wonko_file.to_param, wonko_file: invalid_attributes }, valid_session
         expect(assigns(:wonko_file)).to eq(wonko_file)
       end
 
       it "re-renders the 'edit' template" do
         wonko_file = WonkoFile.create! valid_attributes
-        put :update, {:id => wonko_file.to_param, :wonko_file => invalid_attributes}, valid_session
-        expect(response).to render_template("edit")
+        put :update, { id: wonko_file.to_param, wonko_file: invalid_attributes }, valid_session
+        expect(response).to render_template('edit')
       end
     end
   end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested wonko_file" do
+  describe 'DELETE #destroy' do
+    it 'destroys the requested wonko_file' do
       wonko_file = WonkoFile.create! valid_attributes
-      expect {
-        delete :destroy, {:id => wonko_file.to_param}, valid_session
-      }.to change(WonkoFile, :count).by(-1)
+      expect do
+        delete :destroy, { id: wonko_file.to_param }, valid_session
+      end.to change(WonkoFile, :count).by(-1)
     end
 
-    it "redirects to the wonko_files list" do
+    it 'redirects to the wonko_files list' do
       wonko_file = WonkoFile.create! valid_attributes
-      delete :destroy, {:id => wonko_file.to_param}, valid_session
+      delete :destroy, { id: wonko_file.to_param }, valid_session
       expect(response).to redirect_to(wonko_files_url)
     end
   end
-
 end

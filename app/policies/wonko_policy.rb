@@ -4,15 +4,15 @@ class WonkoPolicy < ApplicationPolicy
       scope
     end
   end
-  
+
   def create?
-    not @user == nil
+    !@user.nil?
   end
-  
+
   def update?
-    @user and (@record.user == @user or @user.admin?)
+    @user && (@record.user == @user || @user.admin?)
   end
-  
+
   def destroy?
     update?
   end

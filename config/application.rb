@@ -1,6 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
-require "rails"
+require 'rails'
 
 %w(
   action_controller
@@ -11,7 +11,6 @@ require "rails"
 ).each do |framework|
   begin
     require "#{framework}/railtie"
-  rescue LoadError
   end
 end
 
@@ -36,8 +35,8 @@ module Workspace
     config.autoload_paths += Dir["#{config.root}/lib/"]
     config.generators do |g|
       g.fixture_replacement :fabrication
-      g.orm             :mongoid
-      g.test_framework  :rspec
+      g.orm :mongoid
+      g.test_framework :rspec
     end
   end
 end
