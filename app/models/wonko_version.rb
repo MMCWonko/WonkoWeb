@@ -10,11 +10,15 @@ class WonkoVersion
   field :origin, type: String
   attr_readonly :version
 
-  embedded_in :wonkofile, class_name: 'WonkoFile'
+  embedded_in :wonkofile, class_name: 'WonkoFile', inverse_of: :wonkoversions
   belongs_to :user
 
   paginates_per 50
   slug(&:version)
+
+  validates :version, presence: true, length: { minimum: 1 }
+
+  delegate :uid, to: :wonkofile
 
   def self.clean_keys(data)
     if data.is_a? Array

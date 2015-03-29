@@ -20,4 +20,30 @@ require 'rspec/rails'
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
-RSpec.configure(&:infer_spec_type_from_file_location!)
+require File.expand_path('../../db/seeds', __FILE__)
+
+begin
+  DatabaseCleaner.start
+  # FactoryGirl.lint
+ensure
+  DatabaseCleaner.clean
+end
+
+RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
+  config.extend ControllerMacros, type: :controller
+  config.include Devise::TestHelpers, type: :controller
+  config.extend ViewHelpers, type: :view
+  # config.include FactoryGirl::Syntax::Methods
+  config.before(:suite) do
+    DatabaseCleaner[:mongoid].strategy = :truncation
+    DatabaseCleaner[:mongoid].clean_with(:truncation)
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+    create_official_user
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+end

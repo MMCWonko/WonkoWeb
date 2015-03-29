@@ -1,16 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe 'wonko_files/show', type: :view do
+  let(:wonko_file) { Fabricate(:wf_minecraft) }
+  let(:user) { Fabricate(:user) }
+
   before(:each) do
-    @wonko_file = assign(:wonko_file, WonkoFile.create!(
-                                        uid: '',
-                                        name: ''
-    ))
+    assign(:wonko_file, wonko_file)
   end
+
+  pundit_view_helpers
 
   it 'renders attributes in <p>' do
     render
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
+    assert_select 'p a[href=#]'
   end
 end

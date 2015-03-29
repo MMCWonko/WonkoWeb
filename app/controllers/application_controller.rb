@@ -51,7 +51,11 @@ class ApplicationController < ActionController::Base
 
   def set_wonko_version
     id = params[:wonko_version_id] || params[:id]
-    @wonko_version = @wonko_file.wonkoversions.where(user: selected_user).find(id)
+    @wonko_version = if @wur_enabled
+                       @wonko_file.wonkoversions.find(id)
+                     else
+                       @wonko_file.wonkoversions.where(user: selected_user).find(id)
+                     end
     if @wonko_version
       add_breadcrumb @wonko_version.version, wonko_file_wonko_version_path(@wonko_file, @wonko_version)
     else

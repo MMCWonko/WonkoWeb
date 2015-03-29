@@ -82,7 +82,7 @@ class WonkoVersionsController < ApplicationController
   def update
     authorize @wonko_version
     respond_to do |format|
-      if @wonko_version.update(wonko_version_params)
+      if !wonko_version_params.empty? && @wonko_version.update(wonko_version_params)
         format.html { redirect_to [@wonko_file, @wonko_version], notice: 'Wonko version was successfully updated.' }
         format.json { render :show, status: :ok, location: @wonko_version }
       else
@@ -94,7 +94,7 @@ class WonkoVersionsController < ApplicationController
 
   def destroy
     authorize @wonko_version
-    @wonko_version.destroy
+    @wonko_version.delete
     respond_to do |format|
       format.html do
         redirect_to wonko_file_wonko_versions_url(@wonko_file),
@@ -108,7 +108,7 @@ class WonkoVersionsController < ApplicationController
     authorize @wonko_version, :show?
     @wonko_version = @wonko_version.clone
     @wonko_version.user = current_user
-    authorize @wonko_version
+    authorize @wonko_version, :create?
 
     respond_to do |format|
       if @wonko_version.save

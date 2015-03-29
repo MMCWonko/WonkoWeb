@@ -1,8 +1,13 @@
-official_pass = Faker::Internet.password
-official = User.new(username: 'Official',
-                    email: 'official@example.org',
-                    password: official_pass)
-official.save!
+def create_official_user
+  official_pass = Faker::Internet.password
+  official = User.new(username: 'Official',
+                      email: 'official@example.org',
+                      password: official_pass,
+                      password_confirmation: official_pass)
+  official.save!
+  official
+end
+official = create_official_user
 
 if Rails.env.development?
   # users
@@ -22,7 +27,7 @@ if Rails.env.development?
     name = Faker::App.name
     uid = Faker::Internet.slug([Faker::Lorem.words(2), name.downcase].flatten.join(' '), '.')
     file = WonkoFile.new(uid: uid,
-                         name: name)
+                         name: %w(The My).sample + ' ' + name)
     file.user = users.sample
     file.save!
     files << file

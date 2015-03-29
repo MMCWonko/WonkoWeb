@@ -1,24 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe 'wonko_versions/show', type: :view do
+  let(:wonko_version) { Fabricate(:wv_minecraft_181) }
+  let(:user) { Fabricate(:user) }
+
   before(:each) do
-    @wonko_version = assign(:wonko_version, WonkoVersion.create!(
-                                              version: '',
-                                              type: '',
-                                              time: '',
-                                              requires: '',
-                                              data: '',
-                                              origin: ''
-    ))
+    assign :wonko_version, wonko_version
+    assign :wonko_file, wonko_version.wonkofile
   end
+
+  pundit_view_helpers
 
   it 'renders attributes in <p>' do
     render
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
-    expect(rendered).to match(//)
   end
 end

@@ -14,3 +14,9 @@ Metrics/CyclomaticComplexity:
   Max: 10
 Metrics/PerceivedComplexity:
   Max: 10
+Metrics/ClassLength:
+  Max: 110
+RSpec/DescribeClass:
+  Enabled: false
+Style/Next:
+  Enabled: false

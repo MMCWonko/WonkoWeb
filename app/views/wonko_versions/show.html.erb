@@ -1,9 +1,9 @@
 <%= bootstrap_button_group do %>
   <%= bootstrap_button_to 'Edit', edit_wonko_file_wonko_version_path(@wonko_file, @wonko_version), :warning, icon: :edit if policy(@wonko_version).edit? %>
-  <%= bootstrap_button_to 'Download', files_version_path, :success, icon: 'download-alt' %>
+  <%= bootstrap_button_to 'Download', files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt' %>
 <% end %>
 
-<%= form_tag do %>
+<%= form_tag 'javascript:return false;' do %>
   <select class="selectpicker" data-live-search="true">
     <% @wonko_version.wonkofile.wonkoversions.where(version: @wonko_version.version).pluck(:user).each do |user_id| %>
       <option value="<%= User.find(user_id).slug %>"><%= User.find(user_id).username %></option>

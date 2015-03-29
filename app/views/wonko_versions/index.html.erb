@@ -19,7 +19,7 @@
           <%= bootstrap_button_group do %>
             <%= bootstrap_button_to 'Show', wonko_file_wonko_version_path(@wonko_file, wonko_version), :default if policy(wonko_version).show? %>
             <%= bootstrap_button_to 'Edit', edit_wonko_file_wonko_version_path(@wonko_file, wonko_version), :warning, icon: :edit if policy(wonko_version).edit? %>
-            <%= bootstrap_button_to 'Destroy', [@wonko_file, wonko_version], :danger, method: :delete, data: { confirm: 'Are you sure?' }, icon: :trash if policy(wonko_version).destroy? %>
+            <%= link_to 'Destroy', [@wonko_file, wonko_version], method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' if policy(wonko_version).destroy? %>
           <% end %>
         </td>
       </tr>

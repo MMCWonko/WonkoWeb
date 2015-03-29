@@ -3,7 +3,7 @@ module ApplicationHelper
     args_merged = args.reduce({}, :merge)
     text = (icon args_merged[:icon]) + ' ' + text if args_merged.key? :icon
     args.select do |arg|
-      ![:icon].include? arg.keys.first
+      arg.keys.first != :icon
     end
     clazz = 'btn btn-' + style.to_s
     args.each do |arg|

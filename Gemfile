@@ -41,25 +41,33 @@ gem 'devise-bootstrap-views'
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'faker'
   gem 'pry'
   gem 'pry-nav'
   gem 'pry-stack_explorer'
   gem 'bullet'
   gem 'meta_request'
   gem 'quiet_assets'
-  gem 'rubocop'
-  gem 'guard-rubocop'
-  gem 'rubocop-rspec'
 end
 
 group :development, :test do
-  gem 'fabrication'
+  # Guard related
+  gem 'guard'
+  gem 'rb-inotify'
   gem 'guard-rspec'
   gem 'guard-bundler'
-  gem 'rspec-rails'
-  gem 'rb-inotify'
+  gem 'guard-brakeman'
+  gem 'guard-rubocop'
+
+  # Testing helpers
+  gem 'database_cleaner'
+  gem 'fabrication'
+  gem 'faker'
+
+  # RSpec related
   gem 'spring-commands-rspec'
+  gem 'rspec-rails'
+  gem 'mongoid-rspec'
+  gem 'rubocop-rspec'
 end
 
 group :production do
