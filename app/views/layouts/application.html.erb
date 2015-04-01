@@ -132,6 +132,8 @@ body {
       </center>
     </div>
   </footer>
-  <%= piwik_tracking_tag %>
+  <% if Rails.env.production? %>
+    <%= piwik_tracking_tag %>
+  <% end %>
 </body>
 </html>

@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+ - 2.2.0
+services: mongodb
+cache: bundler
+bundler_args: --jobs=3
+before_script:
+  - sleep 5s # let the DB start
+script:
+  - RAILS_ENV=test bundle exec rake spec
