@@ -73,6 +73,8 @@ end
 group :production do
   gem 'rails_12factor'
   gem 'puma'
+  gem 'airbrake'
+  gem 'piwik_analytics'
 end
 
 # activeadmin?

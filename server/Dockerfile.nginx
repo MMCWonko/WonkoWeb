@@ -1,0 +1,7 @@
+FROM dockerfile/nginx
+
+ADD nginx-sites/wonkoweb.conf /wonkoweb.conf
+
+CMD rm /etc/nginx/sites-enabled/* && \
+  cat /wonkoweb.conf | envsubst > /etc/nginx/sites-enabled/wonkoweb.conf && \
+  nginx
