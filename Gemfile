@@ -77,4 +77,6 @@ group :production do
   gem 'piwik_analytics'
 end
 
+gem 'codeclimate-test-reporter', group: :test, require: nil
+
 # activeadmin?
