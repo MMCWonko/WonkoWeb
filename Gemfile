@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.6'
+gem 'rails'
 gem 'rabl'
 
 # General assets
-gem 'sass-rails', '~> 4.0.3'
-gem 'coffee-rails', '~> 4.0.0'
-gem 'uglifier', '>= 1.3.0'
+gem 'sass-rails'
+gem 'coffee-rails'
+gem 'uglifier'
 
 gem 'spring',        group: :development
 
@@ -26,11 +26,11 @@ gem 'turbolinks'
 gem 'therubyracer',  platforms: :ruby
 
 # ORM and related
-gem 'mongoid', '~> 4'
+gem 'mongoid'
 gem 'mongoid-slug'
 gem 'bson_ext'
 gem 'kaminari'
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt'
 
 # User management
 gem 'devise'
