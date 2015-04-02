@@ -52,6 +52,9 @@ class Docker
 
   def cmd(cmd)
     @cmd = cmd
+    # following two lines required to silence rubocop
+    asdf = @cmd
+    asdf
   end
 
   ######################### RUN #########################

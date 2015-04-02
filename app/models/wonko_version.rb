@@ -21,21 +21,9 @@ class WonkoVersion
   delegate :uid, to: :wonkofile
 
   def self.clean_keys(data)
-    if data.is_a? Array
-      return data.map { |item| clean_keys item }
-    elsif data.is_a? Hash
-      return Hash[data.map { |k, v| [k.sub('.', '!'), v] }]
-    else
-      return data
-    end
+    Util.deep_map_keys(data) { |key| key.sub('.', '!') }
   end
   def self.unclean_keys(data)
-    if data.is_a? Array
-      return data.map { |item| unclean_keys item }
-    elsif data.is_a? Hash
-      return Hash[data.map { |k, v| [k.sub('!', '.'), v] }]
-    else
-      return data
-    end
+    Util.deep_map_keys(data) { |key| key.sub('!', '.') }
   end
 end

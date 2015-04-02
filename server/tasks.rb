@@ -2,7 +2,11 @@ require_relative 'docker'
 
 if File.exist? 'server/secrets.yml'
   data = YAML.load(File.open('server/secrets.yml')).with_indifferent_access
-  storage = File.exist?('server/storage.json') ? JSON.parse(File.read('server/storage.json'), symbolize_names: true) : {}
+  storage = if File.exist?('server/storage.json')
+              JSON.parse(File.read('server/storage.json'), symbolize_names: true)
+            else
+              {}
+            end
 
   fail 'You need to create server/secrets.yml and fill it with data!' unless data
 

@@ -17,3 +17,5 @@
 /spring
 /data
 /public/assets
+/server/secrets.yml
+/server/storage.json

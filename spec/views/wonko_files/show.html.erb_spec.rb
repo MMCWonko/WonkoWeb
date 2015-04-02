@@ -12,6 +12,6 @@ RSpec.describe 'wonko_files/show', type: :view do
 
   it 'renders attributes in <p>' do
     render
-    assert_select 'p a[href=#]'
+    assert_select 'p a[href="#"]'
   end
 end
