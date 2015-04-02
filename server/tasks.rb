@@ -19,7 +19,7 @@ if File.exist? 'server/secrets.yml'
     image 'mariadb'
     port 3306
     volume ENV['MARIADB_DATA_DIR'] || '/srv/wonkoweb/mariadb', '/var/lib/mysql'
-    env MYSQL_ROOT_PASSWORD: 'asdf'
+    env MYSQL_ROOT_PASSWORD: data[:piwik][:db][:pass]
   end
   Docker.define :wonkoweb_piwik do
     build '.', 'server/Dockerfile.piwik'

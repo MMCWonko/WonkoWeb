@@ -23,7 +23,7 @@ EXPOSE 5000
 
 # bundling (done before adding '.' for improved image caching)
 COPY Gemfile* $APP_HOME/
-RUN bundle install --without test development --deployment
+RUN bundle install --without test development --deployment --jobs=3
 
 ADD . $APP_HOME
 
