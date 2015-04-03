@@ -27,6 +27,8 @@ RUN bundle install --without test development --deployment --jobs=3
 
 ADD . $APP_HOME
 
+RUN bundle install --without test development --deployment --jobs=3 && bundle exec rake assets:precompile
+
 CMD bundle install --without test development --deployment --jobs=3 && \
   AIRBRAKE_KEY=$(bundle exec ruby server/get_errbit_api_key.rb) AIRBRAKE_HOST=$ERRBIT_PORT_4000_TCP_ADDR AIRBRAKE_PORT=$ERRBIT_PORT_4000_TCP_PORT \
   foreman start

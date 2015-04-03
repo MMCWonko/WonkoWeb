@@ -61,7 +61,7 @@
     });
   </script>
 </head>
-<body data-spy="scroll" data-target=".scrollspy">
+<body data-spy="scroll" data-target=".scrollspy" data-no-turbolink="data-no-turbolink">
   <%= navbar position: :static do %>
     <%= vertical do %>
       <%= link_to 'WonkoWeb', root_path %>
@@ -107,7 +107,7 @@
   <% if Rails.env.production? %>
     <!-- Piwik -->
     <script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.<%= ENV['WONKOWEB_PIWIK_HOST'] %>/" : "http://piwik.<%= ENV['WONKOWEB_PIWIK_HOST'] %>/");
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/" : "http://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/");
     document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
     </script><script type="text/javascript">
     try {
