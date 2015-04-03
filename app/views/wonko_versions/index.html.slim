@@ -1,0 +1,22 @@
+= page_entries_info @wonko_versions, entry_name: 'version'
+table.table
+  thead
+    tr
+      th Version
+      th Type
+      th Time
+      th Actions
+  tbody
+    - @wonko_versions.each do |wonko_version|
+      tr
+        td = wonko_version.version
+        td = wonko_version.type
+        td = wonko_version.time_as_string
+        td = bootstrap_button_group do
+             = bootstrap_button_to 'Show', wonko_file_wonko_version_path(@wonko_file, wonko_version, user: wonko_version.user.username), :default if policy(wonko_version).show?
+             = bootstrap_button_to 'Edit', edit_wonko_file_wonko_version_path(@wonko_file, wonko_version, user: wonko_version.user.username), :warning, icon: :edit if policy(wonko_version).edit?
+             = link_to 'Destroy', wonko_file_wonko_version_path(@wonko_file, wonko_version, user: wonko_version.user.username), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' if policy(wonko_version).destroy?
+.btn-toolbar.list-toolbar[role="toolbar"]
+  = bootstrap_button_group do
+    = bootstrap_button_to 'New Wonko Version', new_wonko_file_wonko_version_path(@wonko_file), :success, icon: :plus if policy(WonkoVersion).create?
+  = paginate @wonko_versions

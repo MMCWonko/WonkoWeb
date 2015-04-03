@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'home/irc.html.erb', type: :view do
+RSpec.describe 'home/irc.html.slim', type: :view do
   it 'works' do
     render
   end

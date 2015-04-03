@@ -1,0 +1,8 @@
+= form_for([@wonko_version.wonkofile, @wonko_version], layout: :horizontal) do |f|
+  - if @wonko_version.new_record?
+    = f.text_field :version
+  - else
+    = f.static_control :version, label: 'Version'
+  = f.text_field :type
+  = f.text_field :time
+  = f.submit 'Save', class: 'btn btn-success'

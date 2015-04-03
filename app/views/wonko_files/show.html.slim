@@ -1,0 +1,15 @@
+= bootstrap_button_group do
+  = bootstrap_button_to 'Edit', edit_wonko_file_path(@wonko_file), :warning, icon: :edit if policy(@wonko_file).edit?
+  = bootstrap_button_to 'Download', files_file_path(@wonko_file), :success, icon: :save
+p
+  strong Owner:
+  span = link_to @wonko_file.user.username, '#'
+p
+  strong UID:
+  span = @wonko_file.uid
+p
+  strong Name:
+  span = @wonko_file.name
+h3 Versions:
+= bootstrap_button_to 'All', wonko_file_wonko_versions_path(@wonko_file), :default, icon: 'th-list'
+= @wonko_file.wonkoversions.map do |version| link_to version.version, [@wonko_file, version] end.join(', ').html_safe

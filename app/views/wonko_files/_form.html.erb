@@ -1,9 +1,0 @@
-<%= form_for(@wonko_file, layout: :horizontal) do |f| %>
-  <% if @wonko_file.new_record? %>
-    <%= f.text_field :uid, label: 'UID' %>
-  <% else %>
-    <%= f.static_control :uid, label: 'UID' %>
-  <% end %>
-  <%= f.text_field :name %>
-  <%= f.submit %>
-<% end %>

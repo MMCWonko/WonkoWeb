@@ -1,0 +1,103 @@
+doctype html
+html
+  head
+    title WonkoWeb
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
+    = javascript_include_tag 'application', 'data-turbolinks-track': true
+    = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js', 'data-turbolinks-track': true
+    = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css', media: 'all', 'data-turbolinks-track': true
+    = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.js', 'data-turbolinks-track': true
+    = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.css', media: 'all', 'data-turbolinks-track': true
+    = javascript_include_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/js/fileinput.js', 'data-turbolinks-track': true
+    = stylesheet_link_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/css/fileinput.min.css', media: 'all', 'data-turbolinks-track': true
+    = javascript_include_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/js/ajax-bootstrap-select.min.js', 'data-turbolinks-track': true
+    = stylesheet_link_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/css/ajax-bootstrap-select.css', media: 'all', 'data-turbolinks-track': true
+    = csrf_meta_tags
+    javascript:
+      hljs.initHighlightingOnLoad();
+      function setUrlQueryParameter(key, value) {
+        var url = new URI(document.location.href);
+        url.setQuery(key, value);
+        if (document.location.href !== url.href()) {
+          document.location.href = url.href();
+        }
+      }
+      $(document).on('page:change', function() {
+        $('#getUrlLink').on('click', function() {
+          prompt("Ctrl+C followed by Enter","<%= files_root_url %>");
+        });
+        $('#wurEnabler').bootstrapSwitch({
+          labelText: 'WUR',
+          state: #{@wur_enabled ? 'true' : 'false'},
+          onSwitchChange: function(evt, state) {
+            if (state == true) {
+              bootbox.dialog({
+                message: 'This will enable the WonkoUserRepositories. This means you will see WonkoFiles and versions submitted by strangers that could potentially be malicious!',
+                title: 'Enable the WUR?',
+                buttons: {
+                  yes: {
+                    label: 'Yes',
+                    className: 'btn-danger',
+                    callback: function() {
+                      setUrlQueryParameter('wur', true);
+                    }
+                  },
+                  no: {
+                    label: 'No',
+                    className: 'btn-default',
+                    callback: function() {
+                      $('#wurEnabler').click();
+                    }
+                  }
+                }
+              });
+            } else {
+              setUrlQueryParameter('wur', false);
+            }
+          }
+        });
+      });
+  body data-spy="scroll" data-target=".scrollspy" data-no-turbolink="data-no-turbolink"
+    = navbar position: :static do
+      = vertical do
+        = link_to 'WonkoWeb', root_path
+      = horizontal do
+        = nav class: 'navbar-left' do
+          = link_to 'Get URL for MultiMC', '#', id: 'getUrlLink'
+          = link_to 'About', about_path
+        = form_tag '#', class: 'navbar-form navbar-left' do |f|
+          .form-group
+            input#wurEnabler.form-control type="checkbox"
+        = nav class: 'navbar-right' do
+          - if user_signed_in?
+            = link_to 'Edit account', edit_user_registration_path
+            = link_to 'Sign out', destroy_user_session_path, method: :delete
+          - else
+            = link_to 'Sign in', new_user_session_path
+            = link_to 'Sign up', new_user_registration_path
+
+    .container
+      - if not devise_controller?
+        = render_breadcrumbs builder: BootstrapBreadcrumbsBuilder
+      = bootstrap_flash
+      = yield
+
+    footer.navbar.navbar-default.navbar-fixed-bottom
+      .container
+        div style="height: 15px;"
+        center.footer-contents
+          ' © 2015 Jan Dalheimer
+          = gi_icon :asterisk, size: :sm
+          = link_to 'Contact', about_path + '#contact'
+    - if Rails.env.production?
+        javascript:
+          <script type="text/javascript">
+          var pkBaseURL = (("https:" == document.location.protocol) ? "https://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/" : "http://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/");
+          document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+          </script><script type="text/javascript">
+          try {
+                  var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+                  piwikTracker.trackPageView();
+                  piwikTracker.enableLinkTracking();
+          } catch( err ) {}
+          </script>

@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails'
 gem 'rabl'
+gem 'slim'
+gem 'slim-rails'
 
 # General assets
 gem 'sass-rails'
@@ -47,6 +49,7 @@ group :development do
   gem 'bullet'
   gem 'meta_request'
   gem 'quiet_assets'
+  gem 'rack-prettify', github: 'logicaltext/rack-prettify'
 end
 
 group :development, :test do

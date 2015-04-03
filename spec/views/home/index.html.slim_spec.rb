@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'home/index.html.erb', type: :view do
+RSpec.describe 'home/index.html.slim', type: :view do
   let(:user) { nil }
 
   pundit_view_helpers

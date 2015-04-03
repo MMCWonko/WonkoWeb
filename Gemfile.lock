@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/logicaltext/rack-prettify.git
+  revision: 19eb631c03a5b81eb8ab8cf94c2e5b41e6da3cb9
+  specs:
+    rack-prettify (0.0.1)
+      nokogiri (>= 1.4.2)
+      rack
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -315,6 +323,15 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.9.0)
     simplecov-html (0.9.0)
+    slim (3.0.3)
+      temple (~> 0.7.3)
+      tilt (>= 1.3.3, < 2.1)
+    slim-rails (3.0.1)
+      actionmailer (>= 3.1, < 5.0)
+      actionpack (>= 3.1, < 5.0)
+      activesupport (>= 3.1, < 5.0)
+      railties (>= 3.1, < 5.0)
+      slim (~> 3.0)
     slop (3.6.0)
     spring (1.3.3)
     spring-commands-rspec (1.0.4)
@@ -329,6 +346,7 @@ GEM
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     stringex (2.5.2)
+    temple (0.7.5)
     terminal-table (1.4.5)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
@@ -394,12 +412,15 @@ DEPENDENCIES
   pundit
   quiet_assets
   rabl
+  rack-prettify!
   rails
   rails_12factor
   rb-inotify
   rspec-rails
   rubocop-rspec
   sass-rails
+  slim
+  slim-rails
   spring
   spring-commands-rspec
   therubyracer

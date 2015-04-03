@@ -30,7 +30,7 @@ class WonkoVersion
   end
 
   def time_as_string
-    Time.at(time).to_datetime.strftime '%Y-%m-%d %H:%M'
+    time.nil? ? '' : Time.at(time).to_datetime.strftime('%Y-%m-%d %H:%M')
   end
 
   def self.get(file, id, user = nil)
