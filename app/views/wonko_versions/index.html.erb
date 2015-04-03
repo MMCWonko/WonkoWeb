@@ -14,7 +14,7 @@
       <tr>
         <td><%= wonko_version.version %></td>
         <td><%= wonko_version.type %></td>
-        <td><%= wonko_version.time %></td>
+        <td><%= wonko_version.time_as_string %></td>
         <td>
           <%= bootstrap_button_group do %>
             <%= bootstrap_button_to 'Show', wonko_file_wonko_version_path(@wonko_file, wonko_version, user: wonko_version.user.username), :default if policy(wonko_version).show? %>

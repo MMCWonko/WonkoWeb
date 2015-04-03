@@ -29,6 +29,10 @@ class WonkoVersion
     version
   end
 
+  def time_as_string
+    Time.at(time).to_datetime.strftime '%Y-%m-%d %H:%M'
+  end
+
   def self.get(file, id, user = nil)
     if user
       file.wonkoversions.where(user: user).find_by(version: id)

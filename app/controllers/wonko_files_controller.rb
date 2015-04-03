@@ -6,9 +6,9 @@ class WonkoFilesController < ApplicationController
 
   def index
     if @wur_enabled
-      @wonko_files = WonkoFile.asc(:name).page params[:page]
+      @wonko_files = WonkoFile.includes(:user).asc(:name).page params[:page]
     else
-      @wonko_files = WonkoFile.where(user: User.official_user).asc(:name).page params[:page]
+      @wonko_files = WonkoFile.includes(:user).where(user: User.official_user).asc(:name).page params[:page]
     end
     authorize @wonko_files
   end

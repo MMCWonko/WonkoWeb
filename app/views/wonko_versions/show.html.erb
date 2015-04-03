@@ -1,20 +1,20 @@
-<%= bootstrap_button_group do %>
-  <%= bootstrap_button_to 'Edit', edit_wonko_file_wonko_version_path(@wonko_file, @wonko_version), :warning, icon: :edit if policy(@wonko_version).edit? %>
-  <%= bootstrap_button_to 'Download', files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt' %>
-<% end %>
-
 <%= form_tag 'javascript:return false;' do %>
-  <select class="selectpicker" data-live-search="true">
-    <% @wonko_version.wonkofile.wonkoversions.where(version: @wonko_version.version).pluck(:user).each do |user_id| %>
-      <option value="<%= User.find(user_id).slug %>"><%= User.find(user_id).username %></option>
-    <% end %>
-  </select>
+  <%= bootstrap_button_group do %>
+    <%= bootstrap_button_to 'Edit', edit_wonko_file_wonko_version_path(@wonko_file, @wonko_version), :warning, icon: :edit if policy(@wonko_version).edit? %>
+    <%= bootstrap_button_to 'Copy', copy_wonko_file_wonko_version_path(@wonko_file, @wonko_version), :warning, icon: :duplicate if policy(WonkoVersion).create? %>
+    <%= bootstrap_button_to 'Download', files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt' %>
+    <select class="selectpicker" data-live-search="true">
+      <% @wonko_version.wonkofile.wonkoversions.where(version: @wonko_version.version).pluck(:user).each do |user_id| %>
+        <option value="<%= User.find(user_id).slug %>"><%= User.find(user_id).username %></option>
+      <% end %>
+    </select>
+  <% end %>
 <% end %>
 
 <p><strong>Owner:</strong> <%= @wonko_version.user.username %></p>
 <p><strong>Version:</strong> <%= @wonko_version.version %></p>
 <p><strong>Type:</strong> <%= @wonko_version.type %></p>
-<p><strong>Time:</strong> <%= @wonko_version.time %></p>
+<p><strong>Time:</strong> <%= @wonko_version.time_as_string %></p>
 <p>
   <strong>Requires:</strong>
   <div id="requiresView"></div>

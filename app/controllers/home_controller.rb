@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   def index
-    @wonko_files = WonkoFile.asc(:name).page params[:page]
+    @wonko_files = WonkoFile.includes(:user).asc(:name).page params[:page]
   end
 
   def about
