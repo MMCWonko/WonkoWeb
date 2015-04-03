@@ -41,12 +41,18 @@ class User
   # field :locked_at,       type: Time
 
   field :admin, type: Boolean, default: false
+  field :official, type: Boolean, default: false
   field :username, type: String
 
   slug :username
 
   has_many :wonkofiles, class_name: 'WonkoFile'
-  def wonkoversions
-    WonkoVersion.where(user_id: id)
+
+  def self.official_user
+    User.find_by(official: true)
+  end
+
+  def to_param
+    username
   end
 end

@@ -15,10 +15,17 @@ RSpec.describe WonkoFilesController, type: :controller do
   describe 'GET #index' do
     login_user
 
-    it 'assigns all wonko_files as @wonko_files' do
-      wonko_file = Fabricate(:wf_minecraft)
-      get :index, {}
-      expect(assigns(:wonko_files).to_a).to eq([wonko_file])
+    it 'assigns all wonko_files as @wonko_files with wur' do
+      wf_minecraft = Fabricate(:wf_minecraft)
+      wf_lwjgl = Fabricate(:wf_lwjgl, user: Fabricate(:user))
+      get :index, wur: true
+      expect(assigns(:wonko_files).to_a).to eq([wf_lwjgl, wf_minecraft])
+    end
+    it 'assigns all official wonko_files as @wonko_files without wur' do
+      wf_minecraft = Fabricate(:wf_minecraft)
+      Fabricate(:wf_lwjgl, user: Fabricate(:user))
+      get :index, wur: false
+      expect(assigns(:wonko_files).to_a).to eq([wf_minecraft])
     end
   end
 
@@ -29,6 +36,42 @@ RSpec.describe WonkoFilesController, type: :controller do
       wonko_file = Fabricate(:wf_minecraft)
       get :show, id: wonko_file.to_param
       expect(assigns(:wonko_file)).to eq(wonko_file)
+    end
+    it 'gives 404 with invalid version' do
+      get :show, id: '1.7.10'
+      expect(response).to render_template('errors/404')
+    end
+
+    context 'with wur' do
+      context 'enabled' do
+        it 'and no official gives inofficial' do
+          user = Fabricate(:user)
+          wonko_file = Fabricate(:wf_minecraft, user: user)
+          get :show, id: wonko_file.to_param, wur: :true
+          expect(assigns(:wonko_file)).to eq(wonko_file)
+          expect(assigns(:wonko_file).user).to eq(user)
+        end
+        it 'and official gives official' do
+          wonko_file = Fabricate(:wf_minecraft)
+          get :show, id: wonko_file.to_param, wur: true
+          expect(assigns(:wonko_file)).to eq(wonko_file)
+          expect(assigns(:wonko_file).user).to eq(User.official_user)
+        end
+      end
+      context 'disabled' do
+        it 'and no official gives error' do
+          user = Fabricate(:user)
+          wonko_file = Fabricate(:wf_minecraft, user: user)
+          get :show, id: wonko_file.to_param
+          expect(response).to render_template('wonko_files/enable_wur')
+        end
+        it 'and official gives official' do
+          wonko_file = Fabricate(:wf_minecraft)
+          get :show, id: wonko_file.to_param
+          expect(assigns(:wonko_file)).to eq(wonko_file)
+          expect(assigns(:wonko_file).user).to eq(User.official_user)
+        end
+      end
     end
   end
 

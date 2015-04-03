@@ -19,3 +19,4 @@
 /public/assets
 /server/secrets.yml
 /server/storage.json
+/coverage

@@ -1,5 +1,5 @@
 Fabricator(:wf_minecraft, from: :wonko_file) do
-  uid 'net.minecraft'
+  uid { sequence(:uid) { |n| "net.minecraft.#{n}" } }
   name 'Minecraft'
-  user { User.find_by(username: 'Official') }
+  user { User.official_user }
 end

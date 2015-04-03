@@ -1,25 +1,24 @@
 module ControllerMacros
-  def login_user
+  def login_testing_user
     before(:each) do
       @request.env['devise.mapping'] = Devise.mappings[:user]
-      user = Fabricate(:user)
+      user = testing_user
       sign_in user
     end
+  end
+
+  def login_user
+    let(:testing_user) { Fabricate(:user) }
+    login_testing_user
   end
 
   def login_admin
-    before(:each) do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
-      user = Fabricate(:admin)
-      sign_in user
-    end
+    let(:testing_user) { Fabricate(:admin) }
+    login_testing_user
   end
 
   def login_official
-    before(:each) do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
-      user = User.find_by(username: 'Official')
-      sign_in user
-    end
+    let(:testing_user) { User.official_user }
+    login_testing_user
   end
 end

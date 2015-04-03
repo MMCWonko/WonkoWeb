@@ -3,13 +3,15 @@ class WonkoVersionsController < ApplicationController
   before_action :set_wonko_file, except: [:upload]
   before_action :set_wonko_version, only: [:show, :edit, :update, :destroy, :copy]
   before_action :authenticate_user!, except: [:index, :show]
-  after_action :verify_authorized, except: [:index, :show]
+  after_action :verify_authorized
 
   def index
     @wonko_versions = @wonko_file.wonkoversions.desc(:time).page params[:page]
+    authorize @wonko_versions
   end
 
   def show
+    authorize @wonko_version
   end
 
   def new
@@ -46,17 +48,15 @@ class WonkoVersionsController < ApplicationController
 
     files.each do |file|
       data = ActionController::Parameters.new(JSON.parse file.read)
-      file = WonkoFile.find(data[:uid])
+      file = WonkoFile.find_by(uid: data[:uid])
 
-      @wonko_version = file.wonkoversions.build(data.permit(:version, :type, :time))
+      @wonko_version = file.wonkoversions.find_or_initialize_by(version: data[:version], user: current_user)
+
       @wonko_version.data = WonkoVersion.clean_keys data[:data]
       @wonko_version.requires = data[:requires] || []
       @wonko_version.user = current_user
-      if file.wonkoversions.pluck(:version).include? data[:version]
-        authorize @wonko_version, :update?
-      else
-        authorize @wonko_version, :create?
-      end
+      @wonko_version.update_attributes data.permit(:version, :type, :time)
+      authorize @wonko_version, (@wonko_version.persisted? ? :update? : :create?)
 
       unless @wonko_version.save
         format.html { render :new }

@@ -1,9 +1,11 @@
 def create_official_user
+  return User.official_user unless User.where(official: true).empty?
   official_pass = Faker::Internet.password
   official = User.new(username: 'Official',
                       email: 'official@example.org',
                       password: official_pass,
-                      password_confirmation: official_pass)
+                      password_confirmation: official_pass,
+                      official: true)
   official.save!
   official
 end

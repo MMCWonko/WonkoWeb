@@ -6,14 +6,14 @@ class WonkoPolicy < ApplicationPolicy
   end
 
   def create?
-    !@user.nil?
+    !@user.nil? && super
   end
 
   def update?
-    @user && (@record.user == @user || @user.admin?)
+    @user && (@record.user == @user || @user.admin?) && super
   end
 
   def destroy?
-    update?
+    update? && super
   end
 end

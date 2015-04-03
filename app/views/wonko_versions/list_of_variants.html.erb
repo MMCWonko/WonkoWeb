@@ -1,0 +1,24 @@
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title"><b>404</b>: There doesn't seem to be anything here?</h3>
+  </div>
+  <div class="panel-body">The requested version is available from these people though:</div>
+  <div class="list-group">
+    <% @wonko_versions.where(user: User.official_user).each do |version| %>
+      <a href="<%= wonko_version_wonko_file_path @wonko_file, version, user: version.user.username %>"
+         class="list-group-item">
+        <%= version.user.username %>
+      </a>
+    <% end %>
+    <% if @wur_enabled %>
+      <% @wonko_versions.not.where(user: User.official_user).each do |version| %>
+        <a href="<%= wonko_file_wonko_version_path @wonko_file, version, user: version.user.username %>"
+           class="list-group-item">
+          <%= version.user.username %>
+        </a>
+      <% end %>
+    <% elsif !@wonko_versions.not.where(user: User.official_user).empty? %>
+      <a href="javascript:$('#wurEnabler').click()" class="list-group-item list-group-item-warning">Enable the WUR the see others</a>
+    <% end %>
+  </div>
+</div>

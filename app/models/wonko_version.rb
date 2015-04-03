@@ -1,6 +1,5 @@
 class WonkoVersion
   include Mongoid::Document
-  include Mongoid::Slug
 
   field :version, type: String
   field :type, type: String
@@ -14,7 +13,6 @@ class WonkoVersion
   belongs_to :user
 
   paginates_per 50
-  slug(&:version)
 
   validates :version, presence: true, length: { minimum: 1 }
 
@@ -25,5 +23,19 @@ class WonkoVersion
   end
   def self.unclean_keys(data)
     Util.deep_map_keys(data) { |key| key.sub('!', '.') }
+  end
+
+  def to_param
+    version
+  end
+
+  def self.get(file, id, user = nil)
+    if user
+      file.wonkoversions.where(user: user).find_by(version: id)
+    else
+      file.wonkoversions.find_by(version: id)
+    end
+  rescue Mongoid::Errors::DocumentNotFound
+    return nil
   end
 end

@@ -52,6 +52,71 @@ RSpec.describe WonkoVersionsController, type: :controller do
       get :show, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param
       expect(assigns(:wonko_version)).to eq(wonko_version)
     end
+
+    context 'with wur' do
+      let(:wonko_file) { Fabricate(:wf_minecraft) }
+      let(:user) { Fabricate(:user) }
+      let(:wv_inofficial) { Fabricate(:wv_minecraft_183, user: user, wonkofile: wonko_file) }
+      let(:wv_official) { Fabricate(:wv_minecraft_183, user: User.official_user, wonkofile: wonko_file) }
+      before(:each) do
+        # generate a few red herings
+        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonkofile: wonko_file)
+        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonkofile: wonko_file)
+      end
+
+      context 'enabled' do
+        it 'and no official and no param gives list' do
+          get :show, wonko_file_id: wonko_file.to_param, id: wv_inofficial.to_param, wur: :true
+          expect(response).to render_template('wonko_versions/list_of_variants')
+          expect(assigns(:wonko_versions).to_a).to eq(wonko_file.wonkoversions.to_a)
+        end
+        it 'and no official and no param but only one shows it' do
+          version = Fabricate(:wv_minecraft_181, user: Fabricate(:user), wonkofile: wonko_file)
+          get :show, wonko_file_id: wonko_file.to_param, id: version.to_param, wur: true
+          expect(response).to render_template('wonko_versions/show')
+          expect(assigns(:wonko_version)).to eq(version)
+        end
+        it 'and none at all gives 404' do
+          get :show, wonko_file_id: wonko_file.to_param, id: '1.7.10'
+          expect(response).to render_template('errors/404')
+        end
+        it 'and no official and param gives inofficial' do
+          get :show, wonko_file_id: wonko_file.to_param, id: wv_inofficial.to_param, wur: :true, user: user.to_param
+          expect(assigns(:wonko_version)).to eq(wv_inofficial)
+          expect(assigns(:wonko_version).user).to eq(user)
+          expect(response).to render_template('wonko_versions/show')
+        end
+        it 'and official and no param gives official' do
+          get :show, wonko_file_id: wonko_file.to_param, id: wv_official.to_param, wur: true
+          expect(assigns(:wonko_version)).to eq(wv_official)
+          expect(assigns(:wonko_version).user).to eq(User.official_user)
+          expect(response).to render_template('wonko_versions/show')
+        end
+        it 'and official and param gives inofficial' do
+          get :show, wonko_file_id: wonko_file.to_param, id: wv_inofficial.to_param, wur: true, user: user.to_param
+          expect(assigns(:wonko_version)).to eq(wv_inofficial)
+          expect(assigns(:wonko_version).user).to eq(user)
+          expect(response).to render_template('wonko_versions/show')
+        end
+      end
+      context 'disabled' do
+        it 'and no official gives error gives 404' do
+          get :show, wonko_file_id: wonko_file.to_param, id: '1.7.10'
+          expect(response).to render_template('errors/404')
+        end
+        it 'and no official but inofficial gives hint' do
+          wonko_version = Fabricate(:wv_minecraft_181, user: user, wonkofile: wonko_file)
+          get :show, wonko_file_id: wonko_file.to_param, id: wonko_version.to_param
+          expect(response).to render_template('wonko_versions/list_of_variants')
+          expect(assigns(:wonko_versions).to_a).to eq([wonko_version])
+        end
+        it 'and official gives official' do
+          get :show, wonko_file_id: wonko_file.to_param, id: wv_official.to_param
+          expect(assigns(:wonko_version)).to eq(wv_official)
+          expect(response).to render_template('wonko_versions/show')
+        end
+      end
+    end
   end
 
   describe 'GET #new' do
@@ -71,6 +136,25 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
       get :edit, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param
       expect(assigns(:wonko_version)).to eq(wonko_version)
+    end
+  end
+
+  describe 'POST #upload' do
+    login_user
+
+    it 'updates a version' do
+      file = Fabricate(:wf_minecraft, uid: 'net.minecraft.asdf.asdf')
+      version = Fabricate(:wv_minecraft_183, wonkofile: file, time: 0, user: testing_user)
+      expect do
+        post :upload, file: Rack::Test::UploadedFile.new('spec/1.8.3.json', 'application/json')
+      end.to change { file.reload.wonkoversions.count }.by(0)
+      expect(version.reload.time).not_to eq(0)
+    end
+    it 'creates a new version' do
+      file = Fabricate(:wf_minecraft, uid: 'net.minecraft.asdf.asdf')
+      expect do
+        post :upload, file: Rack::Test::UploadedFile.new('spec/1.8.3.json', 'application/json')
+      end.to change { file.reload.wonkoversions.count }.by(1)
     end
   end
 

@@ -1,6 +1,6 @@
 Fabricator(:wv_minecraft_183, from: :wonko_version) do
   wonkofile(fabricator: :wf_minecraft)
-  user { User.find_by(username: 'Official') }
+  user { User.official_user }
 
   version '1.8.3'
   type 'release'
@@ -11,7 +11,7 @@ Fabricator(:wv_minecraft_183, from: :wonko_version) do
 end
 Fabricator(:wv_minecraft_181, from: :wonko_version) do
   wonkofile(fabricator: :wf_minecraft)
-  user { User.find_by(username: 'Official') }
+  user { User.official_user }
 
   version '1.8.1'
   type 'release'

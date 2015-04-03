@@ -27,23 +27,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def official_user
-    User.find_by(username: 'Official')
-  end
-
   def selected_user
-    username = params[:user] || official_user.username
-    @wur_enabled ? User.find_by(username: username) : official_user
+    username = params[:user] || User.official_user.username
+    @wur_enabled ? User.find_by(username: username) : User.official_user
+  rescue Mongoid::Errors::DocumentNotFound
+    nil
   end
 
   def set_wonko_file
     id = params[:wonko_file_id] || params[:id]
-    @wonko_file = @wur_enabled ? WonkoFile.find(id) : WonkoFile.where(user: selected_user).find(id)
-    if @wonko_file
+    @wonko_file = WonkoFile.find_by(uid: id)
+
+    if @wur_enabled || @wonko_file.user == User.official_user
       add_breadcrumb @wonko_file.uid, wonko_file_path(@wonko_file)
       add_breadcrumb 'Versions', wonko_file_wonko_versions_path(@wonko_file)
     else
-      render 'errors/404'
+      render 'wonko_files/enable_wur'
     end
   rescue Mongoid::Errors::DocumentNotFound
     render 'errors/404'
@@ -51,20 +50,28 @@ class ApplicationController < ActionController::Base
 
   def set_wonko_version
     id = params[:wonko_version_id] || params[:id]
-    @wonko_version = if @wur_enabled
-                       @wonko_file.wonkoversions.find(id)
-                     else
-                       @wonko_file.wonkoversions.where(user: selected_user).find(id)
-                     end
+
+    @wonko_version = selected_user ? WonkoVersion.get(@wonko_file, id, selected_user) : nil
+
+    # if we haven't specifically asked for a user we can take any
+    if !@wonko_version && @wur_enabled && @wonko_file.wonkoversions.where(version: id).count == 1
+      @wonko_version = WonkoVersion.get(@wonko_file, id)
+    end
+
     if @wonko_version
       add_breadcrumb @wonko_version.version, wonko_file_wonko_version_path(@wonko_file, @wonko_version)
     else
-      render 'errors/404'
+      @wonko_versions = @wonko_file.wonkoversions.where(version: id)
+      if @wonko_versions.empty?
+        render 'errors/404'
+      else
+        render 'wonko_versions/list_of_variants'
+      end
     end
   end
 
   def handle_wur_parameter
-    wur = params.key?(:wur) ? params[:wur] == 'true' : (cookies.permanent[:wurEnabled] || false)
+    wur = params.key?(:wur) ? params[:wur].to_s == 'true' : (cookies.permanent[:wurEnabled] || false)
     cookies.permanent[:wurEnabled] = wur
     @wur_enabled = wur
   end

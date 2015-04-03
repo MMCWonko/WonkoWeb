@@ -8,11 +8,13 @@ class WonkoFilesController < ApplicationController
     if @wur_enabled
       @wonko_files = WonkoFile.asc(:name).page params[:page]
     else
-      @wonko_files = WonkoFile.where(user: official_user).asc(:name).page params[:page]
+      @wonko_files = WonkoFile.where(user: User.official_user).asc(:name).page params[:page]
     end
+    authorize @wonko_files
   end
 
   def show
+    authorize @wonko_file
   end
 
   def new
