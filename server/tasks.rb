@@ -25,9 +25,9 @@ if File.exist? 'server/secrets.yml'
     build '.', 'server/Dockerfile.piwik'
     port 5002 => 80
     link :wonkoweb_mariadb, :db_1
-    env DB_USER: data[:piwik][:db][:user], DB_PASSWORD: data[:piwik][:db][:pass], DB_NAME: 'wonkoweb_piwik',
-        PIWIK_USER: data[:piwik][:user], PIWIK_PASSWORD: data[:piwik][:pass],
-        PIWIK_SEED_DATABASE: (storage[:piwik_seeded] ? 0 : 1)
+    env DB_USER: data[:piwik][:db][:user], DB_PASSWORD: data[:piwik][:db][:pass], DB_NAME: 'wonkoweb_piwik'
+    env PIWIK_SEED_DATABASE: 1,
+        PIWIK_USER: data[:piwik][:user], PIWIK_PASSWORD: data[:piwik][:pass] unless storage[:piwik_seeded]
   end
   Docker.define :wonkoweb_errbit do
     build '.', 'server/Dockerfile.errbit'
@@ -76,7 +76,7 @@ if File.exist? 'server/secrets.yml'
     end
 
     desc 'Builds all docker images'
-    task build: %w(docker:build:wonkoweb docker:build:errbit docker:build:piwik)
+    task build: %w(docker:build:wonkoweb docker:build:errbit docker:build:piwik docker:build:nginx)
 
     namespace :run do
       desc 'Runs the docker image for WonkoWeb'

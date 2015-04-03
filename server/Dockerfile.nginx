@@ -1,6 +1,15 @@
 FROM dockerfile/nginx
 
+RUN apt-get install -yqq cron
+
 ADD nginx-sites/wonkoweb.conf /wonkoweb.conf
+#ADD cloudflare-ip-ranges-updater.sh /usr/local/www/_cron/cloudflare-ip-ranges-updater.sh
+
+#RUN mkdir -p /usr/local/www/_include && \
+#  /usr/local/www/_cron/cloudflare-ip-ranges-updater.sh
+
+#RUN echo '00      04      *       *       *       root    /usr/local/www/_cron/cloudflare-ip-ranges-updater.sh >/dev/null 2>&1' >> /etc/crontab && \
+#  service cron restart
 
 CMD rm /etc/nginx/sites-enabled/* && \
   cat /wonkoweb.conf | envsubst > /etc/nginx/sites-enabled/wonkoweb.conf && \

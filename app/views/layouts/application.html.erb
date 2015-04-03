@@ -96,37 +96,9 @@
     <%= yield %>
   </div>
 
-  <style>
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-color: #f5f5f5;
-}
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-.footer-contents {
-  margin: 20px 0;
-  color: #777777;
-}
-.footer-contents > a {
-  color: #777777;
-}
-.footer-contents > .glyphicon {
-  padding-left: 5px;
-  padding-right: 5px;
-}
-body {
-  padding-bottom: 70px;
-  position: relative;
-}
-  </style>
-  <footer class="footer">
+  <footer class="navbar navbar-default navbar-fixed-bottom">
     <div class="container">
+      <div style="height: 15px;"></div>
       <center class="footer-contents">
         &copy; 2015 Jan Dalheimer <%= gi_icon :asterisk, size: :sm %> <%= link_to 'Contact', about_path + '#contact' %>
       </center>
