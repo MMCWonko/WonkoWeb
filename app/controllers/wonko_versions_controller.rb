@@ -3,7 +3,6 @@ class WonkoVersionsController < ApplicationController
   before_action :set_wonko_file, except: [:upload]
   before_action :set_wonko_version, only: [:show, :edit, :update, :destroy, :copy]
   before_action :authenticate_user!, except: [:index, :show]
-  after_action :verify_authorized
 
   def index
     @wonko_versions = @wonko_file.wonkoversions.desc(:time).page params[:page]
@@ -18,28 +17,17 @@ class WonkoVersionsController < ApplicationController
     @wonko_version = @wonko_file.wonkoversions.build
     @wonko_version.user = current_user
     authorize @wonko_version
-    add_breadcrumb 'New', new_wonko_file_wonko_version_path(@wonko_file)
+    add_breadcrumb 'New', route(:new, @wonko_version)
   end
 
   def edit
     authorize @wonko_version
-    add_breadcrumb @wonko_version.version, edit_wonko_file_wonko_version_path(@wonko_file, @wonko_version)
+    add_breadcrumb 'Edit', route(:edit, @wonko_version)
   end
 
   def create
     @wonko_version = @wonko_file.wonkoversions.build(wonko_version_params)
-    @wonko_version.user = current_user
-    authorize @wonko_version
-
-    respond_to do |format|
-      if @wonko_version.save
-        format.html { redirect_to [@wonko_file, @wonko_version], notice: 'Wonko version was successfully created.' }
-        format.json { render :show, status: :created, location: @wonko_version }
-      else
-        format.html { render :new }
-        format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
-      end
-    end
+    do_respond_to :create?, 'created', @wonko_version.save, :new
   end
 
   def upload
@@ -68,7 +56,7 @@ class WonkoVersionsController < ApplicationController
     respond_to do |format|
       if results.size == 1
         format.html do
-          redirect_to [results.first.wonkofile, results.first],
+          redirect_to route(:show, results.first, user: results.first.user.username),
                       notice: 'Wonko version was successfully created.'
         end
         format.json { render :show, status: :created, location: @wonko_version }
@@ -80,16 +68,8 @@ class WonkoVersionsController < ApplicationController
   end
 
   def update
-    authorize @wonko_version
-    respond_to do |format|
-      if !wonko_version_params.empty? && @wonko_version.update(wonko_version_params)
-        format.html { redirect_to [@wonko_file, @wonko_version], notice: 'Wonko version was successfully updated.' }
-        format.json { render :show, status: :ok, location: @wonko_version }
-      else
-        format.html { render :edit }
-        format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
-      end
-    end
+    do_respond_to :update?, 'updated',
+                  !wonko_version_params.empty? && @wonko_version.update(wonko_version_params), :edit
   end
 
   def destroy
@@ -97,7 +77,7 @@ class WonkoVersionsController < ApplicationController
     @wonko_version.delete
     respond_to do |format|
       format.html do
-        redirect_to wonko_file_wonko_versions_url(@wonko_file),
+        redirect_to route(:index, @wonko_file, WonkoVersion),
                     notice: 'Wonko version was successfully destroyed.'
       end
       format.json { head :no_content }
@@ -106,22 +86,41 @@ class WonkoVersionsController < ApplicationController
 
   def copy
     authorize @wonko_version, :show?
-    @wonko_version = @wonko_version.clone
+
+    unless view_context.can_copy(@wonko_version)
+      respond_to do |format|
+        format.html do
+          redirect_to route(:show, @wonko_version, user: current_user.username),
+                      notice: 'You already have this version'
+        end
+        format.json { render json: { error: 'You already have this version' }, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    @wonko_version = @wonko_file.wonkoversions.build(@wonko_version.attributes)
+    do_respond_to :create?, 'copied', @wonko_version.save, :new
+  end
+
+  private
+
+  def do_respond_to(action, verb, success, error_redirect)
     @wonko_version.user = current_user
-    authorize @wonko_version, :create?
+    authorize @wonko_version, action
 
     respond_to do |format|
-      if @wonko_version.save
-        format.html { redirect_to [@wonko_file, @wonko_version], notice: 'Wonko version was successfully copied.' }
+      if success
+        format.html do
+          redirect_to route(:show, @wonko_version, user: current_user.username),
+                      notice: "Wonko version was successfully #{verb}."
+        end
         format.json { render :show, status: :created, location: @wonko_version }
       else
-        format.html { render :new }
+        format.html { render error_redirect }
         format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
       end
     end
   end
-
-  private
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def wonko_version_params

@@ -1,9 +1,16 @@
 Rails.application.routes.draw do
-  get 'profile/login'
+  controller :profile, path: :user do
+    get '(:username)', action: :show, as: :profile
+    get '(:username)/feed' => 'feed#user', as: :profile_feed
+    get '(:username)/files', action: :files, as: :profile_files
+    get '(:username)/versions', action: :versions, as: :profile_versions
+  end
 
-  get 'profile/logout'
-
-  get 'profile/profile'
+  controller :feed, path: :feed do
+    get 'user(/:username)', action: :user, as: :feed_user
+    get 'file/:id', action: :file, id: /[^\/]+/, as: :feed_file
+    get 'file/:wonko_file_id/:id', action: :version, id: /[^\/]+/, wonko_file_id: /[^\/]+/, as: :feed_versions
+  end
 
   devise_for :users
 

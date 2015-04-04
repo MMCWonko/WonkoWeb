@@ -11,11 +11,11 @@ table.table
         td = wonko_file.uid
         td = wonko_file.name
         td = bootstrap_button_group do
-             = bootstrap_button_to 'Show', wonko_file, :default if policy(wonko_file).show?
-             = bootstrap_button_to 'Edit', edit_wonko_file_path(wonko_file), :warning if policy(wonko_file).edit?
-             = bootstrap_button_to 'Destroy', wonko_file, :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(wonko_file).destroy?
+             = bootstrap_button_to 'Show', route(:show, wonko_file), :default if policy(wonko_file).show?
+             = bootstrap_button_to 'Edit', route(:edit, wonko_file), :warning if policy(wonko_file).edit?
+             = bootstrap_button_to 'Destroy', route(:destroy, wonko_file), :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(wonko_file).destroy?
 .btn-toolbar.list-toolbar role="toolbar"
   = bootstrap_button_group do
-    = bootstrap_button_to 'New Wonko File', new_wonko_file_path, :success if policy(WonkoFile).create?
+    = bootstrap_button_to 'New Wonko File', route(:new, WonkoFile), :success if policy(WonkoFile).create?
     = bootstrap_button_to 'Download Index', files_index_path, :success
   = paginate @wonko_files

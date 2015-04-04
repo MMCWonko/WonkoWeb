@@ -6,11 +6,11 @@
   .panel-body The requested version is available from these people though:
   .list-group
     - @wonko_versions.where(user: User.official_user).each do |version|
-      a.list-group-item href="#{wonko_file_wonko_version_path @wonko_file, version, user: version.user.username}"
+      a.list-group-item href="#{route :show, version, user: version.user.username}"
         = version.user.username
     - if @wur_enabled
       - @wonko_versions.not.where(user: User.official_user).each do |version|
-        a.list-group-item href="#{wonko_file_wonko_version_path @wonko_file, version, user: version.user.username}"
+        a.list-group-item href="#{route :show, version, user: version.user.username}"
           = version.user.username
     - elsif !@wonko_versions.not.where(user: User.official_user).empty?
       a.list-group-item.list-group-item-warning href="javascript:$('#wurEnabler').click()"

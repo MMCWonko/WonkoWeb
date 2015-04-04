@@ -2,7 +2,6 @@ class WonkoFilesController < ApplicationController
   before_action :files_crumb
   before_action :set_wonko_file, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index, :show]
-  after_action :verify_authorized, except: [:index, :show]
 
   def index
     if @wur_enabled

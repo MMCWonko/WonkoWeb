@@ -181,7 +181,8 @@ RSpec.describe WonkoVersionsController, type: :controller do
         attributes = Fabricate.attributes_for(:wv_minecraft_183)
         post :create, wonko_file_id: wonko_file.to_param,
                       wonko_version: attributes
-        expect(response).to redirect_to(wonko_file_wonko_version_path(wonko_file, attributes[:version]))
+        expect(response).to redirect_to(wonko_file_wonko_version_path(wonko_file, attributes[:version],
+                                                                      user: testing_user.username))
       end
     end
 
@@ -194,6 +195,52 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 're-renders the \'new\' template' do
         post :create, wonko_file_id: Fabricate(:wf_minecraft).to_param, wonko_version: invalid_attributes
         expect(response).to render_template('new')
+      end
+    end
+  end
+
+  describe 'GET #copy' do
+    let(:wonko_file) { Fabricate(:wf_minecraft) }
+    login_user
+
+    context 'with same user' do
+      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonkofile: wonko_file, user: testing_user) }
+
+      it 'doesn\'t change and redirects to own' do
+        version = wonko_version
+        expect do
+          get :copy, wonko_file_id: wonko_file.to_param, id: version.to_param, user: testing_user.username,
+                     wur: true
+        end.to change { wonko_file.reload.wonkoversions.count }.by(0)
+        expect(response).to redirect_to(wonko_file_wonko_version_path(wonko_file, wonko_version,
+                                                                      user: testing_user.username))
+      end
+    end
+
+    context 'with different user' do
+      let(:other_user) { Fabricate(:user) }
+      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonkofile: wonko_file, user: other_user) }
+
+      it 'creates a new WonkoVersion' do
+        version = wonko_version
+        expect do
+          get :copy, wonko_file_id: wonko_file.to_param, id: version.to_param, user: wonko_version.user.username,
+                     wur: true
+        end.to change { wonko_file.reload.wonkoversions.count }.by(1)
+      end
+
+      it 'assigns a newly created wonko version as @wonko_version' do
+        get :copy, wonko_file_id: wonko_file.to_param, id: wonko_version.to_param, user: wonko_version.user.username,
+                   wur: true
+        expect(assigns(:wonko_version)).to be_a(WonkoVersion)
+        expect(assigns(:wonko_version)).to be_persisted
+      end
+
+      it 'redirects to the created wonko version' do
+        get :copy, wonko_file_id: wonko_file.to_param, id: wonko_version.to_param, user: wonko_version.user.username,
+                   wur: true
+        expect(response).to redirect_to(wonko_file_wonko_version_path(wonko_file, wonko_version.to_param,
+                                                                      user: testing_user.username))
       end
     end
   end
@@ -231,7 +278,8 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
         put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
                      wonko_version: new_attributes
-        expect(response).to redirect_to([wonko_version.wonkofile, wonko_version])
+        expect(response).to redirect_to(wonko_file_wonko_version_path wonko_version.wonkofile, wonko_version,
+                                                                      user: testing_user)
       end
     end
 
