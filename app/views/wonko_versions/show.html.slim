@@ -3,7 +3,7 @@
     = bootstrap_button_to 'Edit', route(:edit, @wonko_version), :warning, icon: :edit if policy(@wonko_version).edit?
     = bootstrap_button_to 'Copy', route(:copy, @wonko_version, user: @wonko_version.user.username), :warning, icon: :duplicate if can_copy(@wonko_version)
     = bootstrap_button_to 'Go to Mine', route(:show, own(@wonko_version), user: current_user.username), :success if show_go_to_mine(@wonko_version)
-    = bootstrap_button_to 'Download', files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt'
+    = bootstrap_button_to 'Download', api_v1_files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt'
     select.selectpicker[data-live-search="true"]
       - @wonko_version.wonkofile.wonkoversions.where(version: @wonko_version.version).pluck(:user).each do |user_id|
         option value="#{User.find(user_id).slug}"

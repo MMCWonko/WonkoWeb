@@ -38,20 +38,20 @@ class WonkoVersionsController < ApplicationController
       data = ActionController::Parameters.new(JSON.parse file.read)
       file = WonkoFile.find_by(uid: data[:uid])
 
-      @wonko_version = file.wonkoversions.find_or_initialize_by(version: data[:version], user: current_user)
+      @wonko_version = WonkoVersion.find_or_create_for_data file, data, current_user
+      is_new = @wonko_version.persisted?
+      authorize @wonko_version, (is_new ? :update? : :create?)
 
-      @wonko_version.data = WonkoVersion.clean_keys data[:data]
-      @wonko_version.requires = data[:requires] || []
-      @wonko_version.user = current_user
-      @wonko_version.update_attributes data.permit(:version, :type, :time)
-      authorize @wonko_version, (@wonko_version.persisted? ? :update? : :create?)
-
-      unless @wonko_version.save
+      if @wonko_version.save
+        results << @wonko_version
+      else
+        results = nil
         format.html { render :new }
         format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
-        return
       end
     end
+
+    return if results.nil?
 
     respond_to do |format|
       if results.size == 1

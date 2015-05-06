@@ -1,3 +1,10 @@
+def api_version_helper(version, _mime, &block)
+  version_str = "v#{version}"
+  api_version module: version_str, path: { value: version_str }, &block
+  # api_version module: "#{version_str}_header", header: { name: :Accept, value: "#{mime};version=#{version}" }, &block
+  api_version module: "#{version_str}_query", parameter: { name: :apiVersion, value: version_str }, &block
+end
+
 Rails.application.routes.draw do
   controller :profile, path: :user do
     get '(:username)', action: :show, as: :profile
@@ -8,16 +15,18 @@ Rails.application.routes.draw do
 
   controller :feed, path: :feed do
     get 'user(/:username)', action: :user, as: :feed_user
-    get 'file/:id', action: :file, id: /[^\/]+/, as: :feed_file
-    get 'file/:wonko_file_id/:id', action: :version, id: /[^\/]+/, wonko_file_id: /[^\/]+/, as: :feed_versions
+    get 'file/:id', action: :file, id: %r{[^/]+}, as: :feed_file
+    get 'file/:wonko_file_id/:id', action: :version, id: %r{[^/]+}, wonko_file_id: %r{[^/]+}, as: :feed_versions
   end
 
   devise_for :users
 
+  mount DjMon::Engine => 'dj_mon'
+
   post 'upload_version' => 'wonko_versions#upload'
 
-  resources :wonko_files, id: /[^\/]+/ do
-    resources :wonko_versions, id: /[^\/]+/ do
+  resources :wonko_files, id: %r{[^/]+} do
+    resources :wonko_versions, id: %r{[^/]+} do
       member do
         get 'copy'
       end
@@ -28,11 +37,15 @@ Rails.application.routes.draw do
   get 'about' => 'home#about'
   get 'irc' => 'home#irc'
 
-  get 'files/' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_root
-  get 'files/index.json' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_index
-  get 'files/:wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: /[^\/]+/, id: /[^\/]+/,
-      defaults: { format: 'json' }, as: :files_version
-  get 'files/:id.json' => 'wonko_files#show', id: /[^\/]+/, defaults: { format: 'json' }, as: :files_file
+  namespace :api do
+    api_version_helper 1, 'application/wonkoweb-api' do
+      root 'wonko_files#index', defaults: { format: 'json' }, as: :files_root
+      get 'index.json' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_index
+      get ':wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: %r{[^/]+}, id: %r{[^/]+},
+          defaults: { format: 'json' }, as: :files_version
+      get ':id.json' => 'wonko_files#show', id: %r{[^/]+}, defaults: { format: 'json' }, as: :files_file
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

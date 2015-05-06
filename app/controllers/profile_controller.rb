@@ -10,10 +10,12 @@ class ProfileController < ApplicationController
   end
 
   def files
+    @wonko_files = policy_scope @user.wonkofiles
     authorize @wonko_files, :index?
   end
 
   def versions
+    @wonko_versions = policy_scope @user.related_wonkoversions
     authorize @wonko_versions, :index?
   end
 end

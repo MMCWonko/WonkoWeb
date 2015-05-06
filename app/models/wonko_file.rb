@@ -1,5 +1,7 @@
 class WonkoFile
   include Mongoid::Document
+  include PublicActivity::Model
+  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
 
   field :uid, type: String
   field :name, type: String

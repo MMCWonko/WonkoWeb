@@ -38,7 +38,7 @@ if Rails.env.development?
         version = file.wonkoversions.create!(
           version: Faker::App.version,
           type: Faker::Lorem.word,
-          time: Faker::Time.between(1000.days.ago, Time.now).to_i
+          time: Faker::Time.between(1000.days.ago, Time.zone.now).to_i
         )
         version.user = users.sample
         fail users.inspect unless version.user

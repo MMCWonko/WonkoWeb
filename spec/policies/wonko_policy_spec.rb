@@ -2,54 +2,31 @@ require 'spec_helper'
 require 'rails_helper'
 
 describe WonkoPolicy do
-  subject { described_class.new(user, wonkofile) }
+  let(:visitor) { nil }
+  let(:user) { Fabricate(:user) }
+  let(:owner) { Fabricate(:user) }
+  let(:admin) { Fabricate(:user_admin) }
+  let(:wonkofile) { Fabricate(:wf_minecraft, user: owner) }
+  subject { described_class }
 
-  context 'for a visitor' do
-    let(:user) { nil }
-    let(:wonkofile) { Fabricate(:wf_minecraft) }
-
-    it { should permit(:show)    }
-
-    it { should_not permit(:create)  }
-    it { should_not permit(:new)     }
-    it { should_not permit(:update)  }
-    it { should_not permit(:edit)    }
-    it { should_not permit(:destroy) }
+  permissions :show? do
+    it('grants access to a visitor') { expect(subject).to permit(visitor, wonkofile) }
+    it('grants access to a user') { expect(subject).to permit(user, wonkofile) }
+    it('grants access to the owner') { expect(subject).to permit(owner, wonkofile) }
+    it('grants access to a admin') { expect(subject).to permit(admin, wonkofile) }
   end
 
-  context 'for a user' do
-    let(:wonkofile) { Fabricate(:wf_minecraft) }
-    let(:user) { Fabricate(:user) }
-
-    it { should permit(:show)    }
-    it { should permit(:create)  }
-    it { should permit(:new)     }
-    it { should_not permit(:update)  }
-    it { should_not permit(:edit)    }
-    it { should_not permit(:destroy) }
+  permissions :create?, :new? do
+    it('denies access to a visitor') { expect(subject).not_to permit(visitor, WonkoFile) }
+    it('grants access to a user') { expect(subject).to permit(user, WonkoFile) }
+    it('grants access to the owner') { expect(subject).to permit(owner, WonkoFile) }
+    it('grants access to a admin') { expect(subject).to permit(admin, WonkoFile) }
   end
 
-  context 'for the owner' do
-    let(:wonkofile) { Fabricate(:wf_minecraft) }
-    let(:user) { wonkofile.user }
-
-    it { should permit(:show)    }
-    it { should permit(:create)  }
-    it { should permit(:new)     }
-    it { should permit(:update)  }
-    it { should permit(:edit)    }
-    it { should permit(:destroy) }
-  end
-
-  context 'for a admin' do
-    let(:wonkofile) { Fabricate(:wf_minecraft) }
-    let(:user) { Fabricate(:user_admin) }
-
-    it { should permit(:show)    }
-    it { should permit(:create)  }
-    it { should permit(:new)     }
-    it { should permit(:update)  }
-    it { should permit(:edit)    }
-    it { should permit(:destroy) }
+  permissions :update?, :edit?, :destroy? do
+    it('denies access to a visitor') { expect(subject).not_to permit(visitor, wonkofile) }
+    it('denies access to a user') { expect(subject).not_to permit(user, wonkofile) }
+    it('grants access to the owner') { expect(subject).to permit(owner, wonkofile) }
+    it('grants access to a admin') { expect(subject).to permit(admin, wonkofile) }
   end
 end

@@ -2,6 +2,7 @@ doctype html
 html
   head
     title WonkoWeb
+    = raw analytical.head_prepend_javascript
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
     = javascript_include_tag 'application', 'data-turbolinks-track': true
     = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js', 'data-turbolinks-track': true
@@ -12,6 +13,7 @@ html
     = stylesheet_link_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/css/fileinput.min.css', media: 'all', 'data-turbolinks-track': true
     = javascript_include_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/js/ajax-bootstrap-select.min.js', 'data-turbolinks-track': true
     = stylesheet_link_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/css/ajax-bootstrap-select.css', media: 'all', 'data-turbolinks-track': true
+    = raw analytical.head_append_javascript
     = csrf_meta_tags
     javascript:
       hljs.initHighlightingOnLoad();
@@ -24,7 +26,7 @@ html
       }
       $(document).on('page:change', function() {
         $('#getUrlLink').on('click', function() {
-          prompt("Ctrl+C followed by Enter","<%= files_root_url %>");
+          prompt("Ctrl+C followed by Enter","<%= api_v1_files_root_url %>"); # TODO: this should be the path to some CDN
         });
         $('#wurEnabler').bootstrapSwitch({
           labelText: 'WUR',
@@ -58,6 +60,7 @@ html
         });
       });
   body data-spy="scroll" data-target=".scrollspy" data-no-turbolink="data-no-turbolink"
+    = raw analytical.body_prepend_javascript
     = navbar position: :static do
       = vertical do
         = link_to 'WonkoWeb', root_path
@@ -101,3 +104,4 @@ html
                   piwikTracker.enableLinkTracking();
           } catch( err ) {}
           </script>
+    = raw analytical.body_append_javascript

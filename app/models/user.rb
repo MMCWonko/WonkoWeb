@@ -1,6 +1,8 @@
 class User
   include Mongoid::Document
   include Mongoid::Slug
+  include PublicActivity::Model
+  tracked
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -48,11 +50,19 @@ class User
 
   has_many :wonkofiles, class_name: 'WonkoFile'
 
+  def related_wonkoversions
+    WonkoVersion.or(user: self, wonko_file: { user: self })
+  end
+
   def self.official_user
     User.find_by(official: true)
   end
 
   def to_param
     username
+  end
+
+  def avatar_url
+    Gravatar.new(email).image_url
   end
 end

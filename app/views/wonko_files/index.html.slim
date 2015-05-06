@@ -15,7 +15,8 @@ table.table
              = bootstrap_button_to 'Edit', route(:edit, wonko_file), :warning if policy(wonko_file).edit?
              = bootstrap_button_to 'Destroy', route(:destroy, wonko_file), :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(wonko_file).destroy?
 .btn-toolbar.list-toolbar role="toolbar"
-  = bootstrap_button_group do
+  - bootstrap_button_group do
     = bootstrap_button_to 'New Wonko File', route(:new, WonkoFile), :success if policy(WonkoFile).create?
-    = bootstrap_button_to 'Download Index', files_index_path, :success
+    / TODO: this should go to some CDN
+    = bootstrap_button_to 'Download Index', api_v1_files_index_path, :success
   = paginate @wonko_files

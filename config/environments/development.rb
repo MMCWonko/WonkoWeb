@@ -41,6 +41,20 @@ Rails.application.configure do
     Bullet.rails_logger = true
     Bullet.add_footer = true
   end
+
+  # Enable rack-dev-mark
+  config.rack_dev_mark.enable = true
+  #
+  # Customize the env string (default Rails.env)
+  # config.rack_dev_mark.env = 'foo'
+  #
+  # Customize themes if you want to do so
+  # config.rack_dev_mark.theme = [:title, :github_fork_ribbon]
+  #
+  # Customize inserted place of the middleware if necessary.
+  # You can use either `insert_before` or `insert_after`
+  # config.rack_dev_mark.insert_before SomeOtherMiddleware
+  # config.rack_dev_mark.insert_after SomeOtherMiddleware
 end
 
 BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']

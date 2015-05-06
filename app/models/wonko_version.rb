@@ -1,5 +1,7 @@
 class WonkoVersion
   include Mongoid::Document
+  include PublicActivity::Model
+  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
 
   field :version, type: String
   field :type, type: String
@@ -30,7 +32,7 @@ class WonkoVersion
   end
 
   def time_as_string
-    time.nil? ? '' : Time.at(time).to_datetime.strftime('%Y-%m-%d %H:%M')
+    time.nil? ? '' : Time.zone.at(time).to_datetime.strftime('%Y-%m-%d %H:%M')
   end
 
   def self.get(file, id, user = nil)
@@ -41,5 +43,15 @@ class WonkoVersion
     end
   rescue Mongoid::Errors::DocumentNotFound
     return nil
+  end
+
+  def self.find_or_create_for_data(file, data, user)
+    wonko_version = file.wonkoversions.find_or_initialize_by(version: data[:version], user: user)
+
+    wonko_version.data = WonkoVersion.clean_keys data[:data]
+    wonko_version.requires = data[:requires] || []
+    wonko_version.user = user
+    wonko_version.update_attributes data.permit(:version, :type, :time)
+    wonko_version
   end
 end

@@ -20,3 +20,6 @@
 /server/secrets.yml
 /server/storage.json
 /coverage
+
+# Ignore RubyMine's stuff
+/.idea

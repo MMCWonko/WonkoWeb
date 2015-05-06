@@ -64,13 +64,13 @@ group :red_green_refactor, halt_on_fail: true do
 
   guard :rubocop, cli: '--rails' do
     watch(/.+\.rb$/)
-    watch(/(?:.+\/)?\.rubocop\.yml$/) { |m| File.dirname(m[0]) }
+    watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
   end
 
   guard :brakeman, run_on_start: true do
-    watch(/^app\/.+\.(erb|haml|rhtml|rb)$/)
-    watch(/^config\/.+\.rb$/)
-    watch(/^lib\/.+\.rb$/)
+    watch(%r{^app/.+\.(erb|haml|rhtml|rb)$})
+    watch(%r{^config/.+\.rb$})
+    watch(%r{^lib/.+\.rb$})
     watch('Gemfile')
   end
 end

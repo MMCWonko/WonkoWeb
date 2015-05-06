@@ -1,6 +1,10 @@
+require 'analytical'
+
 class ApplicationController < ActionController::Base
   include Pundit
   include RoutesHelper
+
+  analytical
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -8,6 +12,7 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :handle_wur_parameter
+  before_action :identify_user
   after_action :verify_authorized
 
   add_breadcrumb 'Home', :root_path
@@ -74,7 +79,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_user
-    @user = params.key? :username ? User.find_by(username: params[:username]) : current_user
+    @user = params.key?(:username) ? User.find_by(username: params[:username]) : current_user
     render 'errors/404' unless @user
   rescue Mongoid::Errors::DocumentNotFound
     render 'errors/404'
@@ -84,5 +89,9 @@ class ApplicationController < ActionController::Base
     wur = params.key?(:wur) ? params[:wur].to_s == 'true' : (cookies.permanent[:wurEnabled] || false)
     cookies.permanent[:wurEnabled] = wur
     @wur_enabled = wur
+  end
+
+  def identify_user
+    analytical.identify current_user.id, email: current_user.email if current_user
   end
 end

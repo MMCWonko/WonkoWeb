@@ -8,7 +8,7 @@ before_script:
   - sleep 5s # let the DB start
 script:
   - RAILS_ENV=test bundle exec rake spec
-  - RAILS_ENV=test bundle exec rubocop
+  - RAILS_ENV=test bundle exec rake rubocop
 addons:
   code_climate:
     repo_token: c39cc1ba366491796027dc2d2ebce57a2965a8ef56d97c3f2e0ebb6f1e447840

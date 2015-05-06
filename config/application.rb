@@ -33,6 +33,7 @@ module Workspace
     # config.i18n.default_locale = :de
 
     config.autoload_paths += Dir["#{config.root}/lib/"]
+    config.active_job.queue_adapter = :delayed_job
     config.generators do |g|
       g.fixture_replacement :fabrication
       g.orm :mongoid

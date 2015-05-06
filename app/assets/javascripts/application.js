@@ -13,9 +13,10 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require timeago
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-switch
 //= require bootbox
-//= require URI
+//= require URIjs
 //= require_tree .

@@ -9,6 +9,7 @@ gem 'slim-rails'
 gem 'sass-rails'
 gem 'coffee-rails'
 gem 'uglifier'
+gem 'analytical'
 
 gem 'spring',        group: :development
 
@@ -23,9 +24,16 @@ gem 'breadcrumbs_on_rails'
 
 # Javascript utils
 gem 'jquery-rails'
-gem 'uri-js-rails'
 gem 'turbolinks'
 gem 'therubyracer',  platforms: :ruby
+
+source 'https://rails-assets.org/' do
+  gem 'rails-assets-timeago'
+  gem 'rails-assets-URIjs'
+end
+
+# API and related
+gem 'versionist'
 
 # ORM and related
 gem 'mongoid'
@@ -33,22 +41,25 @@ gem 'mongoid-slug'
 gem 'bson_ext'
 gem 'kaminari'
 gem 'bcrypt'
+gem 'delayed_job_mongoid'
+gem 'dj_mon', github: 'akshayrawat/dj_mon'
+gem 'public_activity', github: 'pokonski/public_activity'
 
 # User management
 gem 'devise'
 gem 'devise_uid'
 gem 'pundit'
 gem 'devise-bootstrap-views'
+gem 'gravatar-ultimate'
+# TODO: Replace devise by omniauth/omniauth-identity/shield/warden?
 
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'pry'
-  gem 'pry-nav'
-  gem 'pry-stack_explorer'
   gem 'bullet'
   gem 'meta_request'
   gem 'quiet_assets'
+  gem 'rack-dev-mark'
   gem 'rack-prettify', github: 'logicaltext/rack-prettify'
 end
 
@@ -60,6 +71,16 @@ group :development, :test do
   gem 'guard-bundler'
   gem 'guard-brakeman'
   gem 'guard-rubocop'
+  gem 'reek'
+  gem 'flay'
+  gem 'flog'
+
+  # Pry and related
+  gem 'pry'
+  gem 'pry-nav'
+  gem 'pry-stack_explorer'
+  gem 'pry-rails'
+  gem 'pry-rescue'
 
   # Testing helpers
   gem 'database_cleaner'

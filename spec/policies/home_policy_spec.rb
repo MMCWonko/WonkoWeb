@@ -2,26 +2,11 @@ require 'spec_helper'
 require 'rails_helper'
 
 describe HomePolicy do
-  subject { described_class.new(user, nil) }
+  subject { described_class }
 
-  context 'for a visitor' do
-    let(:user) { nil }
-
-    it { should permit(:about)    }
-    it { should permit(:irc)  }
-  end
-
-  context 'for a user' do
-    let(:user) { Fabricate(:user) }
-
-    it { should permit(:about)    }
-    it { should permit(:irc)  }
-  end
-
-  context 'for a admin' do
-    let(:user) { Fabricate(:user_admin) }
-
-    it { should permit(:about)    }
-    it { should permit(:irc)  }
+  permissions :about?, :irc? do
+    it('grants access to a visitor') { expect(subject).to permit(nil) }
+    it('grants access to a user') { expect(subject).to permit(Fabricate :user) }
+    it('grants access to an admin') { expect(subject).to permit(Fabricate :user_admin) }
   end
 end
