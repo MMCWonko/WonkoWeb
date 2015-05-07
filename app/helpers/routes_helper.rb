@@ -1,6 +1,7 @@
 module RoutesHelper
   def self.map_to_route_helper(item)
     overrides = {
+        user: 'profile'
     }
     guess = if item.is_a? Symbol
               ActiveModel::Naming.singular_route_key(item.constantize)

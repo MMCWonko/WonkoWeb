@@ -4,6 +4,7 @@ gem 'rails'
 gem 'rabl'
 gem 'slim'
 gem 'slim-rails'
+gem 'meta-tags'
 
 # General assets
 gem 'sass-rails'
@@ -21,6 +22,8 @@ gem 'bootstrap-select-rails'
 gem 'bootstrap-switch-rails'
 gem 'bootbox-rails'
 gem 'breadcrumbs_on_rails'
+gem 'abracadabra'
+gem 'possessive'
 
 # Javascript utils
 gem 'jquery-rails'
@@ -38,6 +41,7 @@ gem 'versionist'
 # ORM and related
 gem 'mongoid'
 gem 'mongoid-slug'
+gem 'mongoid-history'
 gem 'bson_ext'
 gem 'kaminari'
 gem 'bcrypt'
@@ -48,6 +52,7 @@ gem 'public_activity', github: 'pokonski/public_activity'
 # User management
 gem 'devise'
 gem 'devise_uid'
+gem 'devise-async'
 gem 'pundit'
 gem 'devise-bootstrap-views'
 gem 'gravatar-ultimate'
@@ -92,6 +97,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'mongoid-rspec'
   gem 'rubocop-rspec'
+  gem 'capybara'
 end
 
 group :production do

@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title WonkoWeb
+    = display_meta_tags site: 'WonkoWeb', reverse: true
     = raw analytical.head_prepend_javascript
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
     = javascript_include_tag 'application', 'data-turbolinks-track': true
@@ -26,7 +26,7 @@ html
       }
       $(document).on('page:change', function() {
         $('#getUrlLink').on('click', function() {
-          prompt("Ctrl+C followed by Enter","<%= api_v1_files_root_url %>"); # TODO: this should be the path to some CDN
+          prompt("Ctrl+C followed by Enter","#{api_v1_files_root_url}"); // TODO: this should be the path to some CDN
         });
         $('#wurEnabler').bootstrapSwitch({
           labelText: 'WUR',

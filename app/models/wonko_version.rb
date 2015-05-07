@@ -1,7 +1,7 @@
 class WonkoVersion
   include Mongoid::Document
   include PublicActivity::Model
-  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
+  tracked owner: proc { |controller, _model| binding.pry; controller ? controller.current_user : nil }
 
   field :version, type: String
   field :type, type: String
@@ -34,6 +34,9 @@ class WonkoVersion
   def time_as_string
     time.nil? ? '' : Time.zone.at(time).to_datetime.strftime('%Y-%m-%d %H:%M')
   end
+
+  include Mongoid::History::Trackable
+  track_history modifier_field: 'User', version_field: :revision, track_create: true, track_update: true, track_destroy: true
 
   def self.get(file, id, user = nil)
     if user

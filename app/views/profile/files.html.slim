@@ -1,2 +1,2 @@
-h1 Profile#files
-p Find me in app/views/profile/files.html.slim
+h1 All of #{@user.username.possessive} Wonko Files:
+= render 'wonko_files/table'

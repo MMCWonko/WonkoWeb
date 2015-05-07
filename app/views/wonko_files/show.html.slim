@@ -3,7 +3,7 @@
   = bootstrap_button_to 'Download', api_v1_files_file_path(@wonko_file), :success, icon: :save
 p
   strong Owner:
-  span = link_to @wonko_file.user.username, '#'
+  span = link_to @wonko_file.user.username, route(:show, @wonko_file.user)
 p
   strong UID:
   span = @wonko_file.uid

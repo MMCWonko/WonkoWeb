@@ -11,13 +11,13 @@
 
 p
   strong Owner:
-  span = @wonko_version.user.username
+  span = link_to @wonko_version.user.username, route(:show, @wonko_version.user)
 p
   strong Version:
   span = @wonko_version.version
 p
   strong Type:
-  span = @wonko_version.type
+  span = click_to_edit @wonko_version, url: route(:update, @wonko_version), attribute: :type
 p
   strong Time:
   span = @wonko_version.time_as_string

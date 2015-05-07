@@ -1,19 +1,4 @@
-= page_entries_info @wonko_files, entry_name: 'WonkoFile'
-table.table
-  thead
-    tr
-      th UID
-      th Name
-      th Actions
-  tbody
-    - @wonko_files.each do |wonko_file|
-      tr
-        td = wonko_file.uid
-        td = wonko_file.name
-        td = bootstrap_button_group do
-             = bootstrap_button_to 'Show', route(:show, wonko_file), :default if policy(wonko_file).show?
-             = bootstrap_button_to 'Edit', route(:edit, wonko_file), :warning if policy(wonko_file).edit?
-             = bootstrap_button_to 'Destroy', route(:destroy, wonko_file), :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(wonko_file).destroy?
+= render 'wonko_files/table'
 .btn-toolbar.list-toolbar role="toolbar"
   - bootstrap_button_group do
     = bootstrap_button_to 'New Wonko File', route(:new, WonkoFile), :success if policy(WonkoFile).create?

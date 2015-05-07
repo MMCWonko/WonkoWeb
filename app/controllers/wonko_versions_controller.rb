@@ -5,7 +5,7 @@ class WonkoVersionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @wonko_versions = @wonko_file.wonkoversions.desc(:time).page params[:page]
+    @wonko_versions = scope_collection @wonko_file.wonkoversions.desc :time
     authorize @wonko_versions
   end
 
@@ -39,7 +39,7 @@ class WonkoVersionsController < ApplicationController
       file = WonkoFile.find_by(uid: data[:uid])
 
       @wonko_version = WonkoVersion.find_or_create_for_data file, data, current_user
-      is_new = @wonko_version.persisted?
+      is_new = @wonko_version.new_record?
       authorize @wonko_version, (is_new ? :update? : :create?)
 
       if @wonko_version.save

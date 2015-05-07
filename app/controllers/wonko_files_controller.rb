@@ -4,16 +4,13 @@ class WonkoFilesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    if @wur_enabled
-      @wonko_files = WonkoFile.includes(:user).asc(:name).page params[:page]
-    else
-      @wonko_files = WonkoFile.includes(:user).where(user: User.official_user).asc(:name).page params[:page]
-    end
+    @wonko_files = scope_collection WonkoFile.for_index @wur_enabled
     authorize @wonko_files
   end
 
   def show
     authorize @wonko_file
+    set_meta_tags og: { title: @wonko_file.name, type: 'product.item', url: route(:show, @wonko_file) }
   end
 
   def new

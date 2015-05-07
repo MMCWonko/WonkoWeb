@@ -19,4 +19,9 @@
 //= require bootstrap-switch
 //= require bootbox
 //= require URIjs
+//= require abracadabra
 //= require_tree .
+
+abracadabraSubmitIcon = 'glyphicon glyphicon-ok';
+abracadabraCancelIcon = 'glyphicon glyphicon-remove';
+abracadabraDeleteIcon = 'glyphicon glyphicon-thrash';

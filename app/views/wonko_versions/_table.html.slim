@@ -1,0 +1,18 @@
+= page_entries_info @wonko_versions, entry_name: 'version'
+table.table
+  thead
+    tr
+      th Version
+      th Type
+      th Time
+      th Actions
+  tbody
+    - @wonko_versions.each do |wonko_version|
+      tr
+        td = wonko_version.version
+        td = click_to_edit wonko_version, path: route(:update, wonko_version), attribute: :type
+        td = wonko_version.time_as_string
+        td = bootstrap_button_group do
+          = bootstrap_button_to 'Show', route(:show, wonko_version, user: wonko_version.user.username), :default if policy(wonko_version).show?
+          = bootstrap_button_to 'Edit', route(:edit, wonko_version, user: wonko_version.user.username), :warning, icon: :edit if policy(wonko_version).edit?
+          = link_to 'Destroy', route(:destroy, wonko_version, user: wonko_version.user.username), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' if policy(wonko_version).destroy?

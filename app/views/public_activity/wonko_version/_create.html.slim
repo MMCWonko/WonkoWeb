@@ -1,0 +1,6 @@
+.media
+  .media-left
+    a href="#{route(:show, activity.owner)}"
+      img.media-object src="#{activity.owner.avatar_url}"
+  .media-body
+    h4.media-heading #{activity.owner.username} created version #{binding.pry}

@@ -1,2 +1,14 @@
-h1 Profile#show
-p Find me in app/views/profile/show.html.slim
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading Activity
+      = render_activities @activities
+  .col-md-6
+    .panel.panel-default
+      .panel-heading Files
+      .panel-body This is a list of all Wonko Files that belong to #{@user.username}
+      = render 'wonko_files/table'
+    .panel.panel-default
+      .panel-heading Versions
+      .panel-body This a list of all Wonko Versions that belong to #{@user.username}
+      = render 'wonko_versions/table'

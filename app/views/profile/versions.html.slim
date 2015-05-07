@@ -1,2 +1,2 @@
-h1 Profile#versions
-p Find me in app/views/profile/versions.html.slim
+h1 All of #{@user.username.possessive} Wonko Files:
+= render 'wonko_versions/table'

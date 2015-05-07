@@ -21,7 +21,9 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  mount DjMon::Engine => 'dj_mon'
+  authenticate :user, lambda { |u| u.admin } do
+    mount DjMon::Engine => 'dj_mon'
+  end
 
   post 'upload_version' => 'wonko_versions#upload'
 

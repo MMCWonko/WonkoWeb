@@ -3,6 +3,7 @@ require 'analytical'
 class ApplicationController < ActionController::Base
   include Pundit
   include RoutesHelper
+  include PublicActivity::StoreController
 
   analytical
 
@@ -11,6 +12,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :noindex_logins, if: :devise_controller?
   before_action :handle_wur_parameter
   before_action :identify_user
   after_action :verify_authorized
@@ -35,6 +37,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def noindex_logins
+    set_meta_tags noindex: true, nofollow: true
+  end
+
   def selected_user
     username = params[:user] || User.official_user.username
     @wur_enabled ? User.find_by(username: username) : User.official_user
@@ -49,6 +55,7 @@ class ApplicationController < ActionController::Base
     if @wur_enabled || @wonko_file.user == User.official_user
       add_breadcrumb @wonko_file.uid, route(:show, @wonko_file)
       add_breadcrumb 'Versions', route(:index, @wonko_file, WonkoVersion)
+      set_meta_tags title: @wonko_file.name, author: route(:show, @wonko_file.user)
     else
       render 'wonko_files/enable_wur'
     end
@@ -68,6 +75,7 @@ class ApplicationController < ActionController::Base
 
     if @wonko_version
       add_breadcrumb @wonko_version.version, route(:show, @wonko_version)
+      set_meta_tags title: "#{@wonko_version.version} (#{@wonko_file.name})", author: route(:show, @wonko_version.user)
     else
       @wonko_versions = @wonko_file.wonkoversions.where(version: id)
       if @wonko_versions.empty?
@@ -93,5 +101,9 @@ class ApplicationController < ActionController::Base
 
   def identify_user
     analytical.identify current_user.id, email: current_user.email if current_user
+  end
+
+  def scope_collection(collection)
+    policy_scope(collection).page params[:page]
   end
 end
