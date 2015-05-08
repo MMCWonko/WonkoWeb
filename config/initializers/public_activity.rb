@@ -1,3 +1,3 @@
 PublicActivity.configure do |config|
-  config.orm = :mongoid
+  config.orm = :active_record
 end

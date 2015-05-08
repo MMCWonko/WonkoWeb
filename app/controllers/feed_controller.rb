@@ -6,22 +6,16 @@ class FeedController < ApplicationController
 
   def user
     authorize @user, :show?
-    @activities = scope_collection PublicActivity::Activity.or(trackable: @user,
-                                                               owner: @user,
-                                                               recipient: @user).asc(:created_at)
+    @activities = scope_collection Activity.related_to(@user).order(:created_at)
   end
 
   def file
     authorize @wonko_file, :show?
-    @activities = scope_collection PublicActivity::Activity.or(trackable: @wonko_file,
-                                                               owner: @wonko_file,
-                                                               recipient: @wonko_file).asc(:created_at)
+    @activities = scope_collection Activity.related_to(@user).order(:created_at)
   end
 
   def version
     authorize @wonko_version, :show?
-    @activities = scope_collection PublicActivity::Activity.or(trackable: @wonko_version,
-                                                               owner: @wonko_version,
-                                                               recipient: @wonko_version).asc(:created_at)
+    @activities = scope_collection Activity.related_to(@user).order(:created_at)
   end
 end

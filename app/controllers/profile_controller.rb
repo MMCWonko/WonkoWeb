@@ -8,12 +8,9 @@ class ProfileController < ApplicationController
 
     # delegate to the files and versions actions to populate @wonko_{files,versions}
     files
-    # versions # FIXME waiting on http://stackoverflow.com/q/30085916/953222
-    @wonko_versions = WonkoVersion.all.page 0
+    versions
 
-    @activities = scope_collection PublicActivity::Activity.or({ trackable: @user },
-                                                               { owner: @user },
-                                                               { recipient: @user }).asc :created_at
+    @activities = scope_collection Activity.related_to(@user).order created_at: :desc
   end
 
   def feed
@@ -26,7 +23,7 @@ class ProfileController < ApplicationController
   end
 
   def versions
-    @wonko_versions = scope_collection @user.related_wonkoversions
+    @wonko_versions = scope_collection WonkoVersion.related_to(@user)
     authorize @wonko_versions, :index?
   end
 end

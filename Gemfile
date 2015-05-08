@@ -24,6 +24,7 @@ gem 'bootbox-rails'
 gem 'breadcrumbs_on_rails'
 gem 'abracadabra'
 gem 'possessive'
+gem 'rails-timeago'
 
 # Javascript utils
 gem 'jquery-rails'
@@ -31,7 +32,6 @@ gem 'turbolinks'
 gem 'therubyracer',  platforms: :ruby
 
 source 'https://rails-assets.org/' do
-  gem 'rails-assets-timeago'
   gem 'rails-assets-URIjs'
 end
 
@@ -39,13 +39,14 @@ end
 gem 'versionist'
 
 # ORM and related
-gem 'mongoid'
-gem 'mongoid-slug'
-gem 'mongoid-history'
+gem 'pg'
+gem 'audited'
+gem 'annotate'
 gem 'bson_ext'
 gem 'kaminari'
 gem 'bcrypt'
-gem 'delayed_job_mongoid'
+gem 'delayed_job_active_record'
+gem 'paper_trail'
 gem 'dj_mon', github: 'akshayrawat/dj_mon'
 gem 'public_activity', github: 'pokonski/public_activity'
 
@@ -95,7 +96,6 @@ group :development, :test do
   # RSpec related
   gem 'spring-commands-rspec'
   gem 'rspec-rails'
-  gem 'mongoid-rspec'
   gem 'rubocop-rspec'
   gem 'capybara'
 end

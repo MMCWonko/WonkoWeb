@@ -7,8 +7,8 @@ RSpec.describe 'wonko_versions/index', type: :view do
     file = Fabricate(:wf_minecraft)
     assign(:wonko_file, file)
     assign(:wonko_versions, stub_pagination([
-      Fabricate(:wv_minecraft_181, wonkofile: file),
-      Fabricate(:wv_minecraft_183, wonkofile: file)
+      Fabricate(:wv_minecraft_181, wonko_file: file),
+      Fabricate(:wv_minecraft_183, wonko_file: file)
     ]))
   end
 

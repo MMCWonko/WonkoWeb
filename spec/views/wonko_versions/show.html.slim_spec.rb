@@ -6,7 +6,7 @@ RSpec.describe 'wonko_versions/show', type: :view do
 
   before(:each) do
     assign :wonko_version, wonko_version
-    assign :wonko_file, wonko_version.wonkofile
+    assign :wonko_file, wonko_version.wonko_file
   end
 
   pundit_view_helpers

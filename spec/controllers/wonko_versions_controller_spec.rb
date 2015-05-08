@@ -27,7 +27,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
   let(:invalid_attributes) do
     {
-      wonkofile: {},
+      wonko_file: {},
       asdf: '',
       stuff: nil
     }
@@ -41,7 +41,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
   describe 'GET #index' do
     it 'assigns all wonko_versions as @wonko_versions' do
       wonko_version = Fabricate(:wv_minecraft_183)
-      get :index, wonko_file_id: wonko_version.wonkofile.to_param
+      get :index, wonko_file_id: wonko_version.wonko_file.to_param
       expect(assigns(:wonko_versions).to_a).to eq([wonko_version])
     end
   end
@@ -49,19 +49,19 @@ RSpec.describe WonkoVersionsController, type: :controller do
   describe 'GET #show' do
     it 'assigns the requested wonko_version as @wonko_version' do
       wonko_version = Fabricate(:wv_minecraft_183)
-      get :show, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param
+      get :show, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param
       expect(assigns(:wonko_version)).to eq(wonko_version)
     end
 
     context 'with wur' do
       let(:wonko_file) { Fabricate(:wf_minecraft) }
       let(:user) { Fabricate(:user) }
-      let(:wv_inofficial) { Fabricate(:wv_minecraft_183, user: user, wonkofile: wonko_file) }
-      let(:wv_official) { Fabricate(:wv_minecraft_183, user: User.official_user, wonkofile: wonko_file) }
+      let(:wv_inofficial) { Fabricate(:wv_minecraft_183, user: user, wonko_file: wonko_file) }
+      let(:wv_official) { Fabricate(:wv_minecraft_183, user: User.official_user, wonko_file: wonko_file) }
       before(:each) do
         # generate a few red herings
-        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonkofile: wonko_file)
-        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonkofile: wonko_file)
+        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonko_file: wonko_file)
+        Fabricate(:wv_minecraft_183, user: Fabricate(:user), wonko_file: wonko_file)
       end
 
       context 'enabled' do
@@ -71,7 +71,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
           expect(assigns(:wonko_versions).to_a).to eq(wonko_file.wonkoversions.to_a)
         end
         it 'and no official and no param but only one shows it' do
-          version = Fabricate(:wv_minecraft_181, user: Fabricate(:user), wonkofile: wonko_file)
+          version = Fabricate(:wv_minecraft_181, user: Fabricate(:user), wonko_file: wonko_file)
           get :show, wonko_file_id: wonko_file.to_param, id: version.to_param, wur: true
           expect(response).to render_template('wonko_versions/show')
           expect(assigns(:wonko_version)).to eq(version)
@@ -105,7 +105,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
           expect(response).to render_template('errors/404')
         end
         it 'and no official but inofficial gives hint' do
-          wonko_version = Fabricate(:wv_minecraft_181, user: user, wonkofile: wonko_file)
+          wonko_version = Fabricate(:wv_minecraft_181, user: user, wonko_file: wonko_file)
           get :show, wonko_file_id: wonko_file.to_param, id: wonko_version.to_param
           expect(response).to render_template('wonko_versions/list_of_variants')
           expect(assigns(:wonko_versions).to_a).to eq([wonko_version])
@@ -134,7 +134,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
       wonko_version = Fabricate(:wv_minecraft_183)
       sign_in wonko_version.user
 
-      get :edit, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param
+      get :edit, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param
       expect(assigns(:wonko_version)).to eq(wonko_version)
     end
   end
@@ -144,7 +144,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
     it 'updates a version' do
       file = Fabricate(:wf_minecraft, uid: 'net.minecraft.asdf.asdf')
-      version = Fabricate(:wv_minecraft_183, wonkofile: file, time: 0, user: testing_user)
+      version = Fabricate(:wv_minecraft_183, wonko_file: file, time: 0, user: testing_user)
       expect do
         post :upload, file: Rack::Test::UploadedFile.new('spec/1.8.3.json', 'application/json')
       end.to change { file.reload.wonkoversions.count }.by(0)
@@ -204,7 +204,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
     login_user
 
     context 'with same user' do
-      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonkofile: wonko_file, user: testing_user) }
+      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonko_file: wonko_file, user: testing_user) }
 
       it 'doesn\'t change and redirects to own' do
         version = wonko_version
@@ -219,7 +219,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
     context 'with different user' do
       let(:other_user) { Fabricate(:user) }
-      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonkofile: wonko_file, user: other_user) }
+      let(:wonko_version) { Fabricate(:wv_minecraft_181, wonko_file: wonko_file, user: other_user) }
 
       it 'creates a new WonkoVersion' do
         version = wonko_version
@@ -259,7 +259,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 'updates the requested wonko_version' do
         wonko_version = Fabricate(:wv_minecraft_181)
 
-        put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
+        put :update, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param,
                      wonko_version: new_attributes
         wonko_version.reload
         expect(wonko_version.type).to eq 'stable'
@@ -268,7 +268,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 'assigns the requested wonko_version as @wonko_version' do
         wonko_version = Fabricate(:wv_minecraft_181)
 
-        put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
+        put :update, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param,
                      wonko_version: new_attributes
         expect(assigns(:wonko_version)).to eq(wonko_version)
       end
@@ -276,9 +276,9 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 'redirects to the wonko_version' do
         wonko_version = Fabricate(:wv_minecraft_181)
 
-        put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
+        put :update, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param,
                      wonko_version: new_attributes
-        expect(response).to redirect_to(wonko_file_wonko_version_path wonko_version.wonkofile, wonko_version,
+        expect(response).to redirect_to(wonko_file_wonko_version_path wonko_version.wonko_file, wonko_version,
                                                                       user: testing_user)
       end
     end
@@ -287,7 +287,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 'assigns the wonko_version as @wonko_version' do
         wonko_version = Fabricate(:wv_minecraft_181)
 
-        put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
+        put :update, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param,
                      wonko_version: invalid_attributes
         expect(assigns(:wonko_version)).to eq(wonko_version)
       end
@@ -295,7 +295,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
       it 're-renders the \'edit\' template' do
         wonko_version = Fabricate(:wv_minecraft_181)
 
-        put :update, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param,
+        put :update, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param,
                      wonko_version: invalid_attributes
         expect(response).to render_template('edit')
       end
@@ -307,7 +307,7 @@ RSpec.describe WonkoVersionsController, type: :controller do
 
     it 'destroys the requested wonko_version' do
       wonko_version = Fabricate(:wv_minecraft_181)
-      file = wonko_version.wonkofile
+      file = wonko_version.wonko_file
 
       expect do
         delete :destroy, wonko_file_id: file.to_param, id: wonko_version.to_param
@@ -317,8 +317,8 @@ RSpec.describe WonkoVersionsController, type: :controller do
     it 'redirects to the wonko_versions list' do
       wonko_version = Fabricate(:wv_minecraft_183)
 
-      delete :destroy, wonko_file_id: wonko_version.wonkofile.to_param, id: wonko_version.to_param
-      expect(response).to redirect_to(wonko_file_wonko_versions_url(wonko_version.wonkofile))
+      delete :destroy, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param
+      expect(response).to redirect_to(wonko_file_wonko_versions_url(wonko_version.wonko_file))
     end
   end
 end

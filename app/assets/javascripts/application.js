@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require timeago
+//= require rails-timeago
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-switch

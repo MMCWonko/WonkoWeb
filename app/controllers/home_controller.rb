@@ -1,5 +1,7 @@
 class HomeController < ApplicationController
   def index
+    files_crumb
+
     @wonko_files = WonkoFile.for_index(@wur_enabled).page params[:page]
     authorize @wonko_files
     set_meta_tags canonical: route(:index, WonkoFile), title: ''

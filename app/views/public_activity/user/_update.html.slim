@@ -1,0 +1,9 @@
+- content_for :heading, flush: true do
+  = link_to activity.user.username, route(:show, activity.user)
+  '  edited their profile
+
+- content_for :right, flush: true do
+  span.glyphicon.glyphicon-user
+    span.glyphicon.glyphicon-pencil
+
+= render 'public_activity/item', activity: activity

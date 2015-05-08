@@ -2,7 +2,9 @@
   .col-md-6
     .panel.panel-default
       .panel-heading Activity
-      = render_activities @activities
+      .panel-body
+        ul.media-list
+          = render_activities @activities
   .col-md-6
     .panel.panel-default
       .panel-heading Files

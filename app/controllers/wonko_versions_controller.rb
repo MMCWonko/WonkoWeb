@@ -5,7 +5,7 @@ class WonkoVersionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
-    @wonko_versions = scope_collection @wonko_file.wonkoversions.desc :time
+    @wonko_versions = scope_collection @wonko_file.wonkoversions.order time: :desc
     authorize @wonko_versions
   end
 
@@ -98,7 +98,8 @@ class WonkoVersionsController < ApplicationController
       return
     end
 
-    @wonko_version = @wonko_file.wonkoversions.build(@wonko_version.attributes)
+    @wonko_version = @wonko_version.dup
+    @wonko_version.user = current_user
     do_respond_to :create?, 'copied', @wonko_version.save, :new
   end
 

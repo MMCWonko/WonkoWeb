@@ -43,7 +43,7 @@ class WonkoFilesController < ApplicationController
   def update
     authorize @wonko_file
     respond_to do |format|
-      if !wonko_file_params.empty? && @wonko_file.update(wonko_file_params)
+      if !wonko_file_params.empty? && @wonko_file.update(wonko_file_params.permit :name)
         format.html { redirect_to @wonko_file, notice: 'Wonko file was successfully updated.' }
         format.json { render :show, status: :ok, location: @wonko_file }
       else

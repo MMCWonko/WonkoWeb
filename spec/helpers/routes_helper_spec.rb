@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RoutesHelper, type: :helper do
   describe 'url generation' do
     let(:file) { Fabricate(:wf_minecraft) }
-    let(:version) { Fabricate(:wv_minecraft_181, wonkofile: file) }
+    let(:version) { Fabricate(:wv_minecraft_181, wonko_file: file) }
 
     it 'generates show route' do
       expect(helper.route :show, file).to eq(wonko_file_path file)

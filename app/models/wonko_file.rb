@@ -1,31 +1,44 @@
-class WonkoFile
-  include Mongoid::Document
-  include Mongoid::Timestamps
+# == Schema Information
+#
+# Table name: wonko_files
+#
+#  id         :integer          not null, primary key
+#  uid        :string
+#  name       :string
+#  user_id    :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_wonko_files_on_uid      (uid) UNIQUE
+#  index_wonko_files_on_user_id  (user_id)
+#
+
+class WonkoFile < ActiveRecord::Base
   include PublicActivity::Model
   tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
 
-  field :uid, type: String
-  field :name, type: String
   attr_readonly :uid
 
   validates :uid, presence: true, length: { minimum: 4 }, uniqueness: true
   validates :name, presence: true, length: { minimum: 4 }
 
-  embeds_many :wonkoversions, class_name: 'WonkoVersion', inverse_of: :wonkofile
+  has_many :wonkoversions, class_name: :WonkoVersion, inverse_of: :wonko_file
   belongs_to :user
 
   paginates_per 20
 
   scope :for_index, -> (wur_enabled) do
     if wur_enabled
-      includes(:user).asc(:name)
+      with_wur.includes(:user).order(:name)
     else
-      includes(:user).where(user: User.official_user).asc(:name)
+      without_wur.includes(:user).order(:name)
     end
   end
 
-  include Mongoid::History::Trackable
-  track_history modifier_field: 'User', version_field: :revision, track_create: true, track_update: true, track_destroy: true
+  scope :with_wur, -> { all }
+  scope :without_wur, -> { where(user: User.official_user) }
 
   def to_param
     uid

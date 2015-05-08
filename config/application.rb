@@ -1,18 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails'
-
-%w(
-  action_controller
-  action_view
-  action_mailer
-  rails/test_unit
-  sprockets
-).each do |framework|
-  begin
-    require "#{framework}/railtie"
-  end
-end
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -36,7 +24,7 @@ module Workspace
     config.active_job.queue_adapter = :delayed_job
     config.generators do |g|
       g.fixture_replacement :fabrication
-      g.orm :mongoid
+      g.orm :active_record
       g.test_framework :rspec
     end
   end

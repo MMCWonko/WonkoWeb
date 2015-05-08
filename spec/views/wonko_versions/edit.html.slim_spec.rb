@@ -8,7 +8,7 @@ RSpec.describe 'wonko_versions/edit', type: :view do
     render
 
     assert_select 'form[action=?][method=?]',
-                  wonko_file_wonko_version_path(wonko_version.wonkofile, wonko_version), 'post' do
+                  wonko_file_wonko_version_path(wonko_version.wonko_file, wonko_version), 'post' do
       assert_select 'input#wonko_version_type[name=?]', 'wonko_version[type]'
       assert_select 'input#wonko_version_time[name=?]', 'wonko_version[time]'
     end

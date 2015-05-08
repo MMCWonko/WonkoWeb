@@ -1,7 +1,9 @@
-= render 'wonko_files/table'
 .btn-toolbar.list-toolbar role="toolbar"
-  - bootstrap_button_group do
+  = bootstrap_button_group do
     = bootstrap_button_to 'New Wonko File', route(:new, WonkoFile), :success if policy(WonkoFile).create?
     / TODO: this should go to some CDN
     = bootstrap_button_to 'Download Index', api_v1_files_index_path, :success
+  = paginate @wonko_files
+= render 'wonko_files/table'
+.btn-toolbar.list-toolbar role="toolbar"
   = paginate @wonko_files

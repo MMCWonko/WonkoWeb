@@ -1,3 +1,10 @@
-- single_content_for :action do
-  ' created a new
-  = link_to activity.trackable_type.downcase, activity.trackable
+- content_for :heading, flush: true do
+  = link_to activity.user.username, route(:show, activity.user)
+  '  created
+  = link_to activity.trackable.name, route(:show, activity.trackable)
+
+- content_for :right, flush: true do
+  span.glyphicon.glyphicon-file
+    span.glyphicon.glyphicon-plus
+
+= render 'public_activity/item', activity: activity

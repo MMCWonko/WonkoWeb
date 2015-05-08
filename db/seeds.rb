@@ -43,11 +43,10 @@ if Rails.env.development?
         version.user = users.sample
         fail users.inspect unless version.user
         if !files.empty? && Faker::Number.digit.to_i >= 5
-          version.requires = [{
-            uid: files.sample
-          }]
+          #version.requires = [{
+          #  uid: files.sample
+          #}]
         end
-        version.data = []
         version.save!
     rescue NoMethodError
       Rails.logger.info 'Unable to create ' + version.version

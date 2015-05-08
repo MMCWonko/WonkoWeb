@@ -10,7 +10,7 @@ RSpec.describe 'wonko_versions/new', type: :view do
   it 'renders new wonko_version form' do
     render
 
-    assert_select 'form[action=?][method=?]', wonko_file_wonko_versions_path(wonko_version.wonkofile), 'post' do
+    assert_select 'form[action=?][method=?]', wonko_file_wonko_versions_path(wonko_version.wonko_file), 'post' do
       assert_select 'input#wonko_version_version[name=?]', 'wonko_version[version]'
       assert_select 'input#wonko_version_type[name=?]', 'wonko_version[type]'
       assert_select 'input#wonko_version_time[name=?]', 'wonko_version[time]'

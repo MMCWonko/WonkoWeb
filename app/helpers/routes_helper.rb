@@ -24,7 +24,7 @@ module RoutesHelper
   def route(action, *args)
     case args.first
     when WonkoVersion
-      route action, args.first.wonkofile, *args
+      route action, args.first.wonko_file, *args
     else
       no_prefix_actions = [:create, :update, :show, :index, :destroy]
       plural_actions = [:create, :index]

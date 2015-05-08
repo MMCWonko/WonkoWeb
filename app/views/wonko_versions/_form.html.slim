@@ -1,4 +1,4 @@
-= form_for([@wonko_version.wonkofile, @wonko_version], layout: :horizontal) do |f|
+= form_for([@wonko_version.wonko_file, @wonko_version], layout: :horizontal) do |f|
   - if @wonko_version.new_record?
     = f.text_field :version
   - else

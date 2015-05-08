@@ -73,10 +73,15 @@ GEM
       builder
       multi_json
     analytical (3.0.12)
+    annotate (2.6.8)
+      activerecord (>= 3.2, <= 4.3)
+      rake (~> 10.4)
     arel (6.0.0)
     ast (2.0.0)
     astrolabe (1.3.0)
       parser (>= 2.2.0.pre.3, < 3.0)
+    audited (4.2.0)
+      rails-observers (~> 0.1.2)
     autoprefixer-rails (5.1.11)
       execjs
       json
@@ -108,7 +113,6 @@ GEM
       sass (~> 3.0)
       terminal-table (~> 1.4)
     breadcrumbs_on_rails (2.3.0)
-    bson (2.3.0)
     bson_ext (1.5.1)
     builder (3.2.2)
     bullet (4.14.6)
@@ -136,14 +140,13 @@ GEM
     concord (0.1.5)
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
-    connection_pool (2.2.0)
     database_cleaner (1.4.1)
     debug_inspector (0.0.2)
     delayed_job (4.0.6)
       activesupport (>= 3.0, < 5.0)
-    delayed_job_mongoid (2.1.0)
-      delayed_job (>= 3.0, < 5)
-      mongoid (>= 3.0, < 5)
+    delayed_job_active_record (4.0.3)
+      activerecord (>= 3.0, < 5.0)
+      delayed_job (>= 3.0, < 4.1)
     devise (3.4.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -159,7 +162,6 @@ GEM
       railties (>= 3.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
-    easy_diff (0.0.4)
     equalizer (0.0.11)
     erubis (2.7.0)
     execjs (2.5.2)
@@ -241,26 +243,6 @@ GEM
     mime-types (2.5)
     mini_portile (0.6.2)
     minitest (5.6.1)
-    mongoid (4.0.2)
-      activemodel (~> 4.0)
-      moped (~> 2.0.0)
-      origin (~> 2.1)
-      tzinfo (>= 0.3.37)
-    mongoid-history (0.4.7)
-      activesupport
-      easy_diff
-      mongoid (>= 3.0)
-    mongoid-rspec (2.2.0)
-      mongoid (~> 4.0.0)
-      rake
-      rspec (~> 3.1)
-    mongoid-slug (4.0.0)
-      mongoid (>= 3.0)
-      stringex (~> 2.0)
-    moped (2.0.4)
-      bson (~> 2.2)
-      connection_pool (~> 2.0)
-      optionable (~> 0.2.0)
     multi_json (1.11.0)
     nenv (0.2.0)
     nokogiri (1.6.6.2)
@@ -268,11 +250,13 @@ GEM
     notiffany (0.0.6)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    optionable (0.2.0)
-    origin (2.1.1)
     orm_adapter (0.5.0)
+    paper_trail (3.0.8)
+      activerecord (>= 3.0, < 5.0)
+      activesupport (>= 3.0, < 5.0)
     parser (2.2.2.2)
       ast (>= 1.1, < 3.0)
+    pg (0.18.1)
     piwik_analytics (1.0.2)
       actionpack
       activesupport
@@ -323,8 +307,6 @@ GEM
     rails-assets-URIjs (1.15.1)
       rails-assets-jquery (>= 1.7.0)
     rails-assets-jquery (2.1.4)
-    rails-assets-timeago (1.4.1)
-      rails-assets-jquery (>= 1.4)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
     rails-dom-testing (1.0.6)
@@ -333,6 +315,11 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.2)
       loofah (~> 2.0)
+    rails-observers (0.1.2)
+      activemodel (~> 4.0)
+    rails-timeago (2.11.1)
+      actionpack (>= 3.1)
+      activesupport (>= 3.1)
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -424,7 +411,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    stringex (2.5.2)
     temple (0.7.5)
     terminal-table (1.4.5)
     therubyracer (0.12.2)
@@ -468,6 +454,8 @@ DEPENDENCIES
   abracadabra
   airbrake
   analytical
+  annotate
+  audited
   bcrypt
   better_errors
   bh
@@ -484,7 +472,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   coffee-rails
   database_cleaner
-  delayed_job_mongoid
+  delayed_job_active_record
   devise
   devise-async
   devise-bootstrap-views
@@ -504,10 +492,8 @@ DEPENDENCIES
   kaminari
   meta-tags
   meta_request
-  mongoid
-  mongoid-history
-  mongoid-rspec
-  mongoid-slug
+  paper_trail
+  pg
   piwik_analytics
   possessive
   pry
@@ -524,7 +510,7 @@ DEPENDENCIES
   rack-prettify!
   rails
   rails-assets-URIjs!
-  rails-assets-timeago!
+  rails-timeago
   rails_12factor
   rb-inotify
   reek

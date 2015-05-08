@@ -5,8 +5,8 @@
     = bootstrap_button_to 'Go to Mine', route(:show, own(@wonko_version), user: current_user.username), :success if show_go_to_mine(@wonko_version)
     = bootstrap_button_to 'Download', api_v1_files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt'
     select.selectpicker[data-live-search="true"]
-      - @wonko_version.wonkofile.wonkoversions.where(version: @wonko_version.version).pluck(:user).each do |user_id|
-        option value="#{User.find(user_id).slug}"
+      - @wonko_version.wonko_file.wonkoversions.where(version: @wonko_version.version).pluck(:user_id).each do |user_id|
+        option value="#{User.find(user_id).to_param}"
           = User.find(user_id).username
 
 p
@@ -33,12 +33,12 @@ javascript:
   {
     mode: 'view',
     name: 'Dependencies'
-  }, #{WonkoVersion.unclean_keys(@wonko_version.requires).to_json.html_safe});
+  }, #{@wonko_version.requires.to_json.html_safe});
   var dataEditor = new JSONEditor(document.getElementById('dataView'),
   {
     mode: 'view',
     name: 'Resource Groups'
-  }, #{WonkoVersion.unclean_keys(@wonko_version.data).to_json.html_safe});
+  }, #{@wonko_version.data.to_json.html_safe});
   $('select.selectpicker').on('change', function(evt) {
     var user = $(evt.target).val();
     if (user === 'official') {
