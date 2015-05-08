@@ -1,10 +1,2 @@
-.activity
-  .media
-    .media-left
-      a href: '#'
-        img.media-object src="activity.owner.avatar_url"
-    .media-body
-      h4.media-heading
-        = link_to activity.owner.username, activity.owner
-        =' content_for :action
-      = timeago_tag activity.created_at
+li.media
+  = yield

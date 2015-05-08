@@ -1,0 +1,10 @@
+- content_for :heading, flush: true do
+  = link_to activity.user.username, route(:show, activity.user)
+  '  edited
+  = link_to activity.trackable.version, route(:show, activity.trackable)
+
+- content_for :right, flush: true do
+  span.glyphicon.glyphicon-tag
+    span.glyphicon.glyphicon-pencil
+
+= render 'public_activity/item', activity: activity

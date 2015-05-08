@@ -38,7 +38,7 @@ javascript:
   {
     mode: 'view',
     name: 'Resource Groups'
-  }, #{@wonko_version.data.to_json.html_safe});
+  }, #{@wonko_version.data.html_safe});
   $('select.selectpicker').on('change', function(evt) {
     var user = $(evt.target).val();
     if (user === 'official') {

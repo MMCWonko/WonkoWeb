@@ -1,16 +1,17 @@
 module ApplicationHelper
   def bootstrap_button_to(text, url, style, *args)
     args_merged = args.reduce({}, :merge)
+
     text = (icon args_merged[:icon]) + ' ' + text if args_merged.key? :icon
-    args.select do |arg|
-      arg.keys.first != :icon
-    end
+    args_merged.delete :icon if args_merged.key? :icon
+
     clazz = 'btn btn-' + style.to_s
-    args.each do |arg|
-      clazz = clazz + ' ' + args[:class] if arg.keys.first == :class
-    end
-    args << { class: clazz }
-    link_to text, url, *args
+    clazz = clazz + ' ' + args_merged[:class] if args_merged.key? :class
+    clazz = clazz + ' btn-' + args_merged[:size].to_s if args_merged.key? :size
+    args_merged[:class] = clazz
+    args_merged.delete :size
+
+    link_to text, url, args_merged
   end
 
   def bootstrap_button_group(&block)

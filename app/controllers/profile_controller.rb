@@ -15,6 +15,7 @@ class ProfileController < ApplicationController
 
   def feed
     authorize @user, :show?
+    render 'feed/user'
   end
 
   def files

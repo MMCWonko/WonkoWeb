@@ -1,6 +1,10 @@
-.media
-  .media-left
-    a href="#{route(:show, activity.user)}"
-      img.media-object src="#{activity.user.avatar_url}"
-  .media-body
-    h4.media-heading #{activity.user.username} created version #{binding.pry}
+- content_for :heading, flush: true do
+  = link_to activity.user.username, route(:show, activity.user)
+  '  created
+  = link_to activity.trackable.version, route(:show, activity.trackable)
+
+- content_for :right, flush: true do
+  span.glyphicon.glyphicon-tag
+    span.glyphicon.glyphicon-plus
+
+= render 'public_activity/item', activity: activity

@@ -1,9 +1,8 @@
-li.media
-  = render 'public_activity/user', activity: activity
-  .media-body.media-middle
-    small.text-muted = timeago_tag activity.created_at
-    h4.media-heading
-      = yield :heading
-    = yield :body
-  .media-right.media-middle
-    = yield :right
+= render 'public_activity/user', activity: activity
+.media-body.media-middle
+  small.text-muted = timeago_tag activity.created_at
+  h4.media-heading
+    = yield :heading
+  = yield :body
+.media-right.media-middle
+  = yield :right

@@ -23,7 +23,7 @@ class WonkoVersion < ActiveRecord::Base
   self.inheritance_column = nil
 
   include PublicActivity::Model
-  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
+  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }, recipient: :wonko_file
 
   attr_readonly :version
 
@@ -34,14 +34,18 @@ class WonkoVersion < ActiveRecord::Base
 
   validates :version, presence: true, length: { minimum: 1 }
 
-  delegate :uid, to: :wonkofile
+  delegate :uid, to: :wonko_file
 
   def requires
     []
   end
 
   def data
-    []
+    KVStorageInterface.get "#{uid}##{version}"
+  end
+
+  def data=(data)
+    KVStorageInterface.set "#{uid}##{version}", data.to_json
   end
 
   scope :related_to, ->(user) do
@@ -69,7 +73,7 @@ class WonkoVersion < ActiveRecord::Base
   def self.find_or_create_for_data(file, data, user)
     wonko_version = file.wonkoversions.find_or_initialize_by(version: data[:version], user: user)
 
-    # wonko_version.data = data[:data]
+    wonko_version.data = data[:data]
     # wonko_version.requires = data[:requires] || []
     wonko_version.user = user
     wonko_version.update_attributes data.permit(:version, :type, :time)

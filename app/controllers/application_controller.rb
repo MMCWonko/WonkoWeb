@@ -25,6 +25,10 @@ class ApplicationController < ActionController::Base
     add_breadcrumb 'Files', route(:index, WonkoFile)
   end
 
+  def versions_crumb
+    add_breadcrumb 'Versions', route(:index, @wonko_file, WonkoVersion)
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit(:username, :email, :password, :password_confirmation, :remember_me)
@@ -55,7 +59,6 @@ class ApplicationController < ActionController::Base
 
     if @wur_enabled || @wonko_file.user == User.official_user
       add_breadcrumb @wonko_file.uid, route(:show, @wonko_file)
-      add_breadcrumb 'Versions', route(:index, @wonko_file, WonkoVersion)
       set_meta_tags title: @wonko_file.name, author: route(:show, @wonko_file.user)
     else
       render 'wonko_files/enable_wur'
@@ -75,6 +78,7 @@ class ApplicationController < ActionController::Base
     end
 
     if @wonko_version
+      versions_crumb
       add_breadcrumb @wonko_version.version, route(:show, @wonko_version)
       set_meta_tags title: "#{@wonko_version.version} (#{@wonko_file.name})", author: route(:show, @wonko_version.user)
     else

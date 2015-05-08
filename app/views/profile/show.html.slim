@@ -1,16 +1,25 @@
 .row
   .col-md-6
     .panel.panel-default
-      .panel-heading Activity
+      .panel-heading
+        | Activity
+        .pull-right
+          = bootstrap_button_to 'All', profile_feed_path(username: @user.username), :default, icon: :list, size: :xs
       .panel-body
         ul.media-list
-          = render_activities @activities
+          = render_activities @activities, layout: 'feed'
   .col-md-6
     .panel.panel-default
-      .panel-heading Files
+      .panel-heading
+        | Files
+        .pull-right
+          = bootstrap_button_to 'All', profile_files_path(username: @user.username), :default, icon: :list, size: :xs
       .panel-body This is a list of all Wonko Files that belong to #{@user.username}
       = render 'wonko_files/table'
     .panel.panel-default
-      .panel-heading Versions
+      .panel-heading
+        | Versions
+        .pull-right
+          = bootstrap_button_to 'All', profile_versions_path(username: @user.username), :default, icon: :list, size: :xs
       .panel-body This a list of all Wonko Versions that belong to #{@user.username}
       = render 'wonko_versions/table'
