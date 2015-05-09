@@ -12,6 +12,6 @@
 #
 
 Fabricator(:kv_storage) do
-  key   "MyString"
-  value ""
+  key 'MyString'
+  value ''
 end

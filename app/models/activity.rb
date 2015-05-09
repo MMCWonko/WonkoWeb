@@ -25,8 +25,8 @@
 class Activity < PublicActivity::Activity
   scope :related_to, ->(other) do
     return none if other.nil?
-    query = "(#{where(trackable: other).where_values.map(&:to_sql).join ' AND '}) OR " +
-        "(#{where(owner: other).where_values.map(&:to_sql).join ' AND '}) OR " +
+    query = "(#{where(trackable: other).where_values.map(&:to_sql).join ' AND '}) OR " \
+        "(#{where(owner: other).where_values.map(&:to_sql).join ' AND '}) OR " \
         "(#{where(recipient: other).where_values.map(&:to_sql).join ' AND '})"
     where(query).includes(:trackable, :owner)
   end

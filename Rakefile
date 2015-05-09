@@ -6,4 +6,6 @@ require File.expand_path('../server/tasks', __FILE__)
 
 task(:test) {}
 
+task precommit: %w(spec rubocop)
+
 Rails.application.load_tasks

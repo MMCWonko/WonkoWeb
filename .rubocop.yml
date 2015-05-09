@@ -5,6 +5,7 @@ AllCops:
   Exclude:
     - 'bin/*'
     - 'vendor/**/*'
+    - 'db/**/*'
 Style/Documentation:
   Enabled: false
 Metrics/MethodLength:
@@ -20,4 +21,6 @@ Metrics/ClassLength:
 RSpec/DescribeClass:
   Enabled: false
 Style/Next:
+  Enabled: false
+Style/Lambda:
   Enabled: false

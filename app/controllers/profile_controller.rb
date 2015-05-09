@@ -4,7 +4,7 @@ class ProfileController < ApplicationController
   def show
     authorize @user
     set_meta_tags og: { type: 'profile', url: route(:show, @user), title: @user.username, image: @user.avatar_url,
-                  username: @user.username, site_name: 'WonkoWeb' }
+                        username: @user.username, site_name: 'WonkoWeb' }
 
     # delegate to the files and versions actions to populate @wonko_{files,versions}
     files

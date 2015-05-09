@@ -1,7 +1,7 @@
 class WonkoFilesController < ApplicationController
   before_action :files_crumb
   before_action :set_wonko_file, only: [:show, :edit, :update, :destroy]
-  before_action :versions_crumb
+  before_action :versions_crumb, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index, :show]
 
   def index

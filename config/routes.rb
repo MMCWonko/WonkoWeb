@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  authenticate :user, lambda { |u| u.admin } do
+  authenticate :user, ->(user) { user.admin } do
     mount DjMon::Engine => 'dj_mon'
   end
 

@@ -22,6 +22,7 @@ module Workspace
 
     config.autoload_paths += Dir["#{config.root}/lib/"]
     config.active_job.queue_adapter = :delayed_job
+    config.active_record.raise_in_transactional_callbacks = true
     config.generators do |g|
       g.fixture_replacement :fabrication
       g.orm :active_record

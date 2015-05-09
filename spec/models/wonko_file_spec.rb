@@ -28,13 +28,13 @@ RSpec.describe WonkoFile, type: :model do
     it 'does not give WUR files without the WUR enabled' do
       wonkofile
       unofficial
-      expect(WonkoFile.for_index(false).where.not(user: User.official_user).any?).to eq false
+      expect(described_class.for_index(false).where.not(user: User.official_user).any?).to eq false
     end
 
     it 'does give WUR files with the WUR enabled' do
       wonkofile
       unofficial
-      expect(WonkoFile.for_index(true).where(user: User.official_user).any?).to eq true
+      expect(described_class.for_index(true).where(user: User.official_user).any?).to eq true
     end
   end
 end

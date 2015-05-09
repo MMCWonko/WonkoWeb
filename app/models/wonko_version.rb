@@ -41,7 +41,7 @@ class WonkoVersion < ActiveRecord::Base
   end
 
   def data
-    KVStorageInterface.get "#{uid}##{version}"
+    KVStorageInterface.get("#{uid}##{version}") || [].to_json
   end
 
   def data=(data)

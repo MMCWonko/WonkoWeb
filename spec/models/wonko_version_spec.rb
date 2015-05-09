@@ -23,7 +23,7 @@ require 'rails_helper'
 
 RSpec.describe WonkoVersion, type: :model do
   it 'formats the time' do
-    version = Fabricate(:wv_minecraft_181, time: 1431099857)
+    version = Fabricate(:wv_minecraft_181, time: 1_431_099_857)
     expect(version.time_as_string).to eq '2015-05-08 15:44'
   end
 end

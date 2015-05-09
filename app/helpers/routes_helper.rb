@@ -1,19 +1,17 @@
 module RoutesHelper
   def self.map_to_route_helper(item)
     overrides = {
-        user: 'profile'
+      user: 'profile'
     }
-    guess = if item.is_a? Symbol
-              ActiveModel::Naming.singular_route_key(item.constantize)
-            elsif item.is_a? Class
-              ActiveModel::Naming.singular_route_key(item)
-            else
-              ActiveModel::Naming.singular_route_key(if item.class.respond_to?(:base_class)
-                                                       item.class.base_class
-                                                     else
-                                                       item.class
-                                                     end)
-            end.to_sym
+    guess = ActiveModel::Naming.singular_route_key(if item.is_a? Symbol
+                                                     item.constantize
+                                                   elsif item.is_a? Class
+                                                     item
+                                                   elsif item.class.respond_to? :base_class
+                                                     item.class.base_class
+                                                   else
+                                                     item.class
+                                                   end).to_sym
     overrides.key?(guess) ? overrides[guess] : guess.to_s
   end
 
