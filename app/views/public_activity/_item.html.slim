@@ -3,6 +3,8 @@
   small.text-muted = timeago_tag activity.created_at
   h4.media-heading
     = yield :heading
+    - if @user && @user == current_user && activity.unread?(@user)
+      span.label.label-success New
   = yield :body
 .media-right.media-middle
   = yield :right

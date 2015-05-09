@@ -8,15 +8,9 @@ end
 Rails.application.routes.draw do
   controller :profile, path: :user do
     get '(:username)', action: :show, as: :profile
-    get '(:username)/feed' => 'feed#user', as: :profile_feed
+    get '(:username)/feed' => 'feed#user', as: :feed_profile
     get '(:username)/files', action: :files, as: :profile_files
     get '(:username)/versions', action: :versions, as: :profile_versions
-  end
-
-  controller :feed, path: :feed do
-    get 'user(/:username)', action: :user, as: :feed_user
-    get 'file/:id', action: :file, id: %r{[^/]+}, as: :feed_file
-    get 'file/:wonko_file_id/:id', action: :version, id: %r{[^/]+}, wonko_file_id: %r{[^/]+}, as: :feed_versions
   end
 
   devise_for :users
@@ -28,9 +22,14 @@ Rails.application.routes.draw do
   post 'upload_version' => 'wonko_versions#upload'
 
   resources :wonko_files, id: %r{[^/]+} do
+    member do
+      get 'feed' => 'feed#file'
+    end
+
     resources :wonko_versions, id: %r{[^/]+} do
       member do
         get 'copy'
+        get 'feed' => 'feed#version'
       end
     end
   end

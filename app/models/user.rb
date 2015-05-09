@@ -37,6 +37,8 @@ class User < ActiveRecord::Base
   include PublicActivity::Model
   tracked
 
+  acts_as_reader
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -44,6 +46,10 @@ class User < ActiveRecord::Base
 
   has_many :wonkofiles, class_name: :WonkoFile
   has_many :wonkoversions, class_name: :WonkoVersion
+
+  def notifications
+    Activity.related_to(self).unread_by(self).order created_at: :desc
+  end
 
   def self.official_user
     User.find_by(official: true)

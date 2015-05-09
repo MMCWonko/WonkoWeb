@@ -23,6 +23,8 @@
 
 # Activity model for customisation & custom methods
 class Activity < PublicActivity::Activity
+  acts_as_readable on: :created_at
+
   scope :related_to, ->(other) do
     return none if other.nil?
     query = "(#{where(trackable: other).where_values.map(&:to_sql).join ' AND '}) OR " \

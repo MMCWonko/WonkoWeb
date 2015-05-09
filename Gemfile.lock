@@ -437,6 +437,8 @@ GEM
       equalizer (~> 0.0.9)
       parser (~> 2.2.2, >= 2.2.2.2)
       procto (~> 0.0.2)
+    unread (0.5.0)
+      activerecord (>= 3)
     versionist (1.4.1)
       activesupport (>= 3)
       railties (>= 3)
@@ -524,4 +526,5 @@ DEPENDENCIES
   therubyracer
   turbolinks
   uglifier
+  unread
   versionist

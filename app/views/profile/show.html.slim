@@ -4,7 +4,7 @@
       .panel-heading
         | Activity
         .pull-right
-          = bootstrap_button_to 'All', profile_feed_path(username: @user.username), :default, icon: :list, size: :xs
+          = bootstrap_button_to 'All', route(:feed, @user), :default, icon: :list, size: :xs
       .panel-body
         ul.media-list
           = render_activities @activities, layout: 'feed'
@@ -13,13 +13,13 @@
       .panel-heading
         | Files
         .pull-right
-          = bootstrap_button_to 'All', profile_files_path(username: @user.username), :default, icon: :list, size: :xs
-      .panel-body This is a list of all Wonko Files that belong to #{@user.username}
+          = bootstrap_button_to 'All', profile_files_path(@user), :default, icon: :list, size: :xs
+      .panel-body This is a list of all Wonko Files that belong to #{@user}
       = render 'wonko_files/table'
     .panel.panel-default
       .panel-heading
         | Versions
         .pull-right
-          = bootstrap_button_to 'All', profile_versions_path(username: @user.username), :default, icon: :list, size: :xs
-      .panel-body This a list of all Wonko Versions that belong to #{@user.username}
+          = bootstrap_button_to 'All', profile_versions_path(@user), :default, icon: :list, size: :xs
+      .panel-body This a list of all Wonko Versions that belong to #{@user}
       = render 'wonko_versions/table'

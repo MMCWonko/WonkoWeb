@@ -1,0 +1,21 @@
+scss:
+  .label-badge-overlay {
+    border-radius: 1em;
+    position: relative;
+    top: -15px;
+    left: -15px;
+    font-size: 10px;
+  }
+
+li.dropdown
+  a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+    = gi_icon :inbox, size: :lg
+    - if current_user.notifications.any?
+      span.label.label-danger.label-badge-overlay
+        = current_user.notifications.size
+  ul.dropdown-menu role="menu" style="width:320px;padding-left:10px;padding-right:10px"
+    li style="margin-bottom:-12px;"
+      a href="#{route :feed, current_user}" View all notifications (#{current_user.notifications.size})
+    = render_activities current_user.notifications.limit(5), layout: 'feed'
+    li style="margin-top:3px;"
+      a href="#{route :feed, current_user, markAllRead: true}" Mark all as read

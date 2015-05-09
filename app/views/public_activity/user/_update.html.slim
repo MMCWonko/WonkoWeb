@@ -1,5 +1,6 @@
 - content_for :heading, flush: true do
-  = link_to activity.user.username, route(:show, activity.user)
+  a href="#{route(:show, activity.user)}"
+    = activity.user.username
   '  edited their profile
 
 - content_for :right, flush: true do

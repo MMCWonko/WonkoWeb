@@ -93,7 +93,8 @@ class ApplicationController < ActionController::Base
 
   def set_user
     @user = params.key?(:username) ? User.find_by(username: params[:username]) : current_user
-    render 'errors/404' unless @user
+    fail ActiveRecord::RecordNotFound unless @user
+    add_breadcrumb @user.username, route(:show, @user)
   rescue ActiveRecord::RecordNotFound
     render 'errors/404'
   end

@@ -47,6 +47,7 @@ gem 'kaminari'
 gem 'bcrypt'
 gem 'delayed_job_active_record'
 gem 'paper_trail'
+gem 'unread'
 gem 'dj_mon', github: 'akshayrawat/dj_mon'
 gem 'public_activity', github: 'pokonski/public_activity'
 

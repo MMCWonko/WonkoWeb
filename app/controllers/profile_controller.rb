@@ -13,11 +13,6 @@ class ProfileController < ApplicationController
     @activities = scope_collection Activity.related_to(@user).order created_at: :desc
   end
 
-  def feed
-    authorize @user, :show?
-    render 'feed/user'
-  end
-
   def files
     @wonko_files = scope_collection @user.wonkofiles.includes :user
     authorize @wonko_files, :index?

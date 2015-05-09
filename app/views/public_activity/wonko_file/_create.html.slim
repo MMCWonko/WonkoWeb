@@ -1,7 +1,9 @@
 - content_for :heading, flush: true do
-  = link_to activity.user.username, route(:show, activity.user)
+  a href="#{route(:show, activity.user)}"
+    = activity.user.username
   '  created
-  = link_to activity.trackable.name, route(:show, activity.trackable)
+  a href="#{route(:show, activity.trackable)}"
+    = activity.trackable.name
 
 - content_for :right, flush: true do
   span.glyphicon.glyphicon-file
