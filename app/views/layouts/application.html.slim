@@ -92,14 +92,12 @@ html
           = link_to 'Contact', about_path + '#contact'
     - if Rails.env.production?
         javascript:
-          <script type="text/javascript">
-          var pkBaseURL = (("https:" == document.location.protocol) ? "https://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/" : "http://<%= ENV['WONKOWEB_PIWIK_HOST'] %>/");
+          var pkBaseURL = (("https:" == document.location.protocol) ? "https://#{ENV['WONKOWEB_PIWIK_HOST']}/" : "http://#{ENV['WONKOWEB_PIWIK_HOST']}/");
           document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-          </script><script type="text/javascript">
+        javascript:
           try {
                   var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
                   piwikTracker.trackPageView();
                   piwikTracker.enableLinkTracking();
           } catch( err ) {}
-          </script>
     = raw analytical.body_append_javascript

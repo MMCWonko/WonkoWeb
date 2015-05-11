@@ -23,3 +23,6 @@
 
 # Ignore RubyMine's stuff
 /.idea
+
+/config/database.yml
+/config/secrets.yml

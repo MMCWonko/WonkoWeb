@@ -5,11 +5,14 @@ class FeedController < ApplicationController
   before_action :set_user, only: :user
 
   def user
+    authorize @user, :show?
+
     if params[:markAllRead] && @user == current_user
       Activity.mark_as_read! :all, for: current_user
+      redirect_to route(:feed, @user)
+      return
     end
 
-    authorize @user, :show?
     @activities = scope_collection Activity.related_to(@user).order(created_at: :desc)
     @activities = @activities.with_read_marks_for current_user if @user == current_user
     add_breadcrumb 'Feed', route(:feed, @user)

@@ -68,6 +68,18 @@ group :development do
   gem 'quiet_assets'
   gem 'rack-dev-mark'
   gem 'rack-prettify', github: 'logicaltext/rack-prettify'
+
+  gem 'sshkit-sudo'
+  gem 'capistrano'
+  gem 'capistrano-rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rvm'
+  gem 'capistrano-postgresql'
+  gem 'capistrano-safe-deploy-to'
+  gem 'capistrano-secrets-yml'
+  gem 'capistrano-delayed-job'
+  gem 'capistrano-faster-assets'
+  gem 'airbrussh'
 end
 
 group :development, :test do
@@ -103,9 +115,10 @@ end
 
 group :production do
   gem 'rails_12factor'
-  gem 'puma'
+  gem 'unicorn'
   gem 'airbrake'
   gem 'piwik_analytics'
+  gem 'daemons'
 end
 
 gem 'codeclimate-test-reporter', group: :test, require: nil
