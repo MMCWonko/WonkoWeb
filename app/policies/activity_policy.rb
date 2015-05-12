@@ -8,7 +8,7 @@ class ActivityPolicy < ApplicationPolicy
   def show?
     trackable_policy.show? &&
       owner_policy.show? &&
-      recipient_policy.show?
+      recipient_policy.show? && super
   end
 
   def create?

@@ -2,10 +2,11 @@ set :stage, :production
 set :branch, 'master'
 
 set :server_name, 'wonkoweb.02jandal.xyz'
+set :mail_server_name, 'mail.02jandal.xyz'
 
 set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"
 
-server 'linode_wonkoweb', user: 'deployer', roles: %w(web app db), primary: true
+server 'linode_wonkoweb', user: 'deployer', roles: %w(web app db mail), primary: true
 
 set :deploy_to, "/home/#{fetch(:deploy_user)}/apps/#{fetch(:full_app_name)}"
 

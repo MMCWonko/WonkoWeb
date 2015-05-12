@@ -40,12 +40,29 @@ class User < ActiveRecord::Base
   acts_as_reader
 
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :uid, :async
+  # :lockable and :timeoutable
+  devise :omniauthable, :database_authenticatable, :registerable, :confirmable,
+         :recoverable, :rememberable, :trackable, :validatable, :uid, :async,
+         authentication_keys: [:login]
 
   has_many :wonkofiles, class_name: :WonkoFile
   has_many :wonkoversions, class_name: :WonkoVersion
+  has_many :authentications, class_name: 'UserAuthentication', dependent: :destroy
+
+  validates :username, presence: true, uniqueness: { case_sensitive: false }
+  validates :email, presence: true
+
+  attr_accessor :login
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    login = conditions.delete(:login)
+    if login
+      where(conditions).find_by(['lower(username) = :value OR lower(email) = :value', { value: login.downcase }])
+    else
+      find_by(conditions)
+    end
+  end
 
   def notifications
     Activity.related_to(self).unread_by(self).order created_at: :desc
@@ -61,5 +78,17 @@ class User < ActiveRecord::Base
 
   def avatar_url
     Gravatar.new(email).image_url
+  end
+
+  def self.new_from_omniauth(params)
+    info = params['info']
+    email_is_verified = info['email'] &&
+                        (info['verified'] || info['verified_email'] || params['extra']['raw_info']['email_verified'])
+    email = params['info']['email'] if email_is_verified
+    password = Devise.friendly_token[0, 20]
+    User.new username: params['extra']['raw_info']['username'] || info['nickname'] || params['uid'],
+             email: email || '',
+             password: password,
+             password_confirmation: password
   end
 end

@@ -130,9 +130,10 @@ RSpec.describe WonkoVersionsController, type: :controller do
   end
 
   describe 'GET #edit' do
+    login_official
+
     it 'assigns the requested wonko_version as @wonko_version' do
       wonko_version = Fabricate(:wv_minecraft_183)
-      sign_in wonko_version.user
 
       get :edit, wonko_file_id: wonko_version.wonko_file.to_param, id: wonko_version.to_param
       expect(assigns(:wonko_version)).to eq(wonko_version)

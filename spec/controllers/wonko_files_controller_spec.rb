@@ -47,7 +47,7 @@ RSpec.describe WonkoFilesController, type: :controller do
         it 'and no official gives inofficial' do
           user = Fabricate(:user)
           wonko_file = Fabricate(:wf_minecraft, user: user)
-          get :show, id: wonko_file.to_param, wur: :true
+          get :show, id: wonko_file.to_param, wur: true
           expect(assigns(:wonko_file)).to eq(wonko_file)
           expect(assigns(:wonko_file).user).to eq(user)
         end
@@ -85,9 +85,10 @@ RSpec.describe WonkoFilesController, type: :controller do
   end
 
   describe 'GET #edit' do
+    login_official
+
     it 'assigns the requested wonko_file as @wonko_file' do
       wonko_file = Fabricate(:wf_minecraft)
-      sign_in wonko_file.user
       get :edit, id: wonko_file.to_param
       expect(assigns(:wonko_file)).to eq(wonko_file)
     end
@@ -129,6 +130,9 @@ RSpec.describe WonkoFilesController, type: :controller do
   end
 
   describe 'PUT #update' do
+    login_official
+    let(:wonko_file) { Fabricate(:wf_minecraft) }
+
     context 'with valid params' do
       let(:new_attributes) do
         {
@@ -137,26 +141,17 @@ RSpec.describe WonkoFilesController, type: :controller do
       end
 
       it 'updates the requested wonko_file' do
-        wonko_file = Fabricate(:wf_minecraft)
-        sign_in wonko_file.user
-
         put :update, id: wonko_file.to_param, wonko_file: new_attributes
         wonko_file.reload
         expect(wonko_file.name).to eq 'Not-Minecraft'
       end
 
       it 'assigns the requested wonko_file as @wonko_file' do
-        wonko_file = Fabricate(:wf_minecraft)
-        sign_in wonko_file.user
-
         put :update, id: wonko_file.to_param, wonko_file: valid_attributes
         expect(assigns(:wonko_file)).to eq(wonko_file)
       end
 
       it 'redirects to the wonko_file' do
-        wonko_file = Fabricate(:wf_minecraft)
-        sign_in wonko_file.user
-
         put :update, id: wonko_file.to_param, wonko_file: valid_attributes
         expect(response).to redirect_to(wonko_file)
       end
@@ -164,17 +159,11 @@ RSpec.describe WonkoFilesController, type: :controller do
 
     context 'with invalid params' do
       it 'assigns the wonko_file as @wonko_file' do
-        wonko_file = Fabricate(:wf_minecraft)
-        sign_in wonko_file.user
-
         put :update, id: wonko_file.to_param, wonko_file: invalid_attributes
         expect(assigns(:wonko_file)).to eq(wonko_file)
       end
 
       it "re-renders the 'edit' template" do
-        wonko_file = Fabricate(:wf_minecraft)
-        sign_in wonko_file.user
-
         put :update, id: wonko_file.to_param, wonko_file: invalid_attributes
         expect(response).to render_template('edit')
       end
@@ -182,19 +171,17 @@ RSpec.describe WonkoFilesController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    it 'destroys the requested wonko_file' do
-      wonko_file = Fabricate(:wf_minecraft)
-      sign_in wonko_file.user
+    login_official
+    let(:wonko_file) { Fabricate(:wf_minecraft) }
 
+    it 'destroys the requested wonko_file' do
+      wonko_file
       expect do
         delete :destroy, id: wonko_file.to_param
       end.to change(WonkoFile, :count).by(-1)
     end
 
     it 'redirects to the wonko_files list' do
-      wonko_file = Fabricate(:wf_minecraft)
-      sign_in wonko_file.user
-
       delete :destroy, id: wonko_file.to_param
       expect(response).to redirect_to(wonko_files_url)
     end

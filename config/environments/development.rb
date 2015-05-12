@@ -1,6 +1,7 @@
 Rails.application.configure do
   config.middleware.use Rack::Prettify
   # Settings specified here will take precedence over those in config/application.rb.
+  config.active_record.migration_error = :page_load
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
@@ -33,7 +34,9 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  config.active_record.migration_error = :page_load
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { address: 'localhost', port: 1025 }
 
   config.after_initialize do
     Bullet.enable = true
@@ -44,19 +47,7 @@ Rails.application.configure do
     Bullet.add_footer = true
   end
 
-  # Enable rack-dev-mark
   config.rack_dev_mark.enable = true
-  #
-  # Customize the env string (default Rails.env)
-  # config.rack_dev_mark.env = 'foo'
-  #
-  # Customize themes if you want to do so
-  # config.rack_dev_mark.theme = [:title, :github_fork_ribbon]
-  #
-  # Customize inserted place of the middleware if necessary.
-  # You can use either `insert_before` or `insert_after`
-  # config.rack_dev_mark.insert_before SomeOtherMiddleware
-  # config.rack_dev_mark.insert_after SomeOtherMiddleware
 end
 
 BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']

@@ -4,14 +4,42 @@ module Users
     # before_filter :configure_account_update_params, only: [:update]
 
     # GET /resource/sign_up
-    # def new
-    #   super
-    # end
+    def new
+      super
+    end
 
     # POST /resource
-    # def create
-    #   super
-    # end
+    def create
+      super
+    end
+
+    def finish_signup
+      @omniauth_data = OmniauthDataHolder.read params[:omniauth_data][:data] # needed if we re-render the form
+      @user = User.new_from_omniauth @omniauth_data.raw_data
+      @user.email = params.require(:user).permit(:email)[:email]
+      @user.username = params.require(:user).permit(:username)[:username]
+
+      begin
+        @user.transaction do
+          provider = AuthenticationProvider.find_by name: @omniauth_data['provider']
+          @user.save!
+          @authentication = UserAuthentication.new_from_omniauth @omniauth_data.raw_data,
+                                                                 @user,
+                                                                 provider
+          @authentication.save!
+        end
+        sign_in @user
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: 'Welcome!' }
+          format.json { render json: {}, status: :created, location: route(:show, @user) }
+        end
+      rescue ActiveRecord::ActiveRecordError
+        respond_to do |format|
+          format.html { render 'finish_signup' }
+          format.json { render json: @user.errors, status: :unprocessable_entity }
+        end
+      end
+    end
 
     # GET /resource/edit
     # def edit

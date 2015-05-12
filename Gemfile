@@ -25,6 +25,7 @@ gem 'breadcrumbs_on_rails'
 gem 'abracadabra'
 gem 'possessive'
 gem 'rails-timeago'
+gem 'simple_form'
 
 # Javascript utils
 gem 'jquery-rails'
@@ -58,6 +59,10 @@ gem 'devise-async'
 gem 'pundit'
 gem 'devise-bootstrap-views'
 gem 'gravatar-ultimate'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-github'
+gem 'omniauth-steam'
 # TODO: Replace devise by omniauth/omniauth-identity/shield/warden?
 
 group :development do
@@ -68,6 +73,8 @@ group :development do
   gem 'quiet_assets'
   gem 'rack-dev-mark'
   gem 'rack-prettify', github: 'logicaltext/rack-prettify'
+
+  gem 'domp'
 
   gem 'sshkit-sudo'
   gem 'capistrano'

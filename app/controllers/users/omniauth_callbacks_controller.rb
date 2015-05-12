@@ -1,30 +1,41 @@
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    # You should configure your model like this:
-    # devise :omniauthable, omniauth_providers: [:twitter]
+    def google_oauth2
+      create
+    end
 
-    # You should also create an action method in this controller like this:
-    # def twitter
-    # end
+    def github
+      create
+    end
 
-    # More info at:
-    # https://github.com/plataformatec/devise#omniauth
+    def steam
+      create
+    end
 
-    # GET|POST /resource/auth/twitter
-    # def passthru
-    #   super
-    # end
+    private
 
-    # GET|POST /users/auth/twitter/callback
-    # def failure
-    #   super
-    # end
+    def create
+      auth_params = request.env['omniauth.auth']
+      provider = AuthenticationProvider.find_by name: auth_params.provider
+      authentication = provider.user_authentications.where(uid: auth_params.uid).first
 
-    # protected
-
-    # The path used when omniauth fails
-    # def after_omniauth_failure_path_for(scope)
-    #   super(scope)
-    # end
+      if authentication
+        # sign in with existing authentication
+        sign_in_and_redirect :user, authentication.user
+      elsif current_user
+        # create authentication and sign in
+        authentication = UserAuthentication.new_from_omniauth(auth_params, current_user, provider)
+        if authentication.save
+          sign_in_and_redirect :user, current_user
+        else
+          redirect_to new_user_registration, notice: "Error while authenticating with #{auth_params.provider.titlecase}"
+        end
+      else
+        # ask the user for additional info
+        @omniauth_data = OmniauthDataHolder.new auth_params
+        @user = User.new_from_omniauth auth_params
+        render 'devise/registrations/finish_signup'
+      end
+    end
   end
 end

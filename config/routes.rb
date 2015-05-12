@@ -13,7 +13,10 @@ Rails.application.routes.draw do
     get '(:username)/versions', action: :versions, as: :profile_versions
   end
 
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  devise_scope :user do
+    match '/users/finish_signup' => 'users/registrations#finish_signup', via: [:get, :patch, :post], as: :finish_signup
+  end
 
   authenticate :user, ->(user) { user.admin } do
     mount DjMon::Engine => 'dj_mon'
