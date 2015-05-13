@@ -13,6 +13,9 @@ module Users
       super
     end
 
+    def accounts
+    end
+
     def finish_signup
       @omniauth_data = OmniauthDataHolder.read params[:omniauth_data][:data] # needed if we re-render the form
       @user = User.new_from_omniauth @omniauth_data.raw_data
@@ -21,11 +24,10 @@ module Users
 
       begin
         @user.transaction do
-          provider = AuthenticationProvider.find_by name: @omniauth_data['provider']
           @user.save!
           @authentication = UserAuthentication.new_from_omniauth @omniauth_data.raw_data,
                                                                  @user,
-                                                                 provider
+                                                                 @omniauth_data['provider']
           @authentication.save!
         end
         sign_in @user

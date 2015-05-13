@@ -1,4 +1,9 @@
 <h2>Additional information required</h2>
+
+<div class="alert alert-info" role="alert">
+  If you already have an account, you should <a href="<%= new_user_session_path %>">log in</a> and visit <a href="<%= user_accounts_path %>">Accounts</a> to link <%= @omniauth_data['provider'] %> to your account.
+</div>
+
 <%= simple_form_for @user, as: 'user', url: finish_signup_path do |f| %>
     <%= f.error_notification %>
 

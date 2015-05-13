@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   devise_scope :user do
     match '/users/finish_signup' => 'users/registrations#finish_signup', via: [:get, :patch, :post], as: :finish_signup
+    get '/users/accounts' => 'users/registrations#accounts', as: :user_accounts
+    get '/users/auth/:provider/destroy' => 'users/omniauth_callbacks#destroy', as: :omniauth_unlink
   end
 
   authenticate :user, ->(user) { user.admin } do

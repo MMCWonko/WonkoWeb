@@ -1,0 +1,12 @@
+<div class="alert alert-danger">
+  <b>Warning!</b> If you originally created your account through a provider and have not set your password and you remove all linked accounts you need to request a password reset.
+</div>
+
+<% User.omniauth_providers.each do |provider| %>
+    <% if current_user.authentications.where(provider: provider).any? %>
+        <%= provider.to_s.titleize %>: Linked
+        <%= link_to "Unlink #{provider.to_s.titleize}", omniauth_unlink_path(User, provider) %>
+    <% else %>
+        <%= link_to "Link to #{provider.to_s.titleize}", omniauth_authorize_path(User, provider) %>
+    <% end %><br/>
+<% end %>

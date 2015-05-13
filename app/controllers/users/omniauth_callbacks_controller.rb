@@ -12,19 +12,34 @@ module Users
       create
     end
 
+    def destroy
+      set_meta_tags title: 'Linked Accounts'
+
+      authorize current_user, :update?
+      auth = current_user.authentications.find_by provider: params[:provider]
+      if auth
+        if auth.destroy
+          redirect_to user_accounts_path, notice: "Successfully unlinked #{params[:provider].titleize}"
+        else
+          redirect_to user_accounts_path, notice: 'There was an error'
+        end
+      else
+        render status: 404, text: 'Provider not linked or unknown provider'
+      end
+    end
+
     private
 
     def create
       auth_params = request.env['omniauth.auth']
-      provider = AuthenticationProvider.find_by name: auth_params.provider
-      authentication = provider.user_authentications.where(uid: auth_params.uid).first
+      authentication = UserAuthentication.find_by uid: auth_params.uid, provider: auth_params.provider
 
       if authentication
         # sign in with existing authentication
         sign_in_and_redirect :user, authentication.user
       elsif current_user
         # create authentication and sign in
-        authentication = UserAuthentication.new_from_omniauth(auth_params, current_user, provider)
+        authentication = UserAuthentication.new_from_omniauth auth_params, current_user, auth_params.provider
         if authentication.save
           sign_in_and_redirect :user, current_user
         else
