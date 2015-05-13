@@ -7,10 +7,11 @@ h1 New Wonko Versions from file
   = f.file_field :file, hide_label: true, multiple: true
 javascript:
   $(function() {
-    $('#_file').attr('style', 'width:100%');
-    $('#_file').fileinput({
-      previewFileType: 'text',
-      allowedFileExtensions: ['json'],
-      previewClass: 'bg-warning'
-    });
+    $('#_file')
+            .attr('style', 'width:100%')
+            .fileinput({
+              previewFileType: 'text',
+              allowedFileExtensions: ['json'],
+              previewClass: 'bg-warning'
+            });
   });

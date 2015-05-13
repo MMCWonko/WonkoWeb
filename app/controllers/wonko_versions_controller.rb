@@ -17,6 +17,7 @@ class WonkoVersionsController < ApplicationController
     @wonko_version = @wonko_file.wonkoversions.build
     @wonko_version.user = current_user
     authorize @wonko_version
+    versions_crumb
     add_breadcrumb 'New', route(:new, @wonko_version)
   end
 
@@ -27,6 +28,7 @@ class WonkoVersionsController < ApplicationController
 
   def create
     @wonko_version = @wonko_file.wonkoversions.build(wonko_version_params)
+    @wonko_version.user = current_user
     do_respond_to :create?, 'created', @wonko_version.save, :new
   end
 

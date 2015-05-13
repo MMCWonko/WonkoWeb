@@ -20,6 +20,7 @@
 /server/secrets.yml
 /server/storage.json
 /coverage
+/.respec_failures
 
 # Ignore RubyMine's stuff
 /.idea

@@ -82,9 +82,7 @@ class User < ActiveRecord::Base
 
   def self.new_from_omniauth(params)
     info = params['info']
-    email_is_verified = info['email'] &&
-                        (info['verified'] || info['verified_email'] || params['extra']['raw_info']['email_verified'])
-    email = params['info']['email'] if email_is_verified
+    email = info['email']
     password = Devise.friendly_token[0, 20]
     User.new username: params['extra']['raw_info']['username'] || info['nickname'] || params['uid'],
              email: email || '',

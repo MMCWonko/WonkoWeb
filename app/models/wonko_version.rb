@@ -14,9 +14,10 @@
 #
 # Indexes
 #
-#  index_wonko_versions_on_user_id        (user_id)
-#  index_wonko_versions_on_version        (version)
-#  index_wonko_versions_on_wonko_file_id  (wonko_file_id)
+#  index_wonko_versions_on_user_id                                (user_id)
+#  index_wonko_versions_on_version                                (version)
+#  index_wonko_versions_on_wonko_file_id                          (wonko_file_id)
+#  index_wonko_versions_on_wonko_file_id_and_user_id_and_version  (wonko_file_id,user_id,version) UNIQUE
 #
 
 class WonkoVersion < ActiveRecord::Base
@@ -32,7 +33,11 @@ class WonkoVersion < ActiveRecord::Base
 
   paginates_per 50
 
-  validates :version, presence: true, length: { minimum: 1 }
+  validates :version,
+            presence: true,
+            length: { minimum: 1 },
+            uniqueness: { scope: [:wonko_file_id, :user_id], message: 'already exists' }
+  validates :user, presence: true
 
   delegate :uid, to: :wonko_file
 
@@ -57,7 +62,7 @@ class WonkoVersion < ActiveRecord::Base
   end
 
   def time_as_string
-    time.nil? ? '' : Time.zone.at(time.to_i).to_datetime.strftime('%Y-%m-%d %H:%M')
+    time.nil? ? '' : Time.zone.at(time.to_i).to_datetime.strftime('%Y-%m-%d %H:%M:%S')
   end
 
   def self.get(file, id, user = nil)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150513133942) do
+ActiveRecord::Schema.define(version: 20150513164329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(version: 20150513133942) do
 
   add_index "wonko_versions", ["user_id"], name: "index_wonko_versions_on_user_id", using: :btree
   add_index "wonko_versions", ["version"], name: "index_wonko_versions_on_version", using: :btree
+  add_index "wonko_versions", ["wonko_file_id", "user_id", "version"], name: "index_wonko_versions_on_wonko_file_id_and_user_id_and_version", unique: true, using: :btree
   add_index "wonko_versions", ["wonko_file_id"], name: "index_wonko_versions_on_wonko_file_id", using: :btree
 
   add_foreign_key "wonko_files", "users"

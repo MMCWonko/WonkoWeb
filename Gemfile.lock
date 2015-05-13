@@ -375,6 +375,7 @@ GEM
     rails-assets-URIjs (1.15.1)
       rails-assets-jquery (>= 1.7.0)
     rails-assets-jquery (2.1.4)
+    rails-assets-smalot-bootstrap-datetimepicker (2.3.4)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
     rails-dom-testing (1.0.6)
@@ -608,6 +609,7 @@ DEPENDENCIES
   rack-prettify!
   rails
   rails-assets-URIjs!
+  rails-assets-smalot-bootstrap-datetimepicker!
   rails-timeago
   rails_12factor
   rb-inotify

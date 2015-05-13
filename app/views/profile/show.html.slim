@@ -14,12 +14,12 @@
         | Files
         .pull-right
           = bootstrap_button_to 'All', profile_files_path(@user), :default, icon: :list, size: :xs
-      .panel-body This is a list of all Wonko Files that belong to #{@user}
+      .panel-body This is a list of all Wonko Files that belong to #{@user.username}
       = render 'wonko_files/table'
     .panel.panel-default
       .panel-heading
         | Versions
         .pull-right
           = bootstrap_button_to 'All', profile_versions_path(@user), :default, icon: :list, size: :xs
-      .panel-body This a list of all Wonko Versions that belong to #{@user}
+      .panel-body This a list of all Wonko Versions that belong to #{@user.username}
       = render 'wonko_versions/table'

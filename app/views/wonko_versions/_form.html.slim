@@ -1,8 +1,22 @@
-= form_for([@wonko_version.wonko_file, @wonko_version], layout: :horizontal) do |f|
+= simple_form_for @wonko_version, url: form_route(@wonko_version) do |f|
   - if @wonko_version.new_record?
-    = f.text_field :version
-  - else
-    = f.static_control :version, label: 'Version'
-  = f.text_field :type
-  = f.text_field :time
-  = f.submit 'Save', class: 'btn btn-success'
+    = f.input :version
+  = f.input :type
+  = f.input :time, wrapper: :vertical_input_group
+    span.input-group-addon#humanTime
+    = f.input_field :time, class: 'form-control'
+    span.input-group-btn
+      = bootstrap_button_to 'Now', 'javascript:time_now();', :default
+  / TODO: use http://www.malot.fr/bootstrap-datetimepicker/
+  = f.button :submit, 'Save'
+
+javascript:
+  function updateHumanTime() {
+    $('#humanTime').html((new Date(parseInt($('#wonko_version_time').val()) * 1000)).toString());
+  }
+  function time_now() {
+    updateHumanTime();
+    $('#wonko_version_time').val(Math.floor(Date.now() / 1000));
+  }
+  updateHumanTime();
+  $('#wonko_version_time').on('change keyup keydown', updateHumanTime);

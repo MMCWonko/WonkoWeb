@@ -17,6 +17,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-select
 //= require bootstrap-switch
+//= require smalot-bootstrap-datetimepicker
 //= require bootbox
 //= require URIjs
 //= require abracadabra

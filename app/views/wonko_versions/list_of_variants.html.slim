@@ -9,9 +9,9 @@
       a.list-group-item href="#{route :show, version, user: version.user.username}"
         = version.user.username
     - if @wur_enabled
-      - @wonko_versions.not.where(user: User.official_user).each do |version|
+      - @wonko_versions.where.not(user: User.official_user).each do |version|
         a.list-group-item href="#{route :show, version, user: version.user.username}"
           = version.user.username
-    - elsif !@wonko_versions.not.where(user: User.official_user).empty?
+    - elsif !@wonko_versions.where.not(user: User.official_user).empty?
       a.list-group-item.list-group-item-warning href="javascript:$('#wurEnabler').click()"
         | Enable the WUR the see others

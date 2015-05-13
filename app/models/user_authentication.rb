@@ -2,16 +2,15 @@
 #
 # Table name: user_authentications
 #
-#  id                         :integer          not null, primary key
-#  user_id                    :integer
-#  authentication_provider_id :integer
-#  uid                        :string
-#  token                      :string
-#  token_expires_at           :datetime
-#  params                     :text
-#  created_at                 :datetime         not null
-#  updated_at                 :datetime         not null
-#  provider                   :string
+#  id               :integer          not null, primary key
+#  user_id          :integer
+#  uid              :string
+#  token            :string
+#  token_expires_at :datetime
+#  params           :text
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  provider         :string           not null
 #
 # Indexes
 #

@@ -28,7 +28,8 @@ module RoutesHelper
       plural_actions = [:create, :index]
 
       items = args.select { |item| !item.is_a? Hash }
-      arguments = args.select { |item| !item.is_a? Class }
+      arguments = args.select { |item| !item.is_a?(Class) && !item.is_a?(Symbol) }
+      arguments.pop if action.to_sym == :create
 
       # construct the path:
       # [<prefix>_]<model1>[_<model2>[_<model3>...]][s]_path

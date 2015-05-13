@@ -34,6 +34,7 @@ gem 'therubyracer',  platforms: :ruby
 
 source 'https://rails-assets.org/' do
   gem 'rails-assets-URIjs'
+  gem 'rails-assets-smalot-bootstrap-datetimepicker'
 end
 
 # API and related

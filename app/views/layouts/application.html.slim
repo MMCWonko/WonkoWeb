@@ -17,6 +17,7 @@ html
     = csrf_meta_tags
     javascript:
       window.wurEnabled = #{@wur_enabled ? 'true' : 'false'};
+      window.apiRootUrl = '#{api_v1_files_root_url}';
     coffee:
       setUrlQueryParameter = (key, value) ->
         url = new URI(document.location.href)
@@ -28,7 +29,7 @@ html
       hljs.initHighlightingOnLoad()
       $(document).on 'page:change', ->
         $('#getUrlLink').on 'click', ->
-          prompt 'Ctrl+C followed by Enter', '#{api_v1_files_root_url}'
+          prompt 'Ctrl+C followed by Enter', window.apiRootUrl
           # TODO: this should be the path to some CDN
           return
         $('#wurEnabler').bootstrapSwitch
