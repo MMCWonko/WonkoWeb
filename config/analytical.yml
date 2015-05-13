@@ -1,3 +1,6 @@
 production:
+  piwik:
+    url: piwik.02jandal.xyz
+    id: 1
 development:
 test:

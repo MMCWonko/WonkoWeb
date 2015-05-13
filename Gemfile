@@ -87,6 +87,7 @@ group :development do
   gem 'capistrano-secrets-yml'
   gem 'capistrano-delayed-job'
   gem 'capistrano-faster-assets'
+  gem 'capistrano-rails-console'
   gem 'airbrussh'
 end
 

@@ -29,6 +29,7 @@ require 'airbrussh/capistrano'
 require 'capistrano/secrets_yml'
 require 'capistrano/delayed_job'
 require 'capistrano/faster_assets'
+require 'capistrano/rails/console'
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }
