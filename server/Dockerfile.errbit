@@ -8,7 +8,7 @@ RUN echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main" | t
   apt-get update -qq
 
 # install system and base ruby dependencies
-RUN apt-get install -yqq build-essential libssl-dev ruby2.2 ruby2.2-dev nginx ca-certificates curl git
+RUN apt-get install -yqq build-essential libssl-dev ruby2.2 ruby2.2-dev ca-certificates curl git sendmail
 RUN gem install --no-document bundler
 
 # preliminary setup
@@ -20,7 +20,6 @@ ENV ENV production
 ENV RACK_ENV production
 ENV RAILS_ENV production
 EXPOSE 4000
-EXPOSE 80
 
 RUN git clone https://github.com/errbit/errbit.git $APP_HOME
 RUN echo "gem 'therubyracer'" >> Gemfile
@@ -31,7 +30,4 @@ RUN bundle exec rake assets:precompile
 ENV PORT 4000
 ENV MONGODB_URL mongodb://mongodb:27017/errbit
 
-RUN echo "Errbit::Application.config.secret_token = '$(bundle exec rake secret)'" > config/initializers/__secret_token.rb
-
-CMD rails r -e production "App.create(name: 'WonkoWeb')" && \
-  bundle exec rake errbit:bootstrap && bundle exec unicorn -p 4000 -c config/unicorn.default.rb
+CMD bundle exec unicorn -p 4000 -c config/unicorn.default.rb

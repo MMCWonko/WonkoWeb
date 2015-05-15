@@ -73,6 +73,12 @@ set :symlinks, [
   }
 ]
 
+task :airbrake_notify_deploy do
+  ENV['API_KEY'] = YAML.load(File.read 'config/secrets.yml')[fetch(:rails_env, fetch(:stage)).to_s]['errbit_key']
+  invoke 'airbrake:deploy' if ENV['API_KEY']
+  ENV['API_KEY'] = nil
+end
+
 namespace :deploy do
   before :deploy, 'deploy:check_revision'
   before :deploy, 'deploy:run_tests' unless ENV['TRAVIS_BRANCH']
@@ -83,4 +89,5 @@ namespace :deploy do
   after 'deploy:setup_config', 'nginx:reload'
   after 'deploy:setup_config', 'monit:restart'
   after 'deploy:publishing', 'deploy:restart'
+  after 'deploy:finishing', 'airbrake_notify_deploy'
 end

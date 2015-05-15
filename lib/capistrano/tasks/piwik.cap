@@ -1,56 +1,38 @@
 require 'json'
 
-def get_container_info(container)
-  JSON.parse capture(:docker, :inspect, container)
-rescue SSHKit::Runner::ExecuteError, SSHKit::Command::Failed
-  []
-end
-
-set :piwik_path, -> { "/home/#{fetch(:deploy_user)}/piwik" } unless fetch :piwik_path
-set :piwik_data_path, -> { fetch(:deploy_to) + '/shared/piwik_data' } unless fetch :piwik_data_path
-set :piwik_user, 'piwik' unless fetch :piwik_user
-set :piwik_password, 'piwik' unless fetch :piwik_password
-set :piwik_site_host, 'piwik.02jandal.xyz' unless fetch :piwik_site_host
+set :piwik_path, -> { "/home/#{fetch :deploy_user}/piwik" }
+set :piwik_data_path, -> { fetch(:deploy_to) + '/shared/piwik_data' }
+set :piwik_user, 'piwik'
+set :piwik_password, 'piwik'
+set :piwik_site_host, 'piwik.02jandal.xyz'
 
 namespace :piwik do
   desc 'Builds the piwik container'
   task :build do
     on roles :web, primary: true do
       execute :mkdir, '-pv', fetch(:piwik_path)
-      within fetch :piwik_path do
-        if test("[ -d #{fetch(:piwik_path)}/docker-piwik-mariadb ]")
-          within 'docker-piwik-mariadb' do
-            execute :git, :fetch
-            execute :git, :reset, '--hard', 'origin/master'
-          end
-        else
-          execute :git, :clone, '--depth', '1', 'https://github.com/bprodoehl/docker-piwik-mariadb.git'
-        end
+      within piwik_path do
+        get_or_update_git_repo fetch(:piwik_path), 'docker-piwik-mariadb', 'https://github.com/bprodoehl/docker-piwik-mariadb.git'
 
         within 'docker-piwik-mariadb' do
+          upload! 'config/deploy/shared/piwik.config.ini.php', fetch(:piwik_path) + '/docker-piwik-mariadb/config.ini.php'
           upload! StringIO.new("GeoIPEnable on\nGeoIPDBFile /geoip/GeoIP.dat\nGeoIPDBFile /geoip/GeoLiteCity.dat\nGeoIPScanProxyHeaders on"), fetch(:piwik_path) + '/docker-piwik-mariadb/geoip.conf'
-          execute 'echo "RUN apt-get install -y libapache2-mod-geoip" >> ' + fetch(:piwik_path) + '/docker-piwik-mariadb/Dockerfile'
-          execute 'echo "ADD geoip.conf /etc/apache2/mods-enabled/geoip.conf" >> ' + fetch(:piwik_path) + '/docker-piwik-mariadb/Dockerfile'
-          execute :docker, :build, '-t=bprodoehl/docker-piwik-mariadb', '.'
+          add_to_dockerfile fetch(:piwik_path), 'docker-piwik-mariadb', 'RUN apt-get install -y libapache2-mod-geoip'
+          add_to_dockerfile fetch(:piwik_path), 'docker-piwik-mariadb', 'ADD geoip.conf /etc/apache2/mods-enabled/geoip.conf'
+          add_to_dockerfile fetch(:piwik_path), 'docker-piwik-mariadb', 'ADD config.ini.php /var/www/html/config/config.ini.php'
+          build_dockerfile 'bprodehl/docker-piwik-mariadb'
         end
       end
     end
   end
 
   desc 'Deploys the piwik nginx configuration'
-  task :deploy_nginx_conf do
-    on roles :web, primary: true do
-      smart_template 'nginx_piwik.conf'
-      sudo "/bin/ln -nfs #{shared_path}/config/nginx_piwik.conf /etc/nginx/sites-enabled/piwik"
-    end
-    invoke 'nginx:reload'
-  end
+  task(:deploy_nginx_conf) { deploy_nginx_conf 'piwik' }
 
   desc '(Re-)starts the piwik container'
   task :restart do
     on roles :web, primary: true do
-      info = get_container_info 'docker-piwik-mariadb'
-      execute :docker, :stop, 'docker-piwik-mariadb' if info.size != 0 && info.first['State']['Running']
+      ensure_stopped 'docker-piwik-mariadb'
       invoke 'piwik:ensure_started'
     end
   end
@@ -58,10 +40,9 @@ namespace :piwik do
   desc 'Ensures that the piwik container is running'
   task :ensure_started do
     on roles :web, primary: true do
-      info = get_container_info 'docker-piwik-mariadb'
-      if info.size == 0 || !info.first['State']['Running']
-        execute :docker, :rm, 'docker-piwik-mariadb' if info.size != 0
-        execute "docker run --name=docker-piwik-mariadb -d -v #{fetch :deploy_to}/geoip:/geoip -v #{fetch :piwik_data_path}:/data -p 1111:80 -e USER=\"#{fetch :piwik_user}\" -e PASS=\"#{fetch :piwik_password}\" bprodoehl/docker-piwik-mariadb"
+      unless running? 'docker-piwik-mariadb'
+        remove_stale 'docker-piwik-mariadb'
+        execute "docker run --name=docker-piwik-mariadb -d -v #{deploy_to}/geoip:/geoip -v #{fetch :piwik_data_path}:/data -p 1111:80 -e USER=\"#{fetch :piwik_user}\" -e PASS=\"#{fetch :piwik_password}\" bprodoehl/docker-piwik-mariadb"
       end
     end
   end
@@ -69,8 +50,8 @@ namespace :piwik do
   desc 'Fetches and extracts GeoIP databases'
   task :get_geoip do
     on roles :app do
-      execute :mkdir, '-pv', fetch(:deploy_to) + '/geoip'
-      within fetch(:deploy_to) + '/geoip' do
+      execute :mkdir, '-pv', deploy_to + '/geoip'
+      within deploy_to + '/geoip' do
         execute :wget, 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz'
         execute :wget, 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
         execute :gunzip, 'GeoIP.dat.gz'
@@ -82,7 +63,7 @@ namespace :piwik do
   desc 'Sets piwik up'
   task :setup do
     invoke 'piwik:build'
-    invoke 'deploy_nginx_conf'
+    invoke 'piwik:deploy_nginx_conf'
     invoke 'piwik:restart'
   end
 end

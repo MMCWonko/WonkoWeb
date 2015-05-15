@@ -1,0 +1,80 @@
+require 'json'
+require 'pry'
+
+set :errbit_path, -> { "/home/#{fetch :deploy_user}/errbit" }
+set :errbit_data_path, -> { fetch(:deploy_to) + '/shared/errbit_data' }
+set :errbit_user, 'errbit'
+set :errbit_password, 'errbit'
+set :errbit_site_host, 'errbit.02jandal.xyz'
+
+def errbit_env_vars
+  yaml = YAML.load(File.read 'config/secrets.yml')['production']
+  {
+      ERRBIT_HOST: fetch(:errbit_site_host),
+      ERRBIT_PORT: 80,
+      ERRBIT_USER_HAS_USERNAME: true,
+      ERRBIT_EMAIL_FROM: 'no-reply@02jandal.xyz',
+      SECRET_KEY_BASE: yaml['secret_key_base'],
+      GITHUB_CLIENT_ID: yaml['github_app_id'],
+      GITHUB_CLIENT_SECRET: yaml['github_app_secret'],
+      EMAIL_DELIVERY_METHOD: :sendmail
+  }.map { |k, v| "-e #{k}=#{v}" }.join ' '
+end
+
+namespace :errbit do
+  desc 'Builds the errbit container'
+  task :build do
+    on roles :web, primary: true do
+      execute :docker, :pull, 'mongo'
+
+      execute :mkdir, '-pv', fetch(:errbit_path)
+      within fetch(:errbit_path) do
+        upload! 'server/Dockerfile.errbit', fetch(:errbit_path) + '/Dockerfile'
+        build_dockerfile 'errbit'
+      end
+    end
+  end
+
+  desc 'Deploys the errbit nginx configuration'
+  task :deploy_nginx_conf do
+    deploy_nginx_conf 'errbit'
+  end
+
+  desc '(Re-)starts the errbit container'
+  task :restart do
+    on roles :web, primary: true do
+      ensure_stopped 'errbit-docker'
+      ensure_stopped 'mongodb'
+      invoke 'errbit:ensure_started'
+    end
+  end
+
+  desc 'Ensures that the errbit container is running'
+  task :ensure_started do
+    on roles :web, primary: true do
+      unless running? 'mongodb'
+        remove_stale 'mongodb'
+        execute "docker run --name=mongodb -d -v #{fetch :errbit_data_path}:/data/db mongo"
+      end
+
+      within fetch :errbit_data_path do
+        unless test '[ -e was_seeded ]'
+          sudo 'docker run --rm --link mongodb:mongodb ' + errbit_env_vars + ' errbit bundle exec rake errbit:bootstrap > ' + fetch(:errbit_data_path) + '/seed_out'
+          sudo :touch, :was_seeded
+        end
+      end
+
+      unless running? 'errbit-docker'
+        remove_stale 'errbit-docker'
+        execute "docker run --name=errbit-docker --link mongodb:mongodb #{errbit_env_vars} -d -p 1112:4000 errbit"
+      end
+    end
+  end
+
+  desc 'Sets errbit up'
+  task :setup do
+    invoke 'errbit:build'
+    invoke 'errbit:deploy_nginx_conf'
+    invoke 'errbit:restart'
+  end
+end
