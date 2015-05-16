@@ -18,6 +18,10 @@ module ApplicationHelper
     ('<div class="btn-group">' + capture(&block) + '</div>').html_safe
   end
 
+  def simple_link_to(text, href)
+    content_tag :a, text, href: href
+  end
+
   def affix(id, top, &block)
     ret = '<div class="row"><div class="col-md-9">'
     sections = AffixSectionContainer.new(self)

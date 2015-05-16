@@ -2,9 +2,9 @@
 .media-body.media-middle
   small.text-muted = timeago_tag activity.created_at
   h4.media-heading
-    = yield :heading
+    = view_flow.content.delete :heading
     - if @user && @user == current_user && activity.unread?(@user)
       span.label.label-success New
-  = yield :body
+  = view_flow.content.delete :body
 .media-right.media-middle
-  = yield :right
+  = view_flow.content.delete :right

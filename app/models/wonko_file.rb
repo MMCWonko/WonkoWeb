@@ -31,10 +31,10 @@ class WonkoFile < ActiveRecord::Base
 
   scope :for_index, -> (wur_enabled) do
     if wur_enabled
-      with_wur.includes(:user).order(:name)
+      with_wur
     else
-      without_wur.includes(:user).order(:name)
-    end
+      without_wur
+    end.includes(:user).order :name
   end
 
   scope :with_wur, -> { all }
@@ -42,5 +42,14 @@ class WonkoFile < ActiveRecord::Base
 
   def to_param
     uid
+  end
+
+  def transfer_request
+    require 'activity'
+    TransferRequest.requests(self).last
+  end
+
+  def request_transfer_to(target)
+    create_activity :transfer_request, owner: user, recipient: target, parameters: { state: 'pending' }
   end
 end

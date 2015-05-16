@@ -1,8 +1,12 @@
-def api_version_helper(version, _mime, &block)
+def api_version_helper(version, mime, &block)
   version_str = "v#{version}"
-  api_version module: version_str, path: { value: version_str }, &block
-  # api_version module: "#{version_str}_header", header: { name: :Accept, value: "#{mime};version=#{version}" }, &block
-  api_version module: "#{version_str}_query", parameter: { name: :apiVersion, value: version_str }, &block
+  api_version module: version_str,
+              path: { value: version_str },
+              parameter: { name: :apiVersion, value: version_str },
+              &block
+  scope as: :header do
+    api_version module: version_str, header: { name: :Accept, value: "#{mime};version=#{version}" }, &block
+  end
 end
 
 Rails.application.routes.draw do
@@ -29,6 +33,13 @@ Rails.application.routes.draw do
   resources :wonko_files, id: %r{[^/]+} do
     member do
       get 'feed' => 'feed#file'
+      scope controller: 'wonko_files_transfer' do
+        get 'transfer'
+        post 'transfer'
+        get 'accept_transfer'
+        get 'reject_transfer'
+        get 'cancel_transfer'
+      end
     end
 
     resources :wonko_versions, id: %r{[^/]+} do

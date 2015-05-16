@@ -1,0 +1,6 @@
+h4 Transfer #{@wonko_file.uid} to a different user
+
+= simple_form_for @user, url: route(:transfer, @wonko_file), as: :target, method: :post do |f|
+  = f.error_notification
+  = f.input :username
+  = f.button :submit, value: 'Transfer'

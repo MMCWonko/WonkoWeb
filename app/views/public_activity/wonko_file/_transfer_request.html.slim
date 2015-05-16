@@ -1,0 +1,39 @@
+- content_for :heading do
+  - if activity.state == :pending
+    = simple_link_to activity.owner.username, route(:show, activity.owner)
+    '  wants to transfer ownership of
+    = simple_link_to activity.trackable.name, route(:show, activity.trackable)
+    '  to
+    = simple_link_to activity.recipient.username, route(:show, activity.recipient)
+  - elsif [:accepted, :rejected].include? activity.state
+    = simple_link_to activity.recipient.username, route(:show, activity.recipient)
+    - if activity.state == :accepted
+      '  received ownership of
+    - else
+      '  rejected to take ownership of
+    = simple_link_to activity.trackable.name, route(:show, activity.trackable)
+    '  from
+    = simple_link_to activity.owner.username, route(:show, activity.owner)
+  - else # :canceled
+    = simple_link_to activity.owner.username, route(:show, activity.owner)
+    '  changed their mind about giving
+    = simple_link_to activity.recipient.username, route(:show, activity.recipient)
+    '  the ownership of
+    = simple_link_to activity.trackable.name, route(:show, activity.trackable)
+
+
+- content_for :right do
+  span.glyphicon.glyphicon-file
+    span.glyphicon.glyphicon-transfer
+
+- content_for :body do
+  - if policy(activity.trackable).accept_transfer?
+    a.btn.btn-warning href="#{route :accept_transfer, activity.trackable}"
+      span.glyphicon.glyphicon-check
+      | Accept
+  - if policy(activity.trackable).reject_transfer?
+    a.btn.btn-warning href="#{route :reject_transfer, activity.trackable}"
+      span.glyphicon.glyphicon-unchecked
+      | Reject
+
+= render 'public_activity/item', activity: activity

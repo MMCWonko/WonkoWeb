@@ -1,5 +1,9 @@
 = bootstrap_button_group do
   = bootstrap_button_to 'Edit', route(:edit, @wonko_file), :warning, icon: :edit if policy(@wonko_file).edit?
+  = bootstrap_button_to 'Transfer', route(:transfer, @wonko_file), :warning, icon: :transfer if policy(@wonko_file).transfer?
+  = bootstrap_button_to 'Accept Transfer', route(:accept_transfer, @wonko_file), :warning, icon: :transfer if policy(@wonko_file).accept_transfer?
+  = bootstrap_button_to 'Reject Transfer', route(:reject_transfer, @wonko_file), :warning, icon: :transfer if policy(@wonko_file).reject_transfer?
+  = bootstrap_button_to 'Cancel Transfer', route(:cancel_transfer, @wonko_file), :warning, icon: :transfer if policy(@wonko_file).cancel_transfer?
   = bootstrap_button_to 'Download', api_v1_files_file_path(@wonko_file), :success, icon: :save
   = bootstrap_button_to 'Feed', route(:feed, @wonko_file), :default, icon: :list
 p

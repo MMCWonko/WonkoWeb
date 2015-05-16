@@ -1,0 +1,12 @@
+- content_for :heading do
+  a href="#{route(:show, activity.user)}"
+    = activity.user.username
+  '  destroyed
+  a href="#{route(:show, activity.trackable)}"
+    = activity.trackable.name
+
+- content_for :right do
+  span.glyphicon.glyphicon-file
+    span.glyphicon.glyphicon-minus
+
+= render 'public_activity/item', activity: activity

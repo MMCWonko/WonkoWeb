@@ -38,4 +38,64 @@ class Activity < PublicActivity::Activity
     return recipient if recipient.is_a? User
     return trackable if trackable.is_a? User
   end
+
+  def state
+    parameters[:state].to_sym || :accepted if key == 'wonko_file.transfer_request'
+  end
+end
+
+class TransferRequest < Activity
+  alias_attribute :target, :recipient
+  alias_attribute :wonko_file, :trackable
+
+  default_scope { where key: 'wonko_file.transfer_request' }
+  scope :requests, ->(file) { all.where trackable: file }
+
+  def state=(state)
+    parameters[:state] = state.to_sym
+  end
+
+  def accepted?
+    state == :accepted
+  end
+
+  # stopped by the target
+  def rejected?
+    state == :rejected
+  end
+
+  # stopped by the owner
+  def canceled?
+    state == :canceled
+  end
+
+  def pending?
+    state == :pending
+  end
+
+  def accept
+    return false unless pending?
+    request = self
+    transaction do
+      wonko_file.user = target
+      wonko_file.save
+      request.state = :accepted
+      fail ActiveRecord::Rollback unless request.save
+      true
+    end
+  end
+
+  def reject
+    return false unless pending?
+    request = self
+    request.state = :rejected
+    request.save
+  end
+
+  def cancel
+    return false unless pending?
+    request = self
+    request.state = :canceled
+    request.save
+  end
 end

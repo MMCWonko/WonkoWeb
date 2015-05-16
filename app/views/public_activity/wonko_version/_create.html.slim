@@ -1,11 +1,11 @@
-- content_for :heading, flush: true do
+- content_for :heading do
   a href="#{route(:show, activity.user)}"
     = activity.user.username
   '  created
   a href="#{route(:show, activity.trackable)}"
     = activity.trackable.version
 
-- content_for :right, flush: true do
+- content_for :right do
   span.glyphicon.glyphicon-tag
     span.glyphicon.glyphicon-plus
 

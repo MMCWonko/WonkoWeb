@@ -1,0 +1,12 @@
+- content_for :heading do
+  a href="#{route(:show, activity.user)}"
+    = activity.user.username
+  '  updated
+  a href="#{route(:show, activity.trackable)}"
+    = activity.trackable.name
+
+- content_for :right do
+  span.glyphicon.glyphicon-file
+    span.glyphicon.glyphicon-pencil
+
+= render 'public_activity/item', activity: activity

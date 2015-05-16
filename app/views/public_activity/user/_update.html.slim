@@ -1,9 +1,9 @@
-- content_for :heading, flush: true do
+- content_for :heading do
   a href="#{route(:show, activity.user)}"
     = activity.user.username
   '  edited their profile
 
-- content_for :right, flush: true do
+- content_for :right do
   span.glyphicon.glyphicon-user
     span.glyphicon.glyphicon-pencil
 
