@@ -1,0 +1,7 @@
+development:
+test:
+production:
+  fluent_host: '127.0.0.1'
+  fluent_port: 24224
+  tag: wonkoweb_production_raw
+  message_type: 'string'

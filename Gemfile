@@ -128,6 +128,8 @@ group :production do
   gem 'airbrake'
   gem 'piwik_analytics'
   gem 'daemons'
+  gem 'act-fluent-logger-rails'
+  gem 'lograge'
 end
 
 gem 'codeclimate-test-reporter', group: :test, require: nil

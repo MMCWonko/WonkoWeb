@@ -43,6 +43,9 @@ Rails.application.configure do
 
   # Set to :debug to see everything in the log.
   config.log_level = :info
+  config.logger = ActFluentLoggerRails::Logger.new
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::Json.new
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
