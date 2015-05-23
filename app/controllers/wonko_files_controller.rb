@@ -30,37 +30,26 @@ class WonkoFilesController < ApplicationController
     @wonko_file.user = current_user
     authorize @wonko_file
 
-    respond_to do |format|
-      if @wonko_file.save
-        format.html { redirect_to @wonko_file, notice: 'Wonko file was successfully created.' }
-        format.json { render :show, status: :created, location: @wonko_file }
-      else
-        format.html { render :new }
-        format.json { render json: @wonko_file.errors, status: :unprocessable_entity }
-      end
+    if @wonko_file.save
+      redirect_to @wonko_file, notice: 'Wonko file was successfully created.'
+    else
+      render :new
     end
   end
 
   def update
     authorize @wonko_file
-    respond_to do |format|
-      if !wonko_file_params.empty? && @wonko_file.update(wonko_file_params.permit :name)
-        format.html { redirect_to @wonko_file, notice: 'Wonko file was successfully updated.' }
-        format.json { render :show, status: :ok, location: @wonko_file }
-      else
-        format.html { render :edit }
-        format.json { render json: @wonko_file.errors, status: :unprocessable_entity }
-      end
+    if !wonko_file_params.empty? && @wonko_file.update(wonko_file_params.permit :name)
+      redirect_to @wonko_file, notice: 'Wonko file was successfully updated.'
+    else
+      render :edit
     end
   end
 
   def destroy
     authorize @wonko_file
     @wonko_file.destroy
-    respond_to do |format|
-      format.html { redirect_to wonko_files_url, notice: 'Wonko file was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to wonko_files_url, notice: 'Wonko file was successfully destroyed.'
   end
 
   private

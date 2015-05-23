@@ -42,11 +42,15 @@ class WonkoVersion < ActiveRecord::Base
   delegate :uid, to: :wonko_file
 
   def requires
-    []
+    JSON.parse(KVStorageInterface.get("#{uid}##{version}#requires") || '[]')
+  end
+
+  def requires=(data)
+    KVStorageInterface.set "#{uid}##{version}#requires", data.to_json
   end
 
   def data
-    KVStorageInterface.get("#{uid}##{version}") || [].to_json
+    JSON.parse(KVStorageInterface.get("#{uid}##{version}") || '[]')
   end
 
   def data=(data)

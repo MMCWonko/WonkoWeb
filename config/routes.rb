@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     match '/users/finish_signup' => 'users/registrations#finish_signup', via: [:get, :patch, :post], as: :finish_signup
     get '/users/accounts' => 'users/registrations#accounts', as: :user_accounts
     get '/users/auth/:provider/destroy' => 'users/omniauth_callbacks#destroy', as: :omniauth_unlink
+    match '/users/reset_authentication_token' => 'users/registrations#reset_authentication_token',
+          via: [:get, :patch, :post], as: :reset_authentication_token
   end
 
   authenticate :user, ->(user) { user.admin } do
@@ -54,13 +56,25 @@ Rails.application.routes.draw do
   get 'about' => 'home#about'
   get 'irc' => 'home#irc'
 
-  namespace :api do
+  namespace :api,
+            format: true,
+            constraints: { format: :json },
+            defaults: { format: :json },
+            wonko_file_id: %r{[^/]+},
+            id: %r{[^/]+} do
     api_version_helper 1, 'application/wonkoweb-api' do
-      root 'wonko_files#index', defaults: { format: 'json' }, as: :files_root
-      get 'index.json' => 'wonko_files#index', defaults: { format: 'json' }, as: :files_index
-      get ':wonko_file_id/:id.json' => 'wonko_versions#show', wonko_file_id: %r{[^/]+}, id: %r{[^/]+},
-          defaults: { format: 'json' }, as: :files_version
-      get ':id.json' => 'wonko_files#show', id: %r{[^/]+}, defaults: { format: 'json' }, as: :files_file
+      scope controller: 'wonko_files' do
+        root action: :index
+        get 'index', action: :index, as: :index
+        get ':id', action: :show, as: :file
+        post action: :create, as: :create_file
+        patch ':id', action: :update
+      end
+      scope path: ':wonko_file_id', controller: 'wonko_versions' do
+        get ':id', action: :show, as: :version
+        post action: :create, as: :create_version
+        patch ':id', action: :update
+      end
     end
   end
 

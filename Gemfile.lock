@@ -471,6 +471,10 @@ GEM
     simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
+    simple_token_authentication (1.9.1)
+      actionmailer (>= 3.2.6, < 5)
+      actionpack (>= 3.2.6, < 5)
+      devise (~> 3.2)
     simplecov (0.10.0)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -511,6 +515,8 @@ GEM
     tilt (1.4.1)
     timers (4.0.1)
       hitimes
+    traceroute (0.5.0)
+      rails (>= 3.0.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -633,12 +639,14 @@ DEPENDENCIES
   rubocop-rspec
   sass-rails
   simple_form
+  simple_token_authentication
   slim
   slim-rails
   spring
   spring-commands-rspec
   sshkit-sudo
   therubyracer
+  traceroute
   turbolinks
   uglifier
   unicorn

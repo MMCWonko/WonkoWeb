@@ -29,7 +29,7 @@ class WonkoFilesTransferController < ApplicationController
         format.json { render @wonko_file }
       else
         format.html { redirect_to route(:show, @wonko_file), notice: 'Something went wrong' }
-        format.json { render json: 'Something went wrong' }
+        format.json { render_json_errors internal: { title: 'Something went wrong', status: :internal_server_error } }
       end
     end
   end
@@ -42,7 +42,7 @@ class WonkoFilesTransferController < ApplicationController
         format.json { render @wonko_file }
       else
         format.html { redirect_to route(:show, @wonko_file), notice: 'Something went wrong' }
-        format.json { render json: 'Something went wrong' }
+        format.json { render_json_errors internal: { title: 'Something went wrong', status: :internal_server_error } }
       end
     end
   end
@@ -55,7 +55,7 @@ class WonkoFilesTransferController < ApplicationController
         format.json { render @wonko_file }
       else
         format.html { redirect_to route(:show, @wonko_file), notice: 'Something went wrong' }
-        format.json { render json: 'Something went wrong' }
+        format.json { render_json_errors internal: { title: 'Something went wrong', status: :internal_server_error } }
       end
     end
   end
@@ -67,7 +67,12 @@ class WonkoFilesTransferController < ApplicationController
     return if @request
     respond_to do |format|
       format.html { redirect_to route(:show, @wonko_file), notice: 'There is no transfer request for this file' }
-      format.json { render json: 'There is no transfer request for this file', status: :not_found }
+      format.json do
+        render_json_errors request: {
+          title: 'There is no transfer request for this file',
+          status: :not_found
+        }
+      end
     end
   end
 end

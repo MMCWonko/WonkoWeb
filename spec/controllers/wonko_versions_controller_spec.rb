@@ -101,13 +101,15 @@ RSpec.describe WonkoVersionsController, type: :controller do
       end
       context 'disabled' do
         it 'and no official gives error gives 404' do
-          get :show, wonko_file_id: wonko_file.to_param, id: '1.7.10'
+          get :show, wonko_file_id: wonko_file.to_param, id: '5.5.5.5'
           expect(response).to render_template('errors/404')
+          expect(response).to have_http_status :not_found
         end
         it 'and no official but inofficial gives hint' do
           wonko_version = Fabricate(:wv_minecraft_181, user: user, wonko_file: wonko_file)
           get :show, wonko_file_id: wonko_file.to_param, id: wonko_version.to_param
-          expect(response).to render_template('wonko_versions/list_of_variants')
+          expect(response).to render_template('wonko_files/enable_wur')
+          expect(response).to have_http_status :not_found
           expect(assigns(:wonko_versions).to_a).to eq([wonko_version])
         end
         it 'and official gives official' do

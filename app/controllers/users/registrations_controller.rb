@@ -43,6 +43,20 @@ module Users
       end
     end
 
+    def reset_authentication_token
+      authorize current_user, :update?
+      current_user.reset_authentication_token
+      respond_to do |format|
+        if current_user.save
+          format.html { redirect_to :back, notice: 'Authentication token successfully reset' }
+          format.json { render json: {}, status: :accepted }
+        else
+          format.html { redirect_to :back, notice: 'There was an error while trying to reset the authentication token' }
+          format.json { render json: {}, status: :not_acceptable }
+        end
+      end
+    end
+
     # GET /resource/edit
     # def edit
     #   super

@@ -3,7 +3,7 @@
     = bootstrap_button_to 'Edit', route(:edit, @wonko_version, user: @wonko_version.user.username), :warning, icon: :edit if policy(@wonko_version).edit?
     = bootstrap_button_to 'Copy', route(:copy, @wonko_version, user: @wonko_version.user.username), :warning, icon: :duplicate if can_copy(@wonko_version)
     = bootstrap_button_to 'Go to Mine', route(:show, own(@wonko_version), user: current_user.username), :success if show_go_to_mine(@wonko_version)
-    = bootstrap_button_to 'Download', api_v1_files_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt'
+    = bootstrap_button_to 'Download', api_v1_version_path(@wonko_file, @wonko_version), :success, icon: 'download-alt'
     = bootstrap_button_to 'Feed', route(:feed, @wonko_version), :default, icon: :list
     select.selectpicker[data-live-search="true"]
       - @wonko_version.wonko_file.wonkoversions.where(version: @wonko_version.version).pluck(:user_id).each do |user_id|
@@ -39,12 +39,12 @@ javascript:
   {
     mode: 'view',
     name: 'Resource Groups'
-  }, #{@wonko_version.data.html_safe});
+  }, #{@wonko_version.data.to_json.html_safe});
   $('select.selectpicker').on('change', function(evt) {
     var user = $(evt.target).val();
     if (user === 'official') {
-      document.location.href = '#{wonko_file_wonko_version_url(@wonko_file, @wonko_version)}'
+      document.location.href = '#{route :show, @wonko_version}'
     } else {
-      document.location.href = '#{wonko_file_wonko_version_url(@wonko_file, @wonko_version)}?user=' + user;
+      document.location.href = '#{route :show, @wonko_version}?user=' + user;
     }
   }).val('#{@wonko_version.user.username}');

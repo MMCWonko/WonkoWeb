@@ -47,25 +47,18 @@ class WonkoVersionsController < ApplicationController
       if @wonko_version.save
         results << @wonko_version
       else
-        results = nil
-        format.html { render :new }
-        format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
+        render :new
+        break
       end
     end
 
-    return if results.nil?
+    return if response_body
 
-    respond_to do |format|
-      if results.size == 1
-        format.html do
-          redirect_to route(:show, results.first, user: results.first.user.username),
-                      notice: 'Wonko version was successfully created.'
-        end
-        format.json { render :show, status: :created, location: @wonko_version }
-      else
-        format.html { redirect_to root_path, notice: 'Wonko versions were successfully created.' }
-        format.json { render json: { status: :created } }
-      end
+    if results.size == 1
+      redirect_to route(:show, results.first, user: results.first.user.username),
+                  notice: 'Wonko version was successfully created.'
+    else
+      redirect_to root_path, notice: 'Wonko versions were successfully created.'
     end
   end
 
@@ -77,26 +70,16 @@ class WonkoVersionsController < ApplicationController
   def destroy
     authorize @wonko_version
     @wonko_version.delete
-    respond_to do |format|
-      format.html do
-        redirect_to route(:index, @wonko_file, WonkoVersion),
-                    notice: 'Wonko version was successfully destroyed.'
-      end
-      format.json { head :no_content }
-    end
+    redirect_to route(:index, @wonko_file, WonkoVersion),
+                notice: 'Wonko version was successfully destroyed.'
   end
 
   def copy
     authorize @wonko_version, :show?
 
     unless view_context.can_copy(@wonko_version)
-      respond_to do |format|
-        format.html do
-          redirect_to route(:show, @wonko_version, user: current_user.username),
-                      notice: 'You already have this version'
-        end
-        format.json { render json: { error: 'You already have this version' }, status: :unprocessable_entity }
-      end
+      redirect_to route(:show, @wonko_version, user: current_user.username),
+                  notice: 'You already have this version'
       return
     end
 
@@ -111,17 +94,11 @@ class WonkoVersionsController < ApplicationController
     @wonko_version.user = current_user
     authorize @wonko_version, action
 
-    respond_to do |format|
-      if success
-        format.html do
-          redirect_to route(:show, @wonko_version, user: current_user.username),
-                      notice: "Wonko version was successfully #{verb}."
-        end
-        format.json { render :show, status: :created, location: @wonko_version }
-      else
-        format.html { render error_redirect }
-        format.json { render json: @wonko_version.errors, status: :unprocessable_entity }
-      end
+    if success
+      redirect_to route(:show, @wonko_version, user: current_user.username),
+                  notice: "Wonko version was successfully #{verb}."
+    else
+      render error_redirect
     end
   end
 

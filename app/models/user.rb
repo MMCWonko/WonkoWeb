@@ -23,9 +23,11 @@
 #  admin                  :boolean          default(FALSE)
 #  official               :boolean          default(FALSE)
 #  username               :string
+#  authentication_token   :string
 #
 # Indexes
 #
+#  index_users_on_authentication_token  (authentication_token) UNIQUE
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
@@ -39,8 +41,11 @@ class User < ActiveRecord::Base
 
   acts_as_reader
 
-  # Include default devise modules. Others available are:
-  # :lockable and :timeoutable
+  acts_as_token_authenticatable
+  def reset_authentication_token
+    self.authentication_token = nil
+  end
+
   devise :omniauthable, :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :uid, :async,
          authentication_keys: [:login]

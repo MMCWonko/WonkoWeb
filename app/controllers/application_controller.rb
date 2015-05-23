@@ -3,21 +3,28 @@ require 'analytical'
 class ApplicationController < ActionController::Base
   include Pundit
   include RoutesHelper
+  include ApplicationHelper
   include PublicActivity::StoreController
+  include ActionController::WonkoWeb
 
   analytical
+  acts_as_token_authentication_handler_for User, fallback: :none
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-  before_action :noindex_logins, if: :devise_controller?
+  before_action(if: :devise_controller?) { set_meta_tags noindex: true, nofollow: true }
   before_action :handle_wur_parameter
-  before_action :identify_user
+  before_action { analytical.identify current_user.id, email: current_user.email if current_user }
   after_action :verify_authorized, if: :not_devise_controller?
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   add_breadcrumb 'Home', :root_path
+
+  hide_action :authenticate_user_from_token, :authenticate_user_from_token!, :store_controller_for_public_activity,
+              :form_route, :route, :pundit_policy_authorized?, :pundit_policy_scoped?
 
   protected
 
@@ -41,72 +48,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def noindex_logins
-    set_meta_tags noindex: true, nofollow: true
-  end
-
-  def selected_user
-    username = params[:user] || User.official_user.username
-    @wur_enabled ? User.find_by(username: username) : User.official_user
-  rescue ActiveRecord::RecordNotFound
-    nil
-  end
-
-  def set_wonko_file
-    id = params[:wonko_file_id] || params[:id]
-    @wonko_file = WonkoFile.find_by(uid: id)
-    fail ActiveRecord::RecordNotFound if @wonko_file.nil?
-
-    if @wur_enabled || @wonko_file.user == User.official_user
-      add_breadcrumb @wonko_file.uid, route(:show, @wonko_file)
-      set_meta_tags title: @wonko_file.name, author: route(:show, @wonko_file.user)
-    else
-      render 'wonko_files/enable_wur'
-    end
-  rescue ActiveRecord::RecordNotFound
-    render 'errors/404'
-  end
-
-  def set_wonko_version
-    id = params[:wonko_version_id] || params[:id]
-
-    @wonko_version = selected_user ? WonkoVersion.get(@wonko_file, id, selected_user) : nil
-
-    # if we haven't specifically asked for a user we can take any
-    if !@wonko_version && @wur_enabled && @wonko_file.wonkoversions.where(version: id).count == 1
-      @wonko_version = WonkoVersion.get(@wonko_file, id)
-    end
-
-    if @wonko_version
-      versions_crumb
-      add_breadcrumb @wonko_version.version, route(:show, @wonko_version)
-      set_meta_tags title: "#{@wonko_version.version} (#{@wonko_file.name})", author: route(:show, @wonko_version.user)
-    else
-      @wonko_versions = @wonko_file.wonkoversions.where(version: id)
-      if @wonko_versions.empty?
-        render 'errors/404'
-      else
-        render 'wonko_versions/list_of_variants'
-      end
-    end
-  end
-
-  def set_user
-    @user = params.key?(:username) ? User.find_by(username: params[:username]) : current_user
-    fail ActiveRecord::RecordNotFound unless @user
-    add_breadcrumb @user.username, route(:show, @user)
-  rescue ActiveRecord::RecordNotFound
-    render 'errors/404'
-  end
-
   def handle_wur_parameter
-    wur = params.key?(:wur) ? params[:wur].to_s == 'true' : (cookies.permanent[:wurEnabled] || false)
-    cookies.permanent[:wurEnabled] = wur
-    @wur_enabled = wur
-  end
-
-  def identify_user
-    analytical.identify current_user.id, email: current_user.email if current_user
+    if request.headers.include? 'X-WUR-Enabled'
+      @wur_enabled = request.headers['X-WUR-Enabled'] == 'true'
+    elsif controller_path.include? 'api/'
+      @wur_enabled = params[:wur].to_s == 'true'
+    else
+      wur = params.key?(:wur) ? (params[:wur].to_s == 'true') : cookies[:wurEnabled]
+      cookies.permanent[:wurEnabled] = wur
+      @wur_enabled = wur
+    end
   end
 
   def scope_collection(collection)
@@ -115,5 +66,12 @@ class ApplicationController < ActionController::Base
 
   def not_devise_controller?
     !devise_controller?
+  end
+
+  def user_not_authorized
+    respond_to do |format|
+      format.html { redirect_to :back, notice: 'You are not allowed to perform this action' }
+      format.json { render_json_403 'You are not allowed to perform this action' }
+    end
   end
 end

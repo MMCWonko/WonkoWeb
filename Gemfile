@@ -64,6 +64,7 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 gem 'omniauth-steam'
+gem 'simple_token_authentication'
 # TODO: Replace devise by omniauth/omniauth-identity/shield/warden?
 
 group :development do
@@ -120,6 +121,9 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-rspec'
   gem 'capybara'
+
+  # Other
+  gem 'traceroute'
 end
 
 group :production do

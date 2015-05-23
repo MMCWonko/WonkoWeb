@@ -36,7 +36,7 @@ end
 
 class KVStorageActiveRecord
   def set(key, value)
-    KVStorage.create_with(value: value).find_or_create_by key: key
+    KVStorage.create_with(value: value).find_or_create_by(key: key).save!
   end
 
   def get(key)

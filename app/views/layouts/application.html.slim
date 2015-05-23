@@ -17,7 +17,7 @@ html
     = csrf_meta_tags
     javascript:
       window.wurEnabled = #{@wur_enabled ? 'true' : 'false'};
-      window.apiRootUrl = '#{api_v1_files_root_url}';
+      window.apiRootUrl = '#{api_v1_root_url}';
     coffee:
       setUrlQueryParameter = (key, value) ->
         url = new URI(document.location.href)

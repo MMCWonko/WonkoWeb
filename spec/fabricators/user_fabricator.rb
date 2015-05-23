@@ -23,9 +23,11 @@
 #  admin                  :boolean          default(FALSE)
 #  official               :boolean          default(FALSE)
 #  username               :string
+#  authentication_token   :string
 #
 # Indexes
 #
+#  index_users_on_authentication_token  (authentication_token) UNIQUE
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
