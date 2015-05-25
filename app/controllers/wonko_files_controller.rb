@@ -28,6 +28,7 @@ class WonkoFilesController < ApplicationController
   def create
     @wonko_file = WonkoFile.new(wonko_file_params)
     @wonko_file.user = current_user
+    WonkoOrigin.assign @wonko_file, self, 'created_from_web'
     authorize @wonko_file
 
     if @wonko_file.save

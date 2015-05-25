@@ -2,8 +2,11 @@
   a href="#{route(:show, activity.user)}"
     = activity.user.username
   '  created
-  a href="#{route(:show, activity.trackable)}"
-    = activity.trackable.name
+  - if activity.trackable
+    a href="#{route(:show, activity.trackable)}"
+      = activity.trackable.name
+  - else
+    = "#{activity.parameters[:name]} (#{activity.parameters[:uid]})"
 
 - content_for :right do
   span.glyphicon.glyphicon-file

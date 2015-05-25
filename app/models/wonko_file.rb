@@ -17,14 +17,17 @@
 
 class WonkoFile < ActiveRecord::Base
   include PublicActivity::Model
-  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }
+  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil },
+          parameters: proc { |_, m| { uid: m.uid, name: m.name } }
 
   attr_readonly :uid
 
-  validates :uid, presence: true, length: { minimum: 4 }, uniqueness: true
-  validates :name, presence: true, length: { minimum: 4 }
+  validates :uid, presence: true, length: { minimum: 3 }, uniqueness: true
+  validates :name, presence: true, length: { minimum: 3 }
+  validates :origin, presence: true
 
   has_many :wonkoversions, class_name: :WonkoVersion, inverse_of: :wonko_file
+  has_one :origin, class_name: :WonkoOrigin, as: :object
   belongs_to :user
 
   paginates_per 20

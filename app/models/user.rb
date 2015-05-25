@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
   has_many :wonkofiles, class_name: :WonkoFile
   has_many :wonkoversions, class_name: :WonkoVersion
   has_many :authentications, class_name: 'UserAuthentication', dependent: :destroy
+  has_many :uploaders, dependent: :destroy, inverse_of: :owner
 
   validates :username, presence: true, uniqueness: { case_sensitive: false }
   validates :email, presence: true

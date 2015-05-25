@@ -48,7 +48,6 @@ gem 'bson_ext'
 gem 'kaminari'
 gem 'bcrypt'
 gem 'delayed_job_active_record'
-gem 'paper_trail'
 gem 'unread'
 gem 'dj_mon', github: 'akshayrawat/dj_mon'
 gem 'public_activity', github: 'pokonski/public_activity'
@@ -121,6 +120,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-rspec'
   gem 'capybara'
+  gem 'fuubar'
 
   # Other
   gem 'traceroute'

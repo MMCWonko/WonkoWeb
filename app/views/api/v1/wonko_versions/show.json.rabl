@@ -1,6 +1,6 @@
-node :uid do
-    @wonko_file.uid
-end
+node(:uid) { @wonko_file.uid }
+node(:formatVersion) { 0 }
 
 object @wonko_version
 attribute :version, :type, :time, :requires, :data
+

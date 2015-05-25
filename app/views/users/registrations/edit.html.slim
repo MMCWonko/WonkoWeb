@@ -1,7 +1,4 @@
-h2
-  | Edit #{resource_name.to_s.humanize}
-  span.pull-right
-    a href="#{user_accounts_path}" Linked Accounts
+= render 'pills'
 
 = simple_form_for resource, as: resource_name, url: registration_path(resource_name), html: { method: :put } do |f|
   = f.error_notification
@@ -22,15 +19,3 @@ h2
     = f.button :submit, 'Update'
 
 = link_to 'Back', :back
-
-coffee:
-  window.toggleShown = (button) ->
-    btn = $(button)
-    input = btn.parent().parent().find 'input'
-    if input.attr('type') == 'password'
-      input.attr 'type', 'text'
-      btn.html 'Hide'
-    else
-      input.attr 'type', 'password'
-      btn.html 'Show'
-    return false

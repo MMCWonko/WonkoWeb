@@ -1,6 +1,9 @@
 require 'analytical'
 
 class ApplicationController < ActionController::Base
+  acts_as_token_authentication_handler_for Uploader, fallback_to_devise: false
+  acts_as_token_authentication_handler_for User, fallback: :none
+
   include Pundit
   include RoutesHelper
   include ApplicationHelper
@@ -8,7 +11,6 @@ class ApplicationController < ActionController::Base
   include ActionController::WonkoWeb
 
   analytical
-  acts_as_token_authentication_handler_for User, fallback: :none
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.

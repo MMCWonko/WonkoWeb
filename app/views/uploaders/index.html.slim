@@ -1,0 +1,18 @@
+= render 'users/registrations/pills'
+
+= bootstrap_button_to 'New Uploader', route(:new, Uploader), :success if policy(Uploader).create?
+
+table.table
+  thead
+    tr
+      th Name
+      th Actions
+
+  tbody
+    - @uploaders.each do |uploader|
+      tr
+        td = uploader.name
+        td = bootstrap_button_group do
+          = bootstrap_button_to 'Show', route(:show, uploader), :default if policy(uploader).show?
+          = bootstrap_button_to 'Edit', route(:edit, uploader), :warning if policy(uploader).edit?
+          = bootstrap_button_to 'Destroy', route(:destroy, uploader), :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(uploader).destroy?

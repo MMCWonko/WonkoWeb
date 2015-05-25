@@ -10,6 +10,9 @@ p
   strong Owner:
   span = link_to @wonko_file.user.username, route(:show, @wonko_file.user)
 p
+  strong Origin:
+  span = @wonko_file.origin.to_html
+p
   strong UID:
   span = @wonko_file.uid
 p

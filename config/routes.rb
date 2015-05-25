@@ -19,11 +19,19 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
   devise_scope :user do
-    match '/users/finish_signup' => 'users/registrations#finish_signup', via: [:get, :patch, :post], as: :finish_signup
-    get '/users/accounts' => 'users/registrations#accounts', as: :user_accounts
-    get '/users/auth/:provider/destroy' => 'users/omniauth_callbacks#destroy', as: :omniauth_unlink
-    match '/users/reset_authentication_token' => 'users/registrations#reset_authentication_token',
-          via: [:get, :patch, :post], as: :reset_authentication_token
+    scope path: 'users' do
+      match 'finish_signup' => 'users/registrations#finish_signup', via: [:get, :patch, :post], as: :finish_signup
+      get 'accounts' => 'users/registrations#accounts', as: :user_accounts
+      get 'auth/:provider/destroy' => 'users/omniauth_callbacks#destroy', as: :omniauth_unlink
+      match 'reset_authentication_token' => 'users/registrations#reset_authentication_token',
+            via: [:get, :patch, :post], as: :reset_authentication_token
+
+      resources :uploaders do
+        member do
+          match 'reset_token', via: [:get, :patch, :post]
+        end
+      end
+    end
   end
 
   authenticate :user, ->(user) { user.admin } do

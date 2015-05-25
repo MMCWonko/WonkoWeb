@@ -17,7 +17,7 @@ class StaticInput < SimpleForm::Inputs::Base
                              class: 'btn btn-danger',
                              type: :button,
                              href: '#',
-                             onclick: 'javascript:toggleShown(this);'
+                             onclick: 'javascript:togglePasswordShown(this);'
       end
       res += @builder.text_field(attribute_name, merged_input_options)
       res += template.content_tag :span, class: 'input-group-btn' do

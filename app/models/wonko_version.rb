@@ -24,12 +24,14 @@ class WonkoVersion < ActiveRecord::Base
   self.inheritance_column = nil
 
   include PublicActivity::Model
-  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }, recipient: :wonko_file
+  tracked owner: proc { |controller, _model| controller ? controller.current_user : nil }, recipient: :wonko_file,
+          parameters: proc { |_, m| { uid: m.uid, version: m.version } }
 
   attr_readonly :version
 
   belongs_to :wonko_file, class_name: :WonkoFile, inverse_of: :wonkoversions
   belongs_to :user
+  has_one :origin, class_name: :WonkoOrigin, as: :object
 
   paginates_per 50
 
@@ -38,6 +40,7 @@ class WonkoVersion < ActiveRecord::Base
             length: { minimum: 1 },
             uniqueness: { scope: [:wonko_file_id, :user_id], message: 'already exists' }
   validates :user, presence: true
+  validates :origin, presence: true
 
   delegate :uid, to: :wonko_file
 
@@ -46,7 +49,7 @@ class WonkoVersion < ActiveRecord::Base
   end
 
   def requires=(data)
-    KVStorageInterface.set "#{uid}##{version}#requires", data.to_json
+    KVStorageInterface.set "#{uid}##{version}#requires", (data || []).to_json
   end
 
   def data
@@ -54,7 +57,7 @@ class WonkoVersion < ActiveRecord::Base
   end
 
   def data=(data)
-    KVStorageInterface.set "#{uid}##{version}", data.to_json
+    KVStorageInterface.set "#{uid}##{version}", (data || []).to_json
   end
 
   scope :related_to, ->(user) do

@@ -16,6 +16,7 @@ module Api
       def create
         @wonko_file = WonkoFile.new params.require(:wonko_file).permit(:uid, :name)
         @wonko_file.user = current_user
+        WonkoOrigin.assign(@wonko_file, self, 'api')
         authorize @wonko_file
 
         if @wonko_file.save

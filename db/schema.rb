@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150522084829) do
+ActiveRecord::Schema.define(version: 20150524181801) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,18 @@ ActiveRecord::Schema.define(version: 20150522084829) do
 
   add_index "read_marks", ["user_id", "readable_type", "readable_id"], name: "index_read_marks_on_user_id_and_readable_type_and_readable_id", using: :btree
 
+  create_table "uploaders", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "authentication_token"
+    t.string   "name"
+    t.json     "data"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "uploaders", ["authentication_token"], name: "index_uploaders_on_authentication_token", unique: true, using: :btree
+  add_index "uploaders", ["user_id"], name: "index_uploaders_on_user_id", using: :btree
+
   create_table "user_authentications", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "uid"
@@ -109,17 +121,6 @@ ActiveRecord::Schema.define(version: 20150522084829) do
   add_index "users", ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
-  create_table "versions", force: :cascade do |t|
-    t.string   "item_type",  null: false
-    t.integer  "item_id",    null: false
-    t.string   "event",      null: false
-    t.string   "whodunnit"
-    t.text     "object"
-    t.datetime "created_at"
-  end
-
-  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
-
   create_table "wonko_files", force: :cascade do |t|
     t.string   "uid"
     t.string   "name"
@@ -131,11 +132,24 @@ ActiveRecord::Schema.define(version: 20150522084829) do
   add_index "wonko_files", ["uid"], name: "index_wonko_files_on_uid", unique: true, using: :btree
   add_index "wonko_files", ["user_id"], name: "index_wonko_files_on_user_id", using: :btree
 
+  create_table "wonko_origins", force: :cascade do |t|
+    t.integer  "object_id"
+    t.string   "object_type"
+    t.integer  "origin_id"
+    t.string   "origin_type"
+    t.json     "data"
+    t.string   "type"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "wonko_origins", ["object_type", "object_id"], name: "index_wonko_origins_on_object_type_and_object_id", using: :btree
+  add_index "wonko_origins", ["origin_type", "origin_id"], name: "index_wonko_origins_on_origin_type_and_origin_id", using: :btree
+
   create_table "wonko_versions", force: :cascade do |t|
     t.string   "version"
     t.string   "type"
     t.string   "time"
-    t.string   "origin"
     t.integer  "user_id"
     t.integer  "wonko_file_id"
     t.datetime "created_at",    null: false
@@ -147,6 +161,7 @@ ActiveRecord::Schema.define(version: 20150522084829) do
   add_index "wonko_versions", ["wonko_file_id", "user_id", "version"], name: "index_wonko_versions_on_wonko_file_id_and_user_id_and_version", unique: true, using: :btree
   add_index "wonko_versions", ["wonko_file_id"], name: "index_wonko_versions_on_wonko_file_id", using: :btree
 
+  add_foreign_key "uploaders", "users"
   add_foreign_key "wonko_files", "users"
   add_foreign_key "wonko_versions", "users"
   add_foreign_key "wonko_versions", "wonko_files"

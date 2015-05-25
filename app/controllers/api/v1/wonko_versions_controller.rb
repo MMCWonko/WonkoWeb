@@ -13,9 +13,10 @@ module Api
       def create
         @wonko_version = @wonko_file.wonkoversions.new
         @wonko_version.assign_attributes params.require(:wonko_version).permit(:version, :type, :time)
-        @wonko_version.data = params.require(:wonko_version).require(:data)
-        @wonko_version.requires = params.require(:wonko_version).require(:requires)
+        @wonko_version.data = params.require(:wonko_version)[:data]
+        @wonko_version.requires = params.require(:wonko_version)[:requires]
         @wonko_version.user = current_user
+        WonkoOrigin.assign(@wonko_version, self, 'api')
         authorize @wonko_version
 
         if @wonko_version.save
@@ -23,12 +24,15 @@ module Api
         else
           render_json_errors @wonko_version.errors
         end
+      rescue ActionController::ParameterMissing, ActionController::UnpermittedParameters
+        render_json_errors bad_request: { title: 'Wrong parameters (allowed: version, type, time, requires, data)',
+                                          status: :bad_request }
       end
 
       def update
         @wonko_version.assign_attributes params.require(:wonko_version).permit(:type, :time)
-        @wonko_version.data = params.require(:wonko_version).require(:data) if params[:wonko_version][:data]
-        @wonko_version.requires = params.require(:wonko_version).require(:requires) if params[:wonko_version][:requires]
+        @wonko_version.data = params.require(:wonko_version)[:data]
+        @wonko_version.requires = params.require(:wonko_version)[:requires]
         authorize @wonko_version
 
         if @wonko_version.save

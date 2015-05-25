@@ -6,6 +6,6 @@ describe ActivityPolicy do
   subject { described_class }
 
   permissions :destroy?, :update? do
-    it('rejects for everyone') { expect(subject).not_to permit(user, nil) }
+    it('rejects for everyone') { is_expected.not_to permit(user, nil) }
   end
 end

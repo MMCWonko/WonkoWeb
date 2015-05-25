@@ -1,0 +1,9 @@
+= simple_form_for(@uploader) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :authentication_token, as: :static, readonly: true, reset_path: route(:reset_token, @uploader) if @uploader.persisted?
+
+  .form-actions
+    = f.button :submit

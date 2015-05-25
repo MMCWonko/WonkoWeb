@@ -1,0 +1,7 @@
+h2
+  | Edit #{current_user.username.humanize}
+
+= nav as: :pills do
+  = link_to 'Info', edit_user_registration_path
+  = link_to 'Linked Accounts', user_accounts_path
+  = link_to 'Uploaders', uploaders_path

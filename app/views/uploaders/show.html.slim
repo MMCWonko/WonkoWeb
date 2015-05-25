@@ -1,0 +1,7 @@
+= render 'users/registrations/pills'
+
+= bootstrap_button_group do
+  = bootstrap_button_to 'Edit', route(:edit, @uploader), :warning, icon: :edit if policy(@uploader).edit?
+  = bootstrap_button_to 'Destroy', route(:destroy, @uploader), :danger, method: :delete, data: { confirm: 'Are you sure?' } if policy(@uploader).destroy?
+
+h2 = @uploader.name

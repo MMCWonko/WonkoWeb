@@ -29,6 +29,7 @@ class WonkoVersionsController < ApplicationController
   def create
     @wonko_version = @wonko_file.wonkoversions.build(wonko_version_params)
     @wonko_version.user = current_user
+    WonkoOrigin.assign @wonko_version, self, 'created_from_web'
     do_respond_to :create?, 'created', @wonko_version.save, :new
   end
 
@@ -41,6 +42,7 @@ class WonkoVersionsController < ApplicationController
       file = WonkoFile.find_by(uid: data[:uid])
 
       @wonko_version = WonkoVersion.find_or_create_for_data file, data, current_user
+      WonkoOrigin.assign @wonko_version, self, 'uploaded_from_web'
       is_new = @wonko_version.new_record?
       authorize @wonko_version, (is_new ? :update? : :create?)
 
@@ -83,8 +85,10 @@ class WonkoVersionsController < ApplicationController
       return
     end
 
+    origin = @wonko_version.origin
     @wonko_version = @wonko_version.dup
     @wonko_version.user = current_user
+    @wonko_version.origin = origin.dup
     do_respond_to :create?, 'copied', @wonko_version.save, :new
   end
 
