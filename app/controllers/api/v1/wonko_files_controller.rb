@@ -7,10 +7,12 @@ module Api
       def index
         authorize WonkoFile
         @wonko_files = policy_scope(WonkoFile.for_index @wur_enabled)
+        fresh_when last_modified: @wonko_files.maximum(:updated_at)
       end
 
       def show
         authorize @wonko_file
+        fresh_when @wonko_file, template: 'show'
       end
 
       def create
@@ -20,7 +22,7 @@ module Api
         authorize @wonko_file
 
         if @wonko_file.save
-          render 'show', status: :created
+          render 'show', status: :created if stale? @wonko_file, template: 'show'
         else
           render_json_errors @wonko_file.errors
         end
@@ -31,7 +33,7 @@ module Api
         authorize @wonko_file
 
         if @wonko_file.save
-          render 'show', status: :ok
+          render 'show', status: :ok if stale? @wonko_file, template: 'show'
         else
           render_json_errors @wonko_file.errors
         end

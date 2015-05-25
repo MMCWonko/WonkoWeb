@@ -8,6 +8,7 @@ module Api
 
       def show
         authorize @wonko_version
+        fresh_when @wonko_version, template: 'show'
       end
 
       def create
@@ -20,7 +21,7 @@ module Api
         authorize @wonko_version
 
         if @wonko_version.save
-          render 'show', status: :created
+          render 'show', status: :created if stale? @wonko_version, template: 'show'
         else
           render_json_errors @wonko_version.errors
         end
@@ -36,7 +37,7 @@ module Api
         authorize @wonko_version
 
         if @wonko_version.save
-          render 'show', status: :ok
+          render 'show', status: :ok if stale? @wonko_version, template: 'show'
         else
           render_json_errors @wonko_version.errors
         end
