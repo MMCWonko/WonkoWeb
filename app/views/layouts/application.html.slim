@@ -60,7 +60,7 @@ html
         return
   body data-spy="scroll" data-target=".scrollspy" data-no-turbolink="data-no-turbolink"
     = raw analytical.body_prepend_javascript
-    - cache [current_user, current_user.notifications.size] do
+    - cache [current_user, (current_user ? current_user.notifications.size : 0)] do
       = navbar position: :static do
         = vertical do
           = link_to 'WonkoWeb', root_path
