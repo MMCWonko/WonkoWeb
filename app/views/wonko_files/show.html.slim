@@ -20,4 +20,4 @@ p
   span = @wonko_file.name
 h3 Versions:
 = bootstrap_button_to 'All', route(:index, @wonko_file, WonkoVersion), :default, icon: 'th-list'
-= @wonko_file.wonkoversions.map do |version| link_to version.version, route(:show, version) end.join(', ').html_safe
+= @wonko_file.wonkoversions.pluck(:version).map do |version| link_to version, route(:show, @wonko_file, WonkoVersion.new(version: version)) end.join(', ').html_safe

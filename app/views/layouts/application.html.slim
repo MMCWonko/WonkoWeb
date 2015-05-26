@@ -2,18 +2,19 @@ doctype html
 html
   head
     = display_meta_tags site: 'WonkoWeb', reverse: true
-    = raw analytical.head_prepend_javascript
-    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
-    = javascript_include_tag 'application', 'data-turbolinks-track': true
-    = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js', 'data-turbolinks-track': true
-    = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css', media: 'all', 'data-turbolinks-track': true
-    = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.js', 'data-turbolinks-track': true
-    = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.css', media: 'all', 'data-turbolinks-track': true
-    = javascript_include_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/js/fileinput.js', 'data-turbolinks-track': true
-    = stylesheet_link_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/css/fileinput.min.css', media: 'all', 'data-turbolinks-track': true
-    = javascript_include_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/js/ajax-bootstrap-select.min.js', 'data-turbolinks-track': true
-    = stylesheet_link_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/css/ajax-bootstrap-select.css', media: 'all', 'data-turbolinks-track': true
-    = raw analytical.head_append_javascript
+    - cache do
+      = raw analytical.head_prepend_javascript
+      = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
+      = javascript_include_tag 'application', 'data-turbolinks-track': true
+      = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js', 'data-turbolinks-track': true
+      = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css', media: 'all', 'data-turbolinks-track': true
+      = javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.js', 'data-turbolinks-track': true
+      = stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.1.3/jsoneditor.min.css', media: 'all', 'data-turbolinks-track': true
+      = javascript_include_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/js/fileinput.js', 'data-turbolinks-track': true
+      = stylesheet_link_tag 'https://cdn.rawgit.com/kartik-v/bootstrap-fileinput/master/css/fileinput.min.css', media: 'all', 'data-turbolinks-track': true
+      = javascript_include_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/js/ajax-bootstrap-select.min.js', 'data-turbolinks-track': true
+      = stylesheet_link_tag 'https://cdn.rawgit.com/truckingsim/Ajax-Bootstrap-Select/master/dist/css/ajax-bootstrap-select.css', media: 'all', 'data-turbolinks-track': true
+      = raw analytical.head_append_javascript
     = csrf_meta_tags
     javascript:
       window.wurEnabled = #{@wur_enabled ? 'true' : 'false'};
@@ -59,24 +60,25 @@ html
         return
   body data-spy="scroll" data-target=".scrollspy" data-no-turbolink="data-no-turbolink"
     = raw analytical.body_prepend_javascript
-    = navbar position: :static do
-      = vertical do
-        = link_to 'WonkoWeb', root_path
-      = horizontal do
-        = nav class: 'navbar-left' do
-          li = link_to 'Get URL for MultiMC', '#', id: 'getUrlLink'
-          li = link_to 'About', about_path
-        = form_tag '#', class: 'navbar-form navbar-left' do |f|
-          .form-group
-            input#wurEnabler.form-control type="checkbox"
-        = nav class: 'navbar-right' do
-          - if user_signed_in?
-            = render 'notifications'
-            li = link_to 'Edit account', edit_user_registration_path
-            li = link_to 'Sign out', destroy_user_session_path, method: :delete
-          - else
-            li = link_to 'Sign in', new_user_session_path
-            li = link_to 'Sign up', new_user_registration_path
+    - cache [current_user, current_user.notifications.size] do
+      = navbar position: :static do
+        = vertical do
+          = link_to 'WonkoWeb', root_path
+        = horizontal do
+          = nav class: 'navbar-left' do
+            li = link_to 'Get URL for MultiMC', '#', id: 'getUrlLink'
+            li = link_to 'About', about_path
+          = form_tag '#', class: 'navbar-form navbar-left' do |f|
+            .form-group
+              input#wurEnabler.form-control type="checkbox"
+          = nav class: 'navbar-right' do
+            - if user_signed_in?
+              = render 'application/notifications'
+              li = link_to 'Edit account', edit_user_registration_path
+              li = link_to 'Sign out', destroy_user_session_path, method: :delete
+            - else
+              li = link_to 'Sign in', new_user_session_path
+              li = link_to 'Sign up', new_user_registration_path
 
     .container
       - if not devise_controller?
@@ -92,13 +94,13 @@ html
           = gi_icon :asterisk, size: :sm
           = link_to 'Contact', about_path + '#contact'
     - if Rails.env.production?
-        javascript:
-          var pkBaseURL = (("https:" == document.location.protocol) ? "https://#{ENV['WONKOWEB_PIWIK_HOST']}/" : "http://#{ENV['WONKOWEB_PIWIK_HOST']}/");
-          document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-        javascript:
-          try {
-                  var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-                  piwikTracker.trackPageView();
-                  piwikTracker.enableLinkTracking();
-          } catch( err ) {}
+      javascript:
+        var pkBaseURL = (("https:" == document.location.protocol) ? "https://#{ENV['WONKOWEB_PIWIK_HOST']}/" : "http://#{ENV['WONKOWEB_PIWIK_HOST']}/");
+        document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+      javascript:
+        try {
+          var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+          piwikTracker.trackPageView();
+          piwikTracker.enableLinkTracking();
+        } catch( err ) {}
     = raw analytical.body_append_javascript

@@ -35,6 +35,7 @@ gem 'therubyracer',  platforms: :ruby
 source 'https://rails-assets.org/' do
   gem 'rails-assets-URIjs'
   gem 'rails-assets-smalot-bootstrap-datetimepicker'
+  gem 'rails-assets-spinjs'
 end
 
 # API and related
@@ -74,6 +75,8 @@ group :development do
   gem 'quiet_assets'
   gem 'rack-dev-mark'
   gem 'rack-prettify', github: 'logicaltext/rack-prettify'
+  gem 'rack-mini-profiler'
+  gem 'flamegraph'
 
   gem 'domp'
 

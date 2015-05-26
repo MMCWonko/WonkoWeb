@@ -18,6 +18,8 @@
 //= require bootstrap-select
 //= require bootstrap-switch
 //= require smalot-bootstrap-datetimepicker
+//= require spinjs
+//= require spinjs/jquery.spin
 //= require bootbox
 //= require URIjs
 //= require abracadabra

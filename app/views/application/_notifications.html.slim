@@ -8,7 +8,7 @@ scss:
   }
 
 li.dropdown
-  a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+  a#notifications-button href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
     = gi_icon :inbox, size: :lg
     - if current_user.notifications.any?
       span.label.label-danger.label-badge-overlay
@@ -16,6 +16,20 @@ li.dropdown
   ul.dropdown-menu role="menu" style="width:320px;padding-left:10px;padding-right:10px"
     li style="margin-bottom:-12px;"
       a href="#{route :feed, current_user}" View all notifications (#{current_user.notifications.size})
-    = render_activities current_user.notifications.limit(5), layout: 'feed'
+    li#notifications-loading style="margin-bottom:9px;height:60px;"
     li style="margin-top:3px;"
       a href="#{route :feed, current_user, markAllRead: true}" Mark all as read
+
+javascript:
+  window.notificationsBriefUrl = '#{route :brief_feed, current_user}'
+coffee:
+  $(document).on 'page:change', ->
+    $('#notifications-loading').spin { radius: 10 }
+    $('#notifications-button').on 'click', ->
+      $.ajax {
+        url: window.notificationsBriefUrl,
+        cache: false,
+        success: (html) ->
+          $('#notifications-loading').replaceWith html
+          $('#notifications-button').off 'click'
+      }

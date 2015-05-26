@@ -6,8 +6,11 @@ module ActionController
       protected
 
       def selected_user
-        username = params[:user] || User.official_user.username
-        @wur_enabled ? User.find_by(username: username) : User.official_user
+        if @wur_enabled && !params[:user].nil? && !params[:user].empty?
+          User.find_by username: params[:user]
+        else
+          User.official_user
+        end
       rescue ActiveRecord::RecordNotFound
         nil
       end
@@ -16,7 +19,7 @@ module ActionController
         id = params[:wonko_file_id] || params[:id]
         id = id.sub(/\.json$/, '')
 
-        @wonko_file = WonkoFile.find_by(uid: id)
+        @wonko_file = WonkoFile.includes(:user).find_by(uid: id)
         fail ActiveRecord::RecordNotFound if @wonko_file.nil?
 
         if @wur_enabled || @wonko_file.user == User.official_user
@@ -42,7 +45,8 @@ module ActionController
         id = params[:wonko_version_id] || params[:id]
         id = id.sub(/\.json$/, '')
 
-        @wonko_version = selected_user ? WonkoVersion.get(@wonko_file, id, selected_user) : nil
+        user = selected_user
+        @wonko_version = user ? WonkoVersion.get(@wonko_file, id, user) : nil
 
         # if we haven't specifically asked for a user we can take any
         if !@wonko_version && @wur_enabled && @wonko_file.wonkoversions.where(version: id).count == 1

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     get '(:username)/feed' => 'feed#user', as: :feed_profile
     get '(:username)/files', action: :files, as: :profile_files
     get '(:username)/versions', action: :versions, as: :profile_versions
+    get '(:username)/brief_feed' => 'feed#brief_user', as: :brief_feed_profile
   end
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
