@@ -1,7 +1,0 @@
-#!/bin/bash
-
-DATA_DIR=${DATA_DIR:-data}
-IP=${IP:-localhost}
-
-mkdir -p $DATA_DIR || true
-mongod --bind_ip=$IP --dbpath=$DATA_DIR --nojournal --rest "$@"

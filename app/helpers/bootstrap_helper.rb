@@ -14,8 +14,9 @@ module BootstrapHelper
     link_to text, url, args_merged
   end
 
-  def bootstrap_button_group(&block)
-    ('<div class="btn-group">' + capture(&block) + '</div>').html_safe
+  def bootstrap_button_group(options = {}, &block)
+    options[:class] = (options[:class] || '') + ' btn-group'
+    content_tag :div, options, &block
   end
 
   def simple_link_to(text, href)

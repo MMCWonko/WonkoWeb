@@ -10,6 +10,11 @@ def api_version_helper(version, mime, &block)
 end
 
 Rails.application.routes.draw do
+  controller :wiki, path: :wiki do
+    get '/', action: :index, as: :wiki_index
+    get ':page', action: :show, as: :wiki, page: %r{[^/]+}
+  end
+
   controller :profile, path: :user do
     get '(:username)', action: :show, as: :profile
     get '(:username)/feed' => 'feed#user', as: :feed_profile

@@ -1,0 +1,58 @@
+css:
+  .panel-footer p {
+    margin-bottom: 0;
+  }
+
+  .panel-body {
+    margin-bottom: -10px;
+  }
+
+  footer.well p {
+    display: inline;
+  }
+
+  #header {
+    margin-bottom: -15px;
+  }
+
+h1
+  = @page.title
+  = bootstrap_button_group class: 'pull-right' do
+    = bootstrap_button_to '', gh_wiki_edit_path(@page), :default, icon: :pencil
+    = bootstrap_button_to '', gh_wiki_new_path, :success, icon: :plus
+p.text-muted
+  = @page.version.author.name
+  '  edited this page
+  = timeago_tag @page.version.authored_date
+  '  ·
+  = link_to "#{@page.versions.length} revision#{@page.versions.length > 1 ? 's' : ''}",
+            gh_wiki_page_history_path(@page), class: 'text-muted'
+
+hr
+
+div.row
+  div.col-lg-9
+    - unless @page.header.nil?
+      header.well.well-sm.text-muted
+        = render partial: 'wiki_page', locals: {page: @page.header}
+        = bootstrap_button_to '', gh_wiki_edit_path(@page.header), :default,
+                              icon: :pencil, size: :xs, class: 'pull-right'
+    = render partial: 'wiki_page', locals: {page: @page}
+    - unless @page.footer.nil?
+      footer.well.well-sm.text-muted
+        = render partial: 'wiki_page', locals: {page: @page.footer}
+        = bootstrap_button_to '', gh_wiki_edit_path(@page.footer), :default,
+                              icon: :pencil, size: :xs, class: 'pull-right'
+  div.col-lg-3
+    - unless @page.sidebar.nil?
+      div.panel.panel-default
+        div.panel-body
+          = bootstrap_button_to '', gh_wiki_edit_path('_Sidebar'), :default,
+                                icon: :pencil, size: :xs, class: 'pull-right'
+          = render partial: 'wiki_page', locals: {page: @page.sidebar}
+    b.small Clone this wiki locally
+    div.input-group
+      input type="text" class="form-control" value="#{gh_wiki_clone_url}" readonly="readonly"
+      span.input-group-btn
+        button class="btn btn-default zeroclipboard" type="button" data-clipboard-text="#{gh_wiki_clone_url}"
+          = gi_icon :copy

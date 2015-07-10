@@ -5,6 +5,8 @@ gem 'rabl'
 gem 'slim'
 gem 'slim-rails'
 gem 'meta-tags'
+gem 'gollum-lib'
+gem 'github-markdown'
 
 # General assets
 gem 'sass-rails'
@@ -74,7 +76,6 @@ group :development do
   gem 'meta_request'
   gem 'quiet_assets'
   gem 'rack-dev-mark'
-  gem 'rack-prettify', github: 'logicaltext/rack-prettify'
   gem 'rack-mini-profiler'
   gem 'flamegraph'
 
